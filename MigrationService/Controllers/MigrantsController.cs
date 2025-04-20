@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MigrationService.Models;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MigrationService.Controllers
@@ -10,10 +8,12 @@ namespace MigrationService.Controllers
     public class MigrantsController : Controller
     {
         private readonly MigrationDbContext _context;
+        private readonly ILogger<MigrantsController> _logger;
 
-        public MigrantsController(MigrationDbContext context)
+        public MigrantsController(MigrationDbContext context, ILogger<MigrantsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Migrants/Create
@@ -22,8 +22,8 @@ namespace MigrationService.Controllers
             var viewModel = new MigrantCreateViewModel
             {
                 Migrant = new Migrant(),
-                Countries = _context.Countries.ToList(),
-                Languages = _context.Languages.ToList(),
+                Countries = _context.Countries.AsNoTracking().ToList(),
+                Languages = _context.Languages.AsNoTracking().ToList(),
                 SelectedLanguageProficiencies = new List<LanguageProficiencyEntry>()
             };
 
@@ -36,13 +36,8 @@ namespace MigrationService.Controllers
         public async Task<IActionResult> Create(MigrantCreateViewModel viewModel)
         {
             if (!ModelState.IsValid)
-            {   
-                Console.WriteLine("Модель невалидна.");
-                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    Console.WriteLine(error.ErrorMessage);
-                }
-
+            {
+                // Если модель невалидна, возвращаем представление с ошибками
                 viewModel.Countries = _context.Countries.ToList();
                 viewModel.Languages = _context.Languages.ToList();
                 return View(viewModel);
@@ -74,68 +69,74 @@ namespace MigrationService.Controllers
         // Метод для отображения списка мигрантов
         public async Task<IActionResult> Index()
         {
-            var migrants = await _context.Migrants.ToListAsync();
+            var migrants = await _context.Migrants
+                .Include(m => m.Country) // Подгружаем страну
+                .Include(m => m.MigrantLanguages) // Подгружаем языки мигранта
+                .ThenInclude(ml => ml.Language) // Подгружаем сами языки
+                .ToListAsync();
+    
             return View(migrants);
         }
 
+        // GET: Migrants/Edit
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
                 return NotFound();
-        
+
             var migrant = await _context.Migrants
                 .Include(m => m.Country)
                 .Include(m => m.MigrantLanguages)
                 .ThenInclude(ml => ml.Language)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.MigrantID == id);
-        
+
             if (migrant == null)
                 return NotFound();
-        
-            var countries = _context.Countries.ToList();
-            var languages = _context.Languages.ToList();
-        
+
+            var countries = _context.Countries.AsNoTracking().ToList();
+            var languages = _context.Languages.AsNoTracking().ToList();
+
             // Список стран для выпадающего списка
             ViewBag.CountryList = new SelectList(countries, "CountryID", "CountryName", migrant.CountryID);
-            
+
             // Выбранные языки для мигранта
             var selectedLanguages = migrant.MigrantLanguages.Select(ml => ml.LanguageID).ToArray();
             ViewBag.Languages = languages;
             ViewBag.SelectedLanguages = selectedLanguages;
-        
+
             return View(migrant);
         }
-        
+
+        // POST: Migrants/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Migrant migrant, int[] selectedLanguages)
         {
             if (id != migrant.MigrantID)
                 return NotFound();
-        
+
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(migrant);
-        
+
                     // Обновляем языки мигранта
                     var currentLanguages = _context.MigrantLanguages.Where(ml => ml.MigrantID == migrant.MigrantID);
                     _context.MigrantLanguages.RemoveRange(currentLanguages);
-        
+
                     if (selectedLanguages != null)
                     {
-                        foreach (var languageId in selectedLanguages)
+                        var migrantLanguages = selectedLanguages.Select(languageId => new MigrantLanguage
                         {
-                            var migrantLanguage = new MigrantLanguage
-                            {
-                                MigrantID = migrant.MigrantID,
-                                LanguageID = languageId
-                            };
-                            _context.MigrantLanguages.Add(migrantLanguage);
-                        }
+                            MigrantID = migrant.MigrantID,
+                            LanguageID = languageId
+                        }).ToList();
+
+                        _context.MigrantLanguages.AddRange(migrantLanguages);
                     }
-        
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -147,6 +148,7 @@ namespace MigrationService.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(migrant);
         }
 
@@ -155,7 +157,7 @@ namespace MigrationService.Controllers
         {
             if (id == null) return NotFound();
 
-            var migrant = await _context.Migrants.FirstOrDefaultAsync(m => m.MigrantID == id);
+            var migrant = await _context.Migrants.AsNoTracking().FirstOrDefaultAsync(m => m.MigrantID == id);
             if (migrant == null) return NotFound();
 
             return View(migrant);
@@ -167,6 +169,8 @@ namespace MigrationService.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var migrant = await _context.Migrants.FindAsync(id);
+            if (migrant == null) return NotFound();
+
             _context.Migrants.Remove(migrant);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

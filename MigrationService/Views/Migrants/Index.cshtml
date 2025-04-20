@@ -10,6 +10,7 @@
         <th>Дата рождения</th>
         <th>Адрес</th>
         <th>Страна</th>
+        <th>Языки</th>
         <th></th>
     </tr>
     </thead>
@@ -22,6 +23,19 @@
         <td>@item.BirthDate?.ToShortDateString()</td>
         <td>@item.Address</td>
         <td>@item.Country?.CountryName</td>
+        <td>
+            @if (item.MigrantLanguages != null && item.MigrantLanguages.Any())
+            {
+            @foreach (var migrantLanguage in item.MigrantLanguages)
+            {
+            <div>@migrantLanguage.Language?.LanguageName - @migrantLanguage.ProficiencyLevel</div>
+            }
+            }
+            else
+            {
+            <div>Нет языков</div>
+            }
+        </td>
         <td>
             <a asp-action="Edit" asp-route-id="@item.MigrantID">Редактировать</a> |
             <a asp-action="Details" asp-route-id="@item.MigrantID">Детали</a> |
