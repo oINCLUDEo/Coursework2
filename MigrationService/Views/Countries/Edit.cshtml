@@ -1,0 +1,47 @@
+@model MigrationService.Models.Country
+
+@{
+    ViewData["Title"] = "Edit Country";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2>Edit Country</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="CountryID" />
+                <div class="form-group mb-3">
+                    <label asp-for="CountryName" class="control-label"></label>
+                    <input asp-for="CountryName" class="form-control" />
+                    <span asp-validation-for="CountryName" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="ISOCode" class="control-label"></label>
+                    <input asp-for="ISOCode" class="form-control" />
+                    <span asp-validation-for="ISOCode" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <div class="form-check">
+                        <input asp-for="VisaRequired" class="form-check-input" />
+                        <label asp-for="VisaRequired" class="form-check-label"></label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Save
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

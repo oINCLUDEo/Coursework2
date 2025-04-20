@@ -1,0 +1,58 @@
+@model MigrationService.Models.Country
+
+@{
+    ViewData["Title"] = "Country Details";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2>Country Details</h2>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-2">@Html.DisplayNameFor(model => model.CountryName)</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.CountryName)</dd>
+
+                <dt class="col-sm-2">@Html.DisplayNameFor(model => model.ISOCode)</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.ISOCode)</dd>
+
+                <dt class="col-sm-2">@Html.DisplayNameFor(model => model.VisaRequired)</dt>
+                <dd class="col-sm-10">@Html.DisplayFor(model => model.VisaRequired)</dd>
+            </dl>
+
+            <h3 class="mt-4">Migrants from this Country</h3>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Migrant Name</th>
+                            <th>Passport Number</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var migrant in Model.Migrants)
+                        {
+                            <tr>
+                                <td>@migrant.FullName</td>
+                                <td>@migrant.PassportNumber</td>
+                                <td>@migrant.Address</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="btn-group">
+                <a asp-action="Edit" asp-route-id="@Model.CountryID" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,58 @@
+@model MigrationService.Models.Country
+
+@{
+    ViewData["Title"] = "Create Country";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2>Create Country</h2>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group mb-3">
+                    <label asp-for="CountryName" class="control-label">Country Name</label>
+                    <input asp-for="CountryName" class="form-control" required />
+                    <span asp-validation-for="CountryName" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="ISOCode" class="control-label">ISO Code</label>
+                    <input asp-for="ISOCode" class="form-control" required />
+                    <span asp-validation-for="ISOCode" class="text-danger"></span>
+                </div>
+                <div class="form-group mb-3">
+                    <div class="form-check">
+                        <input asp-for="VisaRequired" class="form-check-input" />
+                        <label asp-for="VisaRequired" class="form-check-label">Visa Required</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            // Add form submission handler
+            $("form").submit(function (e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
+            });
+        });
+    </script>
+} 
