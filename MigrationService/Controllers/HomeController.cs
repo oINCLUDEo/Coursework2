@@ -21,6 +21,7 @@ namespace MigrationService.Controllers
             ViewBag.ApplicationsCount = _context.Applications.Count();
             ViewBag.CountriesCount = _context.Countries.Count();
             ViewBag.LanguagesCount = _context.Languages.Count();
+            ViewBag.DocumentsCount = _context.Documents.Count();
             
             return View();
         }
