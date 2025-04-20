@@ -24,7 +24,6 @@ public class Application
     [Display(Name = "Status")]
     public string Status { get; set; }
 
-    [Required(ErrorMessage = "Submission date is required")]
     [Display(Name = "Submission Date")]
     [DataType(DataType.DateTime)]
     public DateTime SubmissionDate { get; set; }

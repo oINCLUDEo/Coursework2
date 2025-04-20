@@ -30,7 +30,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Migrants}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.MapControllerRoute(
     name: "delete",
