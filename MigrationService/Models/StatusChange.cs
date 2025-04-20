@@ -1,4 +1,6 @@
-﻿namespace MigrationService.Models;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace MigrationService.Models;
 
 public class StatusChange
 {
@@ -9,7 +11,8 @@ public class StatusChange
     public string Status { get; set; }
 
     public DateTime ChangedAt { get; set; }
-
+    
+    [ValidateNever]
     public string Comment { get; set; }
 
     public virtual Application Application { get; set; }

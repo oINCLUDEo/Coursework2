@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace MigrationService.Models;
 
@@ -31,12 +32,12 @@ public class Application
     [Display(Name = "Decision Date")]
     [DataType(DataType.DateTime)]
     public DateTime? DecisionDate { get; set; }
-
+    [ValidateNever]
     public virtual Migrant Migrant { get; set; }
-
+    [ValidateNever]
     public virtual Officer Officer { get; set; }
-
+    [ValidateNever]
     public virtual ICollection<Document> Documents { get; set; }
-
+    [ValidateNever]
     public virtual ICollection<StatusChange> StatusChanges { get; set; }
 }
