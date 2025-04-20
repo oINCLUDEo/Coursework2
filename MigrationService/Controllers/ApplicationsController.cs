@@ -129,6 +129,8 @@ namespace MigrationService.Controllers
             if (id != application.ApplicationID)
                 return NotFound();
 
+            ModelState.Remove("statusComment");
+
             if (ModelState.IsValid)
             {
                 var existingApplication = await _context.Applications
@@ -137,23 +139,25 @@ namespace MigrationService.Controllers
 
                 if (existingApplication == null)
                     return NotFound();
-
+        
                 // Check if status has changed
                 if (existingApplication.Status != application.Status)
-                {   
+                {
                     var statusChange = new StatusChange
                     {
                         ApplicationID = application.ApplicationID,
                         Status = application.Status,
                         ChangedAt = DateTime.Now,
-                        Comment = statusComment
+                        Comment = !string.IsNullOrWhiteSpace(statusComment) 
+                            ? statusComment 
+                            : $"Status changed from {existingApplication.Status} to {application.Status}"
                     };
                     _context.StatusChanges.Add(statusChange);
 
                     // Set DecisionDate when status changes to Approved or Rejected
                     if (application.Status == "Approved" || application.Status == "Rejected")
                     {
-                        existingApplication.DecisionDate = DateTime.Now;
+                        application.DecisionDate = DateTime.Now;
                     }
                 }
 
@@ -163,9 +167,24 @@ namespace MigrationService.Controllers
                 existingApplication.Type = application.Type;
                 existingApplication.Status = application.Status;
                 existingApplication.SubmissionDate = application.SubmissionDate;
+                existingApplication.DecisionDate = application.DecisionDate;
 
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ApplicationExists(application.ApplicationID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
             await PopulateViewBagData();
             return View(application);
