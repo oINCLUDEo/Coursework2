@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 
 namespace MigrationService.Models;
@@ -21,5 +22,6 @@ public class Officer
     [Required]
     public string Password { get; set; }
 
+    [ValidateNever]
     public virtual ICollection<Application> Applications { get; set; }
 }
