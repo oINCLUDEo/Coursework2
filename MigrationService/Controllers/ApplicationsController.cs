@@ -18,12 +18,37 @@ namespace MigrationService.Controllers
         }
 
         // GET: Applications
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string typeFilter, string[] statusFilter)
         {
-            var applications = await _context.Applications
-                .Include(a => a.Migrant)
-                .Include(a => a.Officer)
-                .ToListAsync();
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["TypeFilter"] = typeFilter;
+            ViewData["StatusFilters"] = statusFilter;
+
+            // Start with a simple query and build it up
+            IQueryable<Application> query = _context.Applications;
+
+            // Include related entities
+            query = query.Include(a => a.Migrant).Include(a => a.Officer);
+
+            // Apply filters one by one
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(a => a.Migrant.FullName.ToLower().Contains(searchString.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(typeFilter))
+            {
+                query = query.Where(a => a.Type == typeFilter);
+            }
+
+            if (statusFilter != null && statusFilter.Length > 0)
+            {
+                // Use a simpler approach for multiple statuses
+                query = query.Where(a => statusFilter.Contains(a.Status));
+            }
+
+            // Execute the query
+            var applications = await query.ToListAsync();
             return View(applications);
         }
 

@@ -72,14 +72,47 @@ namespace MigrationService.Controllers
         }
 
         // Метод для отображения списка мигрантов
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? countryFilter, int? languageFilter)
         {
-            var migrants = await _context.Migrants
-                .Include(m => m.Country) // Подгружаем страну
-                .Include(m => m.MigrantLanguages) // Подгружаем языки мигранта
-                .ThenInclude(ml => ml.Language) // Подгружаем сами языки
-                .ToListAsync();
-
+            // Store the current filter values in ViewData for the view
+            ViewData["CurrentFilter"] = searchString;
+            
+            // Get all countries and languages for the filter dropdowns
+            ViewBag.Countries = new SelectList(_context.Countries, "CountryID", "CountryName");
+            ViewBag.Languages = new SelectList(_context.Languages, "LanguageID", "LanguageName");
+            
+            // Start with the base query including related data
+            var query = _context.Migrants
+                .Include(m => m.Country)
+                .Include(m => m.MigrantLanguages)
+                .ThenInclude(ml => ml.Language)
+                .AsQueryable();
+            
+            // Apply search filter if provided
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                query = query.Where(m => 
+                    m.FullName.ToLower().Contains(searchString) || 
+                    m.PassportNumber.ToLower().Contains(searchString) || 
+                    m.Address.ToLower().Contains(searchString));
+            }
+            
+            // Apply country filter if provided
+            if (countryFilter.HasValue)
+            {
+                query = query.Where(m => m.CountryID == countryFilter.Value);
+            }
+            
+            // Apply language filter if provided
+            if (languageFilter.HasValue)
+            {
+                query = query.Where(m => m.MigrantLanguages.Any(ml => ml.LanguageID == languageFilter.Value));
+            }
+            
+            // Execute the query and get the results
+            var migrants = await query.ToListAsync();
+            
             return View(migrants);
         }
 

@@ -12,6 +12,57 @@
         </a>
     </div>
 
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" name="searchString" class="form-control" placeholder="Search by migrant name..." value="@ViewData["CurrentFilter"]">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select name="typeFilter" class="form-select">
+                        <option value="">All Types</option>
+                        @{
+                            var typeFilter = ViewData["TypeFilter"]?.ToString();
+                            <option value="Visa" selected="@(typeFilter == "Visa" ? "selected" : "")">Visa</option>
+                            <option value="Residence" selected="@(typeFilter == "Residence" ? "selected" : "")">Residence</option>
+                            <option value="Citizenship" selected="@(typeFilter == "Citizenship" ? "selected" : null)">Citizenship</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="statusFilter" class="form-select" multiple>
+                        @{
+                            var statusFilters = ViewData["StatusFilters"] as string[] ?? new string[0];
+                            <option value="Pending" selected="@(statusFilters.Contains("Pending") ? "selected" : "")">Pending</option>
+                            <option value="In Progress" selected="@(statusFilters.Contains("In Progress") ? "selected" : "")">In Progress</option>
+                            <option value="Approved" selected="@(statusFilters.Contains("Approved") ? "selected" : "")">Approved</option>
+                            <option value="Rejected" selected="@(statusFilters.Contains("Rejected") ? "selected" : "")">Rejected</option>
+                        }
+                    </select>
+                    <small class="text-muted">Hold Ctrl/Cmd to select multiple statuses</small>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </form>
+            @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()) || 
+                 !string.IsNullOrEmpty(ViewData["TypeFilter"]?.ToString()) || 
+                 !string.IsNullOrEmpty(ViewData["StatusFilter"]?.ToString()))
+            {
+                <div class="mt-3">
+                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-times"></i> Clear Filters
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
