@@ -27,47 +27,48 @@ namespace MigrationService.Controllers
             ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
             ViewData["SortBy"] = sortBy;
 
-            var applications = from a in _context.Applications
-                              select a;
+            // Get all applications with related data
+            var applications = await _context.Applications
+                .Include(a => a.Migrant)
+                .Include(a => a.Officer)
+                .ToListAsync();
 
+            // Apply filters in memory
             if (!string.IsNullOrEmpty(searchString))
             {
-                applications = applications.Where(a => a.Migrant.FullName.Contains(searchString));
+                applications = applications.Where(a => a.Migrant.FullName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             if (!string.IsNullOrEmpty(typeFilter))
             {
-                applications = applications.Where(a => a.Type == typeFilter);
+                applications = applications.Where(a => a.Type == typeFilter).ToList();
             }
 
             if (statusFilter != null && statusFilter.Length > 0)
             {
-                applications = applications.Where(a => statusFilter.Contains(a.Status));
+                applications = applications.Where(a => statusFilter.Contains(a.Status)).ToList();
             }
 
             if (startDate.HasValue)
             {
-                applications = applications.Where(a => a.SubmissionDate >= startDate.Value);
+                applications = applications.Where(a => a.SubmissionDate >= startDate.Value).ToList();
             }
 
             if (endDate.HasValue)
             {
-                applications = applications.Where(a => a.SubmissionDate <= endDate.Value);
+                applications = applications.Where(a => a.SubmissionDate <= endDate.Value).ToList();
             }
 
             // Apply sorting
             applications = sortBy switch
             {
-                "date_asc" => applications.OrderBy(a => a.SubmissionDate),
-                "name_asc" => applications.OrderBy(a => a.Migrant.FullName),
-                "name_desc" => applications.OrderByDescending(a => a.Migrant.FullName),
-                _ => applications.OrderByDescending(a => a.SubmissionDate) // Default to newest first
+                "date_asc" => applications.OrderBy(a => a.SubmissionDate).ToList(),
+                "name_asc" => applications.OrderBy(a => a.Migrant.FullName).ToList(),
+                "name_desc" => applications.OrderByDescending(a => a.Migrant.FullName).ToList(),
+                _ => applications.OrderByDescending(a => a.SubmissionDate).ToList() // Default to newest first
             };
 
-            return View(await applications
-                .Include(a => a.Migrant)
-                .Include(a => a.Officer)
-                .ToListAsync());
+            return View(applications);
         }
 
         // GET: Applications/Details/5
