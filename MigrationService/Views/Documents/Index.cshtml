@@ -1,0 +1,70 @@
+@model IEnumerable<MigrationService.Models.Document>
+
+@{
+    ViewData["Title"] = "Documents";
+}
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2>Documents</h2>
+            <div>
+                <a asp-controller="Applications" asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Applications
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>File Name</th>
+                                <th>Type</th>
+                                <th>Application</th>
+                                <th>Migrant</th>
+                                <th>Upload Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.FileName.Replace($"{item.DocumentID}_", "")</td>
+                                    <td>@item.FileType</td>
+                                    <td>
+                                        <a asp-controller="Applications" asp-action="Details" asp-route-id="@item.ApplicationID">
+                                            Application #@item.ApplicationID
+                                        </a>
+                                    </td>
+                                    <td>@item.Application?.Migrant?.FullName</td>
+                                    <td>@item.UploadedAt.ToString("g")</td>
+                                    <td>
+                                        <a asp-action="Download" asp-route-id="@item.DocumentID" class="btn btn-sm btn-info">
+                                            <i class="fas fa-download"></i> Download
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@item.DocumentID" method="post" style="display: inline;">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this document?');">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No documents have been uploaded yet.
+                </div>
+            }
+        </div>
+    </div>
+</div> 
