@@ -52,29 +52,21 @@ namespace MigrationService.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                if (await _context.Officers.AnyAsync(o => o.Email == officer.Email))
                 {
-                    // Check if officer with same email or login already exists
-                    if (await _context.Officers.AnyAsync(o => o.Email == officer.Email))
-                    {
-                        ModelState.AddModelError("Email", "An officer with this email already exists.");
-                        return View(officer);
-                    }
-
-                    if (await _context.Officers.AnyAsync(o => o.Login == officer.Login))
-                    {
-                        ModelState.AddModelError("Login", "An officer with this login already exists.");
-                        return View(officer);
-                    }
-
-                    _context.Add(officer);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError("Email", "An officer with this email already exists.");
+                    return View(officer);
                 }
-                catch (Exception)
+
+                if (await _context.Officers.AnyAsync(o => o.Login == officer.Login))
                 {
-                    ModelState.AddModelError("", "An error occurred while creating the officer. Please try again.");
+                    ModelState.AddModelError("Login", "An officer with this login already exists.");
+                    return View(officer);
                 }
+
+                _context.Add(officer);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(officer);
         }
@@ -102,44 +94,29 @@ namespace MigrationService.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                if (await _context.Officers.AnyAsync(o => o.Email == officer.Email && o.OfficerID != id))
                 {
-                    // Check if officer with same email or login already exists (excluding current officer)
-                    if (await _context.Officers.AnyAsync(o => o.Email == officer.Email && o.OfficerID != id))
-                    {
-                        ModelState.AddModelError("Email", "An officer with this email already exists.");
-                        return View(officer);
-                    }
-
-                    if (await _context.Officers.AnyAsync(o => o.Login == officer.Login && o.OfficerID != id))
-                    {
-                        ModelState.AddModelError("Login", "An officer with this login already exists.");
-                        return View(officer);
-                    }
-
-                    var existingOfficer = await _context.Officers.FindAsync(id);
-                    if (existingOfficer == null)
-                        return NotFound();
-
-                    existingOfficer.FullName = officer.FullName;
-                    existingOfficer.Position = officer.Position;
-                    existingOfficer.Email = officer.Email;
-                    existingOfficer.Login = officer.Login;
-                    existingOfficer.Password = officer.Password;
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError("Email", "An officer with this email already exists.");
+                    return View(officer);
                 }
-                catch (DbUpdateConcurrencyException)
+
+                if (await _context.Officers.AnyAsync(o => o.Login == officer.Login && o.OfficerID != id))
                 {
-                    if (!OfficerExists(officer.OfficerID))
-                        return NotFound();
-                    else
-                        throw;
+                    ModelState.AddModelError("Login", "An officer with this login already exists.");
+                    return View(officer);
                 }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("", "An error occurred while saving the officer. Please try again.");
-                }
+
+                var existingOfficer = await _context.Officers.FindAsync(id);
+                if (existingOfficer == null)
+                    return NotFound();
+
+                existingOfficer.FullName = officer.FullName;
+                existingOfficer.Position = officer.Position;
+                existingOfficer.Email = officer.Email;
+                existingOfficer.Login = officer.Login;
+                existingOfficer.Password = officer.Password;
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(officer);
         }
@@ -171,17 +148,9 @@ namespace MigrationService.Controllers
             if (officer == null)
                 return NotFound();
 
-            try
-            {
-                _context.Officers.Remove(officer);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ModelState.AddModelError("", "An error occurred while deleting the officer. Please try again.");
-                return View("Delete", officer);
-            }
+            _context.Officers.Remove(officer);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool OfficerExists(int id)

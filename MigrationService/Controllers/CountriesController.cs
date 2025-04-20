@@ -49,40 +49,23 @@ namespace MigrationService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CountryName,ISOCode,VisaRequired")] Country country)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (string.IsNullOrWhiteSpace(country.CountryName))
+                if (await _context.Countries.AnyAsync(c => c.CountryName == country.CountryName))
                 {
-                    ModelState.AddModelError("CountryName", "Country name is required");
-                }
-                if (string.IsNullOrWhiteSpace(country.ISOCode))
-                {
-                    ModelState.AddModelError("ISOCode", "ISO code is required");
+                    ModelState.AddModelError("CountryName", "A country with this name already exists.");
+                    return View(country);
                 }
 
-                if (ModelState.IsValid)
+                if (await _context.Countries.AnyAsync(c => c.ISOCode == country.ISOCode))
                 {
-                    // Check if country with same name or code already exists
-                    if (await _context.Countries.AnyAsync(c => c.CountryName == country.CountryName))
-                    {
-                        ModelState.AddModelError("CountryName", "A country with this name already exists.");
-                        return View(country);
-                    }
-
-                    if (await _context.Countries.AnyAsync(c => c.ISOCode == country.ISOCode))
-                    {
-                        ModelState.AddModelError("ISOCode", "A country with this code already exists.");
-                        return View(country);
-                    }
-
-                    _context.Add(country);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError("ISOCode", "A country with this code already exists.");
+                    return View(country);
                 }
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", "An error occurred while creating the country. Please try again.");
+
+                _context.Add(country);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(country);
         }
@@ -108,53 +91,29 @@ namespace MigrationService.Controllers
             if (id != country.CountryID)
                 return NotFound();
 
-            try
+            if (ModelState.IsValid)
             {
-                if (string.IsNullOrWhiteSpace(country.CountryName))
+                if (await _context.Countries.AnyAsync(c => c.CountryName == country.CountryName && c.CountryID != id))
                 {
-                    ModelState.AddModelError("CountryName", "Country name is required");
-                }
-                if (string.IsNullOrWhiteSpace(country.ISOCode))
-                {
-                    ModelState.AddModelError("ISOCode", "ISO code is required");
+                    ModelState.AddModelError("CountryName", "A country with this name already exists.");
+                    return View(country);
                 }
 
-                if (ModelState.IsValid)
+                if (await _context.Countries.AnyAsync(c => c.ISOCode == country.ISOCode && c.CountryID != id))
                 {
-                    // Check if country with same name or code already exists (excluding current country)
-                    if (await _context.Countries.AnyAsync(c => c.CountryName == country.CountryName && c.CountryID != id))
-                    {
-                        ModelState.AddModelError("CountryName", "A country with this name already exists.");
-                        return View(country);
-                    }
-
-                    if (await _context.Countries.AnyAsync(c => c.ISOCode == country.ISOCode && c.CountryID != id))
-                    {
-                        ModelState.AddModelError("ISOCode", "A country with this code already exists.");
-                        return View(country);
-                    }
-
-                    var existingCountry = await _context.Countries.FindAsync(id);
-                    if (existingCountry == null)
-                        return NotFound();
-
-                    existingCountry.CountryName = country.CountryName;
-                    existingCountry.ISOCode = country.ISOCode;
-                    existingCountry.VisaRequired = country.VisaRequired;
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    ModelState.AddModelError("ISOCode", "A country with this code already exists.");
+                    return View(country);
                 }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CountryExists(country.CountryID))
+
+                var existingCountry = await _context.Countries.FindAsync(id);
+                if (existingCountry == null)
                     return NotFound();
-                else
-                    throw;
-            }
-            catch (Exception)
-            {
-                ModelState.AddModelError("", "An error occurred while saving the country. Please try again.");
+
+                existingCountry.CountryName = country.CountryName;
+                existingCountry.ISOCode = country.ISOCode;
+                existingCountry.VisaRequired = country.VisaRequired;
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(country);
         }
@@ -186,17 +145,9 @@ namespace MigrationService.Controllers
             if (country == null)
                 return NotFound();
 
-            try
-            {
-                _context.Countries.Remove(country);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ModelState.AddModelError("", "An error occurred while deleting the country. Please try again.");
-                return View("Delete", country);
-            }
+            _context.Countries.Remove(country);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool CountryExists(int id)

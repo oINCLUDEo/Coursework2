@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MigrationService.Models;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Diagnostics;
-using System.ComponentModel.DataAnnotations;
 
 namespace MigrationService.Controllers
 {
@@ -39,7 +38,7 @@ namespace MigrationService.Controllers
                 .Include(a => a.Officer)
                 .Include(a => a.Documents)
                 .Include(a => a.StatusChanges)
-                .FirstOrDefaultAsync(a => a.ApplicationID == id);
+                .FirstOrDefaultAsync(m => m.ApplicationID == id);
 
             if (application == null)
                 return NotFound();
@@ -48,10 +47,9 @@ namespace MigrationService.Controllers
         }
 
         // GET: Applications/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["MigrantID"] = new SelectList(_context.Migrants, "MigrantID", "FullName");
-            ViewData["OfficerID"] = new SelectList(_context.Officers, "OfficerID", "FullName");
+            await PopulateViewBagData();
             return View();
         }
 
@@ -60,19 +58,7 @@ namespace MigrationService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MigrantID,OfficerID,Type,Status")] Application application)
         {
-            List<ValidationResult> validationResults;
-            if (!application.Validate(out validationResults))
-            {
-                foreach (var result in validationResults)
-                {
-                    ModelState.AddModelError(string.Join(", ", result.MemberNames), result.ErrorMessage);
-                }
-                ViewData["MigrantID"] = new SelectList(_context.Migrants, "MigrantID", "FullName", application.MigrantID);
-                ViewData["OfficerID"] = new SelectList(_context.Officers, "OfficerID", "FullName", application.OfficerID);
-                return View(application);
-            }
-
-            try
+            if (ModelState.IsValid)
             {
                 application.SubmissionDate = DateTime.Now;
 
@@ -92,13 +78,8 @@ namespace MigrationService.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception)
-            {
-                ModelState.AddModelError("", "An error occurred while creating the application. Please try again.");
-                ViewData["MigrantID"] = new SelectList(_context.Migrants, "MigrantID", "FullName", application.MigrantID);
-                ViewData["OfficerID"] = new SelectList(_context.Officers, "OfficerID", "FullName", application.OfficerID);
-                return View(application);
-            }
+            await PopulateViewBagData();
+            return View(application);
         }
 
         // GET: Applications/Edit/5
@@ -111,8 +92,7 @@ namespace MigrationService.Controllers
             if (application == null)
                 return NotFound();
             
-            ViewData["MigrantID"] = new SelectList(_context.Migrants, "MigrantID", "FullName", application.MigrantID);
-            ViewData["OfficerID"] = new SelectList(_context.Officers, "OfficerID", "FullName", application.OfficerID);
+            await PopulateViewBagData();
             return View(application);
         }
 
@@ -122,56 +102,13 @@ namespace MigrationService.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("ApplicationID,MigrantID,OfficerID,Type,Status,SubmissionDate,DecisionDate")] Application application, string statusComment)
         {
             if (id != application.ApplicationID)
-            {
                 return NotFound();
-            }
 
-            List<ValidationResult> validationResults;
-            if (!application.Validate(out validationResults))
+            if (ModelState.IsValid)
             {
-                foreach (var result in validationResults)
-                {
-                    ModelState.AddModelError(string.Join(", ", result.MemberNames), result.ErrorMessage);
-                }
-                await PopulateViewBagData();
-                return View(application);
-            }
-
-            try
-            {
-                var existingApplication = await _context.Applications
-                    .Include(a => a.StatusChanges)
-                    .FirstOrDefaultAsync(a => a.ApplicationID == id);
-
+                var existingApplication = await _context.Applications.FindAsync(id);
                 if (existingApplication == null)
-                {
                     return NotFound();
-                }
-
-                // Check if status has changed
-                if (existingApplication.Status != application.Status)
-                {
-                    var statusChange = new StatusChange
-                    {
-                        ApplicationID = application.ApplicationID,
-                        Status = application.Status,
-                        ChangedAt = DateTime.Now,
-                        Comment = statusComment ?? "Status updated"
-                    };
-
-                    _context.StatusChanges.Add(statusChange);
-
-                    // Automatically set DecisionDate when status changes to Approved or Rejected
-                    if (application.Status == "Approved" || application.Status == "Rejected")
-                    {
-                        existingApplication.DecisionDate = DateTime.Now;
-                    }
-                    else if (application.Status == "Pending" || application.Status == "InProgress")
-                    {
-                        // Clear DecisionDate if status changes back to Pending or InProgress
-                        existingApplication.DecisionDate = null;
-                    }
-                }
 
                 // Update only the changed fields
                 existingApplication.MigrantID = application.MigrantID;
@@ -187,20 +124,8 @@ namespace MigrationService.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ApplicationExists(application.ApplicationID))
-                {
-                    return NotFound();
-                }
-                throw;
-            }
-            catch (Exception)
-            {
-                ModelState.AddModelError("", "An error occurred while saving the application. Please try again.");
-                await PopulateViewBagData();
-                return View(application);
-            }
+            await PopulateViewBagData();
+            return View(application);
         }
 
         private async Task PopulateViewBagData()
@@ -219,7 +144,6 @@ namespace MigrationService.Controllers
                 .Include(a => a.Migrant)
                 .Include(a => a.Officer)
                 .FirstOrDefaultAsync(m => m.ApplicationID == id);
-                
             if (application == null)
                 return NotFound();
 
@@ -231,7 +155,14 @@ namespace MigrationService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var application = await _context.Applications.FindAsync(id);
+            var application = await _context.Applications
+                .Include(a => a.Documents)
+                .Include(a => a.StatusChanges)
+                .FirstOrDefaultAsync(a => a.ApplicationID == id);
+
+            if (application == null)
+                return NotFound();
+
             _context.Applications.Remove(application);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

@@ -52,23 +52,15 @@ namespace MigrationService.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                if (await _context.Languages.AnyAsync(l => l.LanguageName == language.LanguageName))
                 {
-                    // Check if language with same name already exists
-                    if (await _context.Languages.AnyAsync(l => l.LanguageName == language.LanguageName))
-                    {
-                        ModelState.AddModelError("LanguageName", "A language with this name already exists.");
-                        return View(language);
-                    }
+                    ModelState.AddModelError("LanguageName", "A language with this name already exists.");
+                    return View(language);
+                }
 
-                    _context.Add(language);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("", "An error occurred while creating the language. Please try again.");
-                }
+                _context.Add(language);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(language);
         }
@@ -96,34 +88,19 @@ namespace MigrationService.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                if (await _context.Languages.AnyAsync(l => l.LanguageName == language.LanguageName && l.LanguageID != id))
                 {
-                    // Check if language with same name already exists (excluding current language)
-                    if (await _context.Languages.AnyAsync(l => l.LanguageName == language.LanguageName && l.LanguageID != id))
-                    {
-                        ModelState.AddModelError("LanguageName", "A language with this name already exists.");
-                        return View(language);
-                    }
+                    ModelState.AddModelError("LanguageName", "A language with this name already exists.");
+                    return View(language);
+                }
 
-                    var existingLanguage = await _context.Languages.FindAsync(id);
-                    if (existingLanguage == null)
-                        return NotFound();
+                var existingLanguage = await _context.Languages.FindAsync(id);
+                if (existingLanguage == null)
+                    return NotFound();
 
-                    existingLanguage.LanguageName = language.LanguageName;
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LanguageExists(language.LanguageID))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("", "An error occurred while saving the language. Please try again.");
-                }
+                existingLanguage.LanguageName = language.LanguageName;
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(language);
         }
@@ -155,17 +132,9 @@ namespace MigrationService.Controllers
             if (language == null)
                 return NotFound();
 
-            try
-            {
-                _context.Languages.Remove(language);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                ModelState.AddModelError("", "An error occurred while deleting the language. Please try again.");
-                return View("Delete", language);
-            }
+            _context.Languages.Remove(language);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool LanguageExists(int id)
