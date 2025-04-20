@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <data name="Home" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="Management" xml:space="preserve">
+    <value>Управление</value>
+  </data>
+  <data name="Migrants" xml:space="preserve">
+    <value>Мигранты</value>
+  </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Заявки</value>
+  </data>
+  <data name="Officers" xml:space="preserve">
+    <value>Сотрудники</value>
+  </data>
+  <data name="Countries" xml:space="preserve">
+    <value>Страны</value>
+  </data>
+  <data name="Languages" xml:space="preserve">
+    <value>Языки</value>
+  </data>
+  <data name="Documents" xml:space="preserve">
+    <value>Документы</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Редактировать</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Подробности</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Фильтр</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Сортировка</value>
+  </data>
+  <data name="Newest" xml:space="preserve">
+    <value>Сначала новые</value>
+  </data>
+  <data name="Oldest" xml:space="preserve">
+    <value>Сначала старые</value>
+  </data>
+  <data name="NameAZ" xml:space="preserve">
+    <value>По имени (А-Я)</value>
+  </data>
+  <data name="NameZA" xml:space="preserve">
+    <value>По имени (Я-А)</value>
+  </data>
+  <data name="Results" xml:space="preserve">
+    <value>Результаты</value>
+  </data>
+  <data name="Found" xml:space="preserve">
+    <value>Найдено</value>
+  </data>
+  <data name="NoResults" xml:space="preserve">
+    <value>Ничего не найдено</value>
+  </data>
+  <data name="PleaseTryAgain" xml:space="preserve">
+    <value>Пожалуйста, попробуйте другой поисковый запрос</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить этот элемент?</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>Загрузить</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Скачать</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value>Полное имя</value>
+  </data>
+  <data name="PassportNumber" xml:space="preserve">
+    <value>Номер паспорта</value>
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Номер телефона</value>
+  </data>
+  <data name="Gender" xml:space="preserve">
+    <value>Пол</value>
+  </data>
+  <data name="BirthDate" xml:space="preserve">
+    <value>Дата рождения</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Адрес</value>
+  </data>
+  <data name="Country" xml:space="preserve">
+    <value>Страна</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="ProficiencyLevel" xml:space="preserve">
+    <value>Уровень владения</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Должность</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Эл. почта</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Логин</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>Имя файла</value>
+  </data>
+  <data name="FileType" xml:space="preserve">
+    <value>Тип файла</value>
+  </data>
+  <data name="UploadedAt" xml:space="preserve">
+    <value>Загружено</value>
+  </data>
+  <data name="SubmissionDate" xml:space="preserve">
+    <value>Дата подачи</value>
+  </data>
+  <data name="DecisionDate" xml:space="preserve">
+    <value>Дата решения</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Комментарий</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>На рассмотрении</value>
+  </data>
+  <data name="InProgress" xml:space="preserve">
+    <value>В обработке</value>
+  </data>
+  <data name="Approved" xml:space="preserve">
+    <value>Одобрено</value>
+  </data>
+  <data name="Rejected" xml:space="preserve">
+    <value>Отклонено</value>
+  </data>
+  <data name="Visa" xml:space="preserve">
+    <value>Виза</value>
+  </data>
+  <data name="Residence" xml:space="preserve">
+    <value>ВНЖ</value>
+  </data>
+  <data name="Citizenship" xml:space="preserve">
+    <value>Гражданство</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Мужской</value>
+  </data>
+  <data name="Female" xml:space="preserve">
+    <value>Женский</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Другой</value>
+  </data>
+  <data name="Beginner" xml:space="preserve">
+    <value>Начальный</value>
+  </data>
+  <data name="Intermediate" xml:space="preserve">
+    <value>Средний</value>
+  </data>
+  <data name="Advanced" xml:space="preserve">
+    <value>Продвинутый</value>
+  </data>
+  <data name="Native" xml:space="preserve">
+    <value>Родной</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Обязательно</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Необязательно</value>
+  </data>
+  <data name="SelectType" xml:space="preserve">
+    <value>-- Выберите тип --</value>
+  </data>
+  <data name="SelectStatus" xml:space="preserve">
+    <value>-- Выберите статус --</value>
+  </data>
+  <data name="SelectCountry" xml:space="preserve">
+    <value>-- Выберите страну --</value>
+  </data>
+  <data name="SelectLanguage" xml:space="preserve">
+    <value>-- Выберите язык --</value>
+  </data>
+  <data name="SelectGender" xml:space="preserve">
+    <value>-- Выберите пол --</value>
+  </data>
+  <data name="SelectOfficer" xml:space="preserve">
+    <value>-- Выберите сотрудника --</value>
+  </data>
+  <data name="SelectMigrant" xml:space="preserve">
+    <value>-- Выберите мигранта --</value>
+  </data>
+  <data name="AllTypes" xml:space="preserve">
+    <value>Все типы</value>
+  </data>
+  <data name="AllStatuses" xml:space="preserve">
+    <value>Все статусы</value>
+  </data>
+  <data name="AllCountries" xml:space="preserve">
+    <value>Все страны</value>
+  </data>
+  <data name="AllLanguages" xml:space="preserve">
+    <value>Все языки</value>
+  </data>
+  <data name="DateRange" xml:space="preserve">
+    <value>Период</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>От</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>До</value>
+  </data>
+  <data name="SearchByName" xml:space="preserve">
+    <value>Поиск по имени</value>
+  </data>
+  <data name="EnterName" xml:space="preserve">
+    <value>Введите имя...</value>
+  </data>
+  <data name="MigrationService" xml:space="preserve">
+    <value>Миграционная служба</value>
+  </data>
+</root> 
