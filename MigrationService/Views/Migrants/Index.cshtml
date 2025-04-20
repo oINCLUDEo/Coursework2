@@ -55,7 +55,9 @@
                     <thead class="table-light">
                         <tr>
                             <th>Full Name</th>
-                            <th>Passport</th>
+                            <th>Passport Number</th>
+                            <th>Gender</th>
+                            <th>Phone Number</th>
                             <th>Birth Date</th>
                             <th>Address</th>
                             <th>Country</th>
@@ -69,6 +71,8 @@
                             <tr>
                                 <td>@item.FullName</td>
                                 <td>@item.PassportNumber</td>
+                                <td>@item.Gender</td>
+                                <td>@item.PhoneNumber</td>
                                 <td>@item.BirthDate?.ToShortDateString()</td>
                                 <td>@item.Address</td>
                                 <td>@item.Country?.CountryName</td>

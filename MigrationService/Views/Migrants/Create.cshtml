@@ -33,6 +33,24 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
+                        <label asp-for="Migrant.Gender" class="form-label">Gender</label>
+                        <select asp-for="Migrant.Gender" class="form-select">
+                            <option value="">-- Select Gender --</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <span asp-validation-for="Migrant.Gender" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Migrant.PhoneNumber" class="form-label">Phone Number</label>
+                        <input asp-for="Migrant.PhoneNumber" class="form-control" type="tel" />
+                        <span asp-validation-for="Migrant.PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
                         <label asp-for="Migrant.CountryID" class="form-label">Country</label>
                         <select asp-for="Migrant.CountryID" class="form-select" asp-items="@(new SelectList(Model.Countries, "CountryID", "CountryName"))">
                             <option value="">-- Select Country --</option>

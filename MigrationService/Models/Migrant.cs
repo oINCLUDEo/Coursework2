@@ -20,6 +20,15 @@ public class Migrant
 
     public int? CountryID { get; set; }
 
+    [Required]
+    [Display(Name = "Gender")]
+    public string Gender { get; set; }
+
+    [Required]
+    [Display(Name = "Phone Number")]
+    [Phone]
+    public string PhoneNumber { get; set; }
+
     [ValidateNever]
     public virtual Country Country { get; set; }
 
