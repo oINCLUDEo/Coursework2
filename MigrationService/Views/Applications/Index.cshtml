@@ -13,57 +13,87 @@
     </div>
 
     <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Applications</h5>
+        </div>
         <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-search"></i></span>
-                        <input type="text" name="searchString" class="form-control" placeholder="Search by migrant name..." value="@ViewData["CurrentFilter"]">
+            <form method="get" id="filterForm">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Search by Migrant Name</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" name="searchString" class="form-control" placeholder="Enter migrant name..." value="@ViewData["CurrentFilter"]">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Application Type</label>
+                        <select name="typeFilter" class="form-select">
+                            <option value="">All Types</option>
+                            @{
+                                var typeFilter = ViewData["TypeFilter"]?.ToString();
+                                <option value="Visa" selected="@(typeFilter == "Visa" ? "selected" : "")">Visa</option>
+                                <option value="Residence" selected="@(typeFilter == "Residence" ? "selected" : "")">Residence</option>
+                                <option value="Citizenship" selected="@(typeFilter == "Citizenship" ? "selected" : null)">Citizenship</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Status</label>
+                        <select name="statusFilter" class="form-select" id="statusMultiSelect" multiple>
+                            @{
+                                var statusFilters = ViewData["StatusFilters"] as string[] ?? new string[0];
+                                <option value="Pending" selected="@(statusFilters.Contains("Pending") ? "selected" : "")">Pending</option>
+                                <option value="In Progress" selected="@(statusFilters.Contains("In Progress") ? "selected" : "")">In Progress</option>
+                                <option value="Approved" selected="@(statusFilters.Contains("Approved") ? "selected" : "")">Approved</option>
+                                <option value="Rejected" selected="@(statusFilters.Contains("Rejected") ? "selected" : "")">Rejected</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Submission Date Range</label>
+                        <div class="input-group">
+                            <input type="date" name="startDate" class="form-control" value="@ViewData["StartDate"]" placeholder="Start Date">
+                            <span class="input-group-text">to</span>
+                            <input type="date" name="endDate" class="form-control" value="@ViewData["EndDate"]" placeholder="End Date">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Sort By</label>
+                        <select name="sortBy" class="form-select">
+                            <option value="date_desc" selected="@(ViewData["SortBy"]?.ToString() == "date_desc" ? "selected" : "")">Submission Date (Newest)</option>
+                            <option value="date_asc" selected="@(ViewData["SortBy"]?.ToString() == "date_asc" ? "selected" : "")">Submission Date (Oldest)</option>
+                            <option value="name_asc" selected="@(ViewData["SortBy"]?.ToString() == "name_asc" ? "selected" : "")">Migrant Name (A-Z)</option>
+                            <option value="name_desc" selected="@(ViewData["SortBy"]?.ToString() == "name_desc" ? "selected" : "")">Migrant Name (Z-A)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <div class="d-grid gap-2 w-100">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-filter me-2"></i> Apply Filters
+                            </button>
+                            @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()) || 
+                                 !string.IsNullOrEmpty(ViewData["TypeFilter"]?.ToString()) || 
+                                 !string.IsNullOrEmpty(ViewData["StatusFilter"]?.ToString()) ||
+                                 !string.IsNullOrEmpty(ViewData["StartDate"]?.ToString()) ||
+                                 !string.IsNullOrEmpty(ViewData["EndDate"]?.ToString()))
+                            {
+                                <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-2"></i> Clear Filters
+                                </a>
+                            }
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <select name="typeFilter" class="form-select">
-                        <option value="">All Types</option>
-                        @{
-                            var typeFilter = ViewData["TypeFilter"]?.ToString();
-                            <option value="Visa" selected="@(typeFilter == "Visa" ? "selected" : "")">Visa</option>
-                            <option value="Residence" selected="@(typeFilter == "Residence" ? "selected" : "")">Residence</option>
-                            <option value="Citizenship" selected="@(typeFilter == "Citizenship" ? "selected" : null)">Citizenship</option>
-                        }
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="statusFilter" class="form-select" multiple>
-                        @{
-                            var statusFilters = ViewData["StatusFilters"] as string[] ?? new string[0];
-                            <option value="Pending" selected="@(statusFilters.Contains("Pending") ? "selected" : "")">Pending</option>
-                            <option value="In Progress" selected="@(statusFilters.Contains("In Progress") ? "selected" : "")">In Progress</option>
-                            <option value="Approved" selected="@(statusFilters.Contains("Approved") ? "selected" : "")">Approved</option>
-                            <option value="Rejected" selected="@(statusFilters.Contains("Rejected") ? "selected" : "")">Rejected</option>
-                        }
-                    </select>
-                    <small class="text-muted">Hold Ctrl/Cmd to select multiple statuses</small>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
-                </div>
             </form>
-            @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()) || 
-                 !string.IsNullOrEmpty(ViewData["TypeFilter"]?.ToString()) || 
-                 !string.IsNullOrEmpty(ViewData["StatusFilter"]?.ToString()))
-            {
-                <div class="mt-3">
-                    <a href="@Url.Action("Index")" class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-times"></i> Clear Filters
-                    </a>
-                </div>
-            }
         </div>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Application Results</h5>
+            <span class="badge bg-primary">@Model.Count() Applications Found</span>
+        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -122,4 +152,41 @@
 
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .card {
+            transition: transform 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-light {
+            transition: all 0.3s;
+        }
+        .btn-light:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.05);
+        }
+        .select2-container--default .select2-selection--multiple {
+            border-color: #ced4da;
+        }
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#statusMultiSelect').select2({
+                placeholder: "Select statuses...",
+                allowClear: true,
+                closeOnSelect: false
+            });
+        });
+    </script>
 } 

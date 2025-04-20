@@ -18,38 +18,56 @@ namespace MigrationService.Controllers
         }
 
         // GET: Applications
-        public async Task<IActionResult> Index(string searchString, string typeFilter, string[] statusFilter)
+        public async Task<IActionResult> Index(string searchString, string typeFilter, string[] statusFilter, DateTime? startDate, DateTime? endDate, string sortBy)
         {
             ViewData["CurrentFilter"] = searchString;
             ViewData["TypeFilter"] = typeFilter;
             ViewData["StatusFilters"] = statusFilter;
+            ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
+            ViewData["SortBy"] = sortBy;
 
-            // Start with a simple query and build it up
-            IQueryable<Application> query = _context.Applications;
+            var applications = from a in _context.Applications
+                              select a;
 
-            // Include related entities
-            query = query.Include(a => a.Migrant).Include(a => a.Officer);
-
-            // Apply filters one by one
             if (!string.IsNullOrEmpty(searchString))
             {
-                query = query.Where(a => a.Migrant.FullName.ToLower().Contains(searchString.ToLower()));
+                applications = applications.Where(a => a.Migrant.FullName.Contains(searchString));
             }
 
             if (!string.IsNullOrEmpty(typeFilter))
             {
-                query = query.Where(a => a.Type == typeFilter);
+                applications = applications.Where(a => a.Type == typeFilter);
             }
 
             if (statusFilter != null && statusFilter.Length > 0)
             {
-                // Use a simpler approach for multiple statuses
-                query = query.Where(a => statusFilter.Contains(a.Status));
+                applications = applications.Where(a => statusFilter.Contains(a.Status));
             }
 
-            // Execute the query
-            var applications = await query.ToListAsync();
-            return View(applications);
+            if (startDate.HasValue)
+            {
+                applications = applications.Where(a => a.SubmissionDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                applications = applications.Where(a => a.SubmissionDate <= endDate.Value);
+            }
+
+            // Apply sorting
+            applications = sortBy switch
+            {
+                "date_asc" => applications.OrderBy(a => a.SubmissionDate),
+                "name_asc" => applications.OrderBy(a => a.Migrant.FullName),
+                "name_desc" => applications.OrderByDescending(a => a.Migrant.FullName),
+                _ => applications.OrderByDescending(a => a.SubmissionDate) // Default to newest first
+            };
+
+            return View(await applications
+                .Include(a => a.Migrant)
+                .Include(a => a.Officer)
+                .ToListAsync());
         }
 
         // GET: Applications/Details/5
