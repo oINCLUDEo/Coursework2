@@ -114,7 +114,7 @@ namespace MigrationService.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Migrant migrant, int[] selectedLanguages)
+        public async Task<IActionResult> Edit(int id, Migrant migrant, int[] selectedLanguages, Dictionary<int, string> proficiencyLevels)
         {
             if (id != migrant.MigrantID)
                 return NotFound();
@@ -136,13 +136,15 @@ namespace MigrationService.Controllers
                             var migrantLanguage = new MigrantLanguage
                             {
                                 MigrantID = migrant.MigrantID,
-                                LanguageID = languageId
+                                LanguageID = languageId,
+                                ProficiencyLevel = proficiencyLevels.ContainsKey(languageId) ? proficiencyLevels[languageId] : "Начальный"
                             };
                             _context.MigrantLanguages.Add(migrantLanguage);
                         }
                     }
 
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -151,10 +153,14 @@ namespace MigrationService.Controllers
                     else
                         throw;
                 }
-
-                return RedirectToAction(nameof(Index));
             }
 
+            // If we got this far, something failed, redisplay form
+            var countries = _context.Countries.ToList();
+            var languages = _context.Languages.ToList();
+            ViewBag.CountryList = new SelectList(countries, "CountryID", "CountryName", migrant.CountryID);
+            ViewBag.Languages = languages;
+            ViewBag.SelectedLanguages = selectedLanguages ?? Array.Empty<int>();
             return View(migrant);
         }
 
@@ -195,6 +201,24 @@ namespace MigrationService.Controllers
 
             // Перенаправление на список мигрантов после удаления
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Migrants/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var migrant = await _context.Migrants
+                .Include(m => m.Country)
+                .Include(m => m.MigrantLanguages)
+                    .ThenInclude(ml => ml.Language)
+                .FirstOrDefaultAsync(m => m.MigrantID == id);
+
+            if (migrant == null)
+                return NotFound();
+
+            return View(migrant);
         }
     }
 }
