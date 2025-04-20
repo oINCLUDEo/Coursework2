@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MigrationService.Models.Migrant>
+
+<h2>Список мигрантов</h2>
+<a class="btn btn-primary" asp-action="Create">Добавить</a>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Имя</th>
+        <th>Паспорт</th>
+        <th>Дата рождения</th>
+        <th>Адрес</th>
+        <th>Страна</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@item.FullName</td>
+        <td>@item.PassportNumber</td>
+        <td>@item.BirthDate?.ToShortDateString()</td>
+        <td>@item.Address</td>
+        <td>@item.Country?.CountryName</td>
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.MigrantID">Редактировать</a> |
+            <a asp-action="Details" asp-route-id="@item.MigrantID">Детали</a> |
+            <a asp-action="Delete" asp-route-id="@item.MigrantID">Удалить</a>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
