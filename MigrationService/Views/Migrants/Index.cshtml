@@ -1,47 +1,80 @@
 ﻿@model IEnumerable<MigrationService.Models.Migrant>
 
-<h2>Список мигрантов</h2>
-<a class="btn btn-primary" asp-action="Create">Добавить</a>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Имя</th>
-        <th>Паспорт</th>
-        <th>Дата рождения</th>
-        <th>Адрес</th>
-        <th>Страна</th>
-        <th>Языки</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-    <tr>
-        <td>@item.FullName</td>
-        <td>@item.PassportNumber</td>
-        <td>@item.BirthDate?.ToShortDateString()</td>
-        <td>@item.Address</td>
-        <td>@item.Country?.CountryName</td>
-        <td>
-            @if (item.MigrantLanguages != null && item.MigrantLanguages.Any())
-            {
-            @foreach (var migrantLanguage in item.MigrantLanguages)
-            {
-            <div>@migrantLanguage.Language?.LanguageName - @migrantLanguage.ProficiencyLevel</div>
-            }
-            }
-            else
-            {
-            <div>Нет языков</div>
-            }
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@item.MigrantID">Редактировать</a> |
-            <a asp-action="Details" asp-route-id="@item.MigrantID">Детали</a> |
-            <a asp-action="Delete" asp-route-id="@item.MigrantID">Удалить</a>
-        </td>
-    </tr>
-    }
-    </tbody>
-</table>
+@{
+    ViewData["Title"] = "Migrants";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Migrants</h2>
+        <a class="btn btn-primary" asp-action="Create">
+            <i class="fas fa-plus-circle me-2"></i>Add New Migrant
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Passport</th>
+                            <th>Birth Date</th>
+                            <th>Address</th>
+                            <th>Country</th>
+                            <th>Languages</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.FullName</td>
+                                <td>@item.PassportNumber</td>
+                                <td>@item.BirthDate?.ToShortDateString()</td>
+                                <td>@item.Address</td>
+                                <td>@item.Country?.CountryName</td>
+                                <td>
+                                    @if (item.MigrantLanguages != null && item.MigrantLanguages.Any())
+                                    {
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach (var migrantLanguage in item.MigrantLanguages)
+                                            {
+                                                <span class="badge bg-info">
+                                                    @migrantLanguage.Language?.LanguageName - @migrantLanguage.ProficiencyLevel
+                                                </span>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No languages</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@item.MigrantID" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.MigrantID" class="btn btn-sm btn-outline-info">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.MigrantID" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+}
