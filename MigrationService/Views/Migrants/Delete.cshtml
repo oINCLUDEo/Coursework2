@@ -2,8 +2,8 @@
 
 <h2>Удалить мигранта</h2>
 <h4>Вы уверены, что хотите удалить @Model.FullName?</h4>
-<form asp-action="DeleteConfirmed">
-    <input type="hidden" asp-for="MigrantID" />
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.MigrantID" />
     <button type="submit" class="btn btn-danger">Удалить</button>
     <a asp-action="Index" class="btn btn-secondary">Отмена</a>
 </form>

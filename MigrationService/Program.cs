@@ -32,4 +32,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Migrants}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "delete",
+    pattern: "{controller=Migrants}/{action=Delete}/{id?}");
+
 app.Run();
