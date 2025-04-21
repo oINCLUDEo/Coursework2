@@ -14,29 +14,29 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group mb-3">
-                <label asp-for="FullName" class="form-label">Имя</label>
+                <label asp-for="FullName" class="form-label">ФИО</label>
                 <input asp-for="FullName" class="form-control" />
                 <span asp-validation-for="FullName" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="PassportNumber" class="form-label">Паспорт</label>
+                <label asp-for="PassportNumber" class="form-label">Номер паспорта</label>
                 <input asp-for="PassportNumber" class="form-control" />
                 <span asp-validation-for="PassportNumber" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="Gender" class="form-label">Gender</label>
+                <label asp-for="Gender" class="form-label">Пол</label>
                 <select asp-for="Gender" class="form-select">
-                    <option value="">-- Select Gender --</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+                    <option value="">-- Выберите пол --</option>
+                    <option value="Male">Мужской</option>
+                    <option value="Female">Женский</option>
                 </select>
                 <span asp-validation-for="Gender" class="text-danger"></span>
             </div>
 
             <div class="form-group mb-3">
-                <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                <label asp-for="PhoneNumber" class="form-label">Номер телефона</label>
                 <input asp-for="PhoneNumber" class="form-control" type="tel" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
@@ -44,7 +44,7 @@
             <div class="form-group mb-3">
                 <label asp-for="CountryID" class="form-label">Страна</label>
                 <select asp-for="CountryID" class="form-control" asp-items="ViewBag.CountryList">
-                    <option value="">-- выберите страну --</option>
+                    <option value="">-- Выберите страну --</option>
                 </select>
                 <span asp-validation-for="CountryID" class="text-danger"></span>
             </div>
@@ -85,10 +85,10 @@
                         {
                             <div class="ms-4 mt-1">
                                 <select name="proficiencyLevels[@lang.LanguageID]" class="form-select form-select-sm">
-                                    <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">Intermediate</option>
-                                    <option value="Advanced">Advanced</option>
-                                    <option value="Fluent">Fluent</option>
+                                    <option value="Beginner">Начинающий</option>
+                                    <option value="Intermediate">Средний</option>
+                                    <option value="Advanced">Продвинутый</option>
+                                    <option value="Fluent">Свободный</option>
                                 </select>
                             </div>
                         }
@@ -123,9 +123,10 @@
                         $(this).closest('.col-md-4').append(
                             '<div class="ms-4 mt-1">' +
                             '<select name="proficiencyLevels[' + langId + ']" class="form-select form-select-sm">' +
-                            '<option value="Начальный">Начальный</option>' +
-                            '<option value="Средний">Средний</option>' +
-                            '<option value="Продвинутый">Продвинутый</option>' +
+                            '<option value="Beginner">Начинающий</option>' +
+                            '<option value="Intermediate">Средний</option>' +
+                            '<option value="Advanced">Продвинутый</option>' +
+                            '<option value="Fluent">Свободный</option>' +
                             '</select>' +
                             '</div>'
                         );

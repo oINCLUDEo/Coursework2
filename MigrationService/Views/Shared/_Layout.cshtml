@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Migration Service</title>
+    <title>@ViewData["Title"] - Миграционная Служба</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     @await RenderSectionAsync("Styles", required: false)
@@ -12,32 +12,32 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Migration Service</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Миграционная Служба</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Management
+                                Управление
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-controller="Migrants" asp-action="Index">Migrants</a></li>
-                                <li><a class="dropdown-item" asp-controller="Applications" asp-action="Index">Applications</a></li>
-                                <li><a class="dropdown-item" asp-controller="Officers" asp-action="Index">Officers</a></li>
-                                <li><a class="dropdown-item" asp-controller="Countries" asp-action="Index">Countries</a></li>
-                                <li><a class="dropdown-item" asp-controller="Languages" asp-action="Index">Languages</a></li>
-                                <li><a class="dropdown-item" asp-controller="Documents" asp-action="Index">Documents</a></li>
+                                <li><a class="dropdown-item" asp-controller="Migrants" asp-action="Index">Мигранты</a></li>
+                                <li><a class="dropdown-item" asp-controller="Applications" asp-action="Index">Заявления</a></li>
+                                <li><a class="dropdown-item" asp-controller="Officers" asp-action="Index">Сотрудники</a></li>
+                                <li><a class="dropdown-item" asp-controller="Countries" asp-action="Index">Страны</a></li>
+                                <li><a class="dropdown-item" asp-controller="Languages" asp-action="Index">Языки</a></li>
+                                <li><a class="dropdown-item" asp-controller="Documents" asp-action="Index">Документы</a></li>
                             </ul>
                         </li>
                     </ul>
                     <form class="d-flex" asp-controller="Search" asp-action="Index" method="get">
                         <div class="input-group">
-                            <input class="form-control" type="search" name="query" placeholder="Search..." aria-label="Search">
+                            <input class="form-control" type="search" name="query" placeholder="Поиск..." aria-label="Поиск">
                             <button class="btn btn-outline-primary" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
@@ -55,7 +55,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; @DateTime.Now.Year - Migration Service
+            &copy; @DateTime.Now.Year - Миграционная Служба
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

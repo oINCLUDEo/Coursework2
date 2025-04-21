@@ -11,16 +11,16 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <dl class="row">
-                                <dt class="col-sm-4">Имя</dt>
+                                <dt class="col-sm-4">ФИО</dt>
                                 <dd class="col-sm-8">@Model.FullName</dd>
 
-                                <dt class="col-sm-4">Паспорт</dt>
+                                <dt class="col-sm-4">Номер паспорта</dt>
                                 <dd class="col-sm-8">@Model.PassportNumber</dd>
 
-                                <dt class="col-sm-4">Gender</dt>
-                                <dd class="col-sm-8">@Model.Gender</dd>
+                                <dt class="col-sm-4">Пол</dt>
+                                <dd class="col-sm-8">@(Model.Gender == "Male" ? "Мужской" : "Женский")</dd>
 
-                                <dt class="col-sm-4">Phone Number</dt>
+                                <dt class="col-sm-4">Номер телефона</dt>
                                 <dd class="col-sm-8">@Model.PhoneNumber</dd>
 
                                 <dt class="col-sm-4">Дата рождения</dt>
@@ -56,7 +56,13 @@
                                             {
                                                 <tr>
                                                     <td>@lang.Language?.LanguageName</td>
-                                                    <td>@lang.ProficiencyLevel</td>
+                                                    <td>@(lang.ProficiencyLevel switch {
+                                                        "Beginner" => "Начинающий",
+                                                        "Intermediate" => "Средний",
+                                                        "Advanced" => "Продвинутый",
+                                                        "Fluent" => "Свободный",
+                                                        _ => lang.ProficiencyLevel
+                                                    })</td>
                                                 </tr>
                                             }
                                         </tbody>

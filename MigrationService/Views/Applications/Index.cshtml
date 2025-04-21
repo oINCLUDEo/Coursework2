@@ -1,76 +1,76 @@
 @model IEnumerable<MigrationService.Models.Application>
 
 @{
-    ViewData["Title"] = "Applications";
+    ViewData["Title"] = "Заявления";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Applications</h2>
+        <h2 class="mb-0">Заявления</h2>
         <a asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus-circle me-2"></i>Add New Application
+            <i class="fas fa-plus-circle me-2"></i>Добавить заявление
         </a>
     </div>
 
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Applications</h5>
+            <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Фильтрация заявлений</h5>
         </div>
         <div class="card-body">
             <form method="get" id="filterForm">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label">Search by Migrant Name</label>
+                        <label class="form-label">Поиск по имени мигранта</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="text" name="searchString" class="form-control" placeholder="Enter migrant name..." value="@ViewData["CurrentFilter"]">
+                            <input type="text" name="searchString" class="form-control" placeholder="Введите имя мигранта..." value="@ViewData["CurrentFilter"]">
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Application Type</label>
+                        <label class="form-label">Тип заявления</label>
                         <select name="typeFilter" class="form-select">
-                            <option value="">All Types</option>
+                            <option value="">Все типы</option>
                             @{
                                 var typeFilter = ViewData["TypeFilter"]?.ToString();
-                                <option value="Visa" selected="@(typeFilter == "Visa" ? "selected" : "")">Visa</option>
-                                <option value="Residence" selected="@(typeFilter == "Residence" ? "selected" : "")">Residence</option>
-                                <option value="Citizenship" selected="@(typeFilter == "Citizenship" ? "selected" : null)">Citizenship</option>
+                                <option value="Visa" selected="@(typeFilter == "Visa" ? "selected" : "")">Виза</option>
+                                <option value="Residence" selected="@(typeFilter == "Residence" ? "selected" : "")">ВНЖ</option>
+                                <option value="Citizenship" selected="@(typeFilter == "Citizenship" ? "selected" : null)">Гражданство</option>
                             }
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Status</label>
+                        <label class="form-label">Статус</label>
                         <select name="statusFilter" class="form-select" id="statusMultiSelect" multiple>
                             @{
                                 var statusFilters = ViewData["StatusFilters"] as string[] ?? new string[0];
-                                <option value="Pending" selected="@(statusFilters.Contains("Pending") ? "selected" : "")">Pending</option>
-                                <option value="In Progress" selected="@(statusFilters.Contains("In Progress") ? "selected" : "")">In Progress</option>
-                                <option value="Approved" selected="@(statusFilters.Contains("Approved") ? "selected" : "")">Approved</option>
-                                <option value="Rejected" selected="@(statusFilters.Contains("Rejected") ? "selected" : "")">Rejected</option>
+                                <option value="Pending" selected="@(statusFilters.Contains("Pending") ? "selected" : "")">На рассмотрении</option>
+                                <option value="In Progress" selected="@(statusFilters.Contains("In Progress") ? "selected" : "")">В процессе</option>
+                                <option value="Approved" selected="@(statusFilters.Contains("Approved") ? "selected" : "")">Одобрено</option>
+                                <option value="Rejected" selected="@(statusFilters.Contains("Rejected") ? "selected" : "")">Отклонено</option>
                             }
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Submission Date Range</label>
+                        <label class="form-label">Период подачи</label>
                         <div class="input-group">
-                            <input type="date" name="startDate" class="form-control" value="@ViewData["StartDate"]" placeholder="Start Date">
-                            <span class="input-group-text">to</span>
-                            <input type="date" name="endDate" class="form-control" value="@ViewData["EndDate"]" placeholder="End Date">
+                            <input type="date" name="startDate" class="form-control" value="@ViewData["StartDate"]" placeholder="Начальная дата">
+                            <span class="input-group-text">до</span>
+                            <input type="date" name="endDate" class="form-control" value="@ViewData["EndDate"]" placeholder="Конечная дата">
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label">Sort By</label>
+                        <label class="form-label">Сортировка</label>
                         <select name="sortBy" class="form-select">
-                            <option value="date_desc" selected="@(ViewData["SortBy"]?.ToString() == "date_desc" ? "selected" : "")">Submission Date (Newest)</option>
-                            <option value="date_asc" selected="@(ViewData["SortBy"]?.ToString() == "date_asc" ? "selected" : "")">Submission Date (Oldest)</option>
-                            <option value="name_asc" selected="@(ViewData["SortBy"]?.ToString() == "name_asc" ? "selected" : "")">Migrant Name (A-Z)</option>
-                            <option value="name_desc" selected="@(ViewData["SortBy"]?.ToString() == "name_desc" ? "selected" : "")">Migrant Name (Z-A)</option>
+                            <option value="date_desc" selected="@(ViewData["SortBy"]?.ToString() == "date_desc" ? "selected" : "")">Дата подачи (сначала новые)</option>
+                            <option value="date_asc" selected="@(ViewData["SortBy"]?.ToString() == "date_asc" ? "selected" : "")">Дата подачи (сначала старые)</option>
+                            <option value="name_asc" selected="@(ViewData["SortBy"]?.ToString() == "name_asc" ? "selected" : "")">Имя мигранта (А-Я)</option>
+                            <option value="name_desc" selected="@(ViewData["SortBy"]?.ToString() == "name_desc" ? "selected" : "")">Имя мигранта (Я-А)</option>
                         </select>
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
                         <div class="d-grid gap-2 w-100">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-filter me-2"></i> Apply Filters
+                                <i class="fas fa-filter me-2"></i> Применить фильтры
                             </button>
                             @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()) || 
                                  !string.IsNullOrEmpty(ViewData["TypeFilter"]?.ToString()) || 
@@ -79,7 +79,7 @@
                                  !string.IsNullOrEmpty(ViewData["EndDate"]?.ToString()))
                             {
                                 <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
-                                    <i class="fas fa-times me-2"></i> Clear Filters
+                                    <i class="fas fa-times me-2"></i> Сбросить фильтры
                                 </a>
                             }
                         </div>
@@ -91,20 +91,20 @@
 
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Application Results</h5>
-            <span class="badge bg-primary">@Model.Count() Applications Found</span>
+            <h5 class="mb-0">Результаты поиска</h5>
+            <span class="badge bg-primary">Найдено заявлений: @Model.Count()</span>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>@Html.DisplayNameFor(model => model.Migrant)</th>
-                            <th>@Html.DisplayNameFor(model => model.Officer)</th>
-                            <th>@Html.DisplayNameFor(model => model.Type)</th>
-                            <th>@Html.DisplayNameFor(model => model.Status)</th>
-                            <th>@Html.DisplayNameFor(model => model.SubmissionDate)</th>
-                            <th class="text-end">Actions</th>
+                            <th>Мигрант</th>
+                            <th>Сотрудник</th>
+                            <th>Тип</th>
+                            <th>Статус</th>
+                            <th>Дата подачи</th>
+                            <th class="text-end">Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,7 +113,12 @@
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.Migrant.FullName)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Officer.FullName)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                                <td>@(item.Type switch {
+                                    "Visa" => "Виза",
+                                    "Residence" => "ВНЖ",
+                                    "Citizenship" => "Гражданство",
+                                    _ => item.Type
+                                })</td>
                                 <td>
                                     @{
                                         string statusClass = item.Status switch
@@ -124,8 +129,16 @@
                                             "Rejected" => "bg-danger",
                                             _ => "bg-secondary"
                                         };
+                                        string statusText = item.Status switch
+                                        {
+                                            "Pending" => "На рассмотрении",
+                                            "InProgress" => "В процессе",
+                                            "Approved" => "Одобрено",
+                                            "Rejected" => "Отклонено",
+                                            _ => item.Status
+                                        };
                                     }
-                                    <span class="badge @statusClass">@item.Status</span>
+                                    <span class="badge @statusClass">@statusText</span>
                                 </td>
                                 <td>@Html.DisplayFor(modelItem => item.SubmissionDate)</td>
                                 <td class="text-end">
@@ -183,7 +196,7 @@
     <script>
         $(document).ready(function() {
             $('#statusMultiSelect').select2({
-                placeholder: "Select statuses...",
+                placeholder: "Выберите статусы...",
                 allowClear: true,
                 closeOnSelect: false
             });

@@ -1,14 +1,14 @@
 ﻿@model MigrantCreateViewModel
 
 @{
-    ViewData["Title"] = "Create Migrant";
+    ViewData["Title"] = "Создать мигранта";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Create Migrant</h2>
+        <h2 class="mb-0">Создать мигранта</h2>
         <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to List
+            <i class="fas fa-arrow-left me-2"></i>Вернуться к списку
         </a>
     </div>
 
@@ -19,13 +19,13 @@
                 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Migrant.FullName" class="form-label">Full Name</label>
+                        <label asp-for="Migrant.FullName" class="form-label">ФИО</label>
                         <input asp-for="Migrant.FullName" class="form-control" />
                         <span asp-validation-for="Migrant.FullName" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Migrant.PassportNumber" class="form-label">Passport Number</label>
+                        <label asp-for="Migrant.PassportNumber" class="form-label">Номер паспорта</label>
                         <input asp-for="Migrant.PassportNumber" class="form-control" />
                         <span asp-validation-for="Migrant.PassportNumber" class="text-danger"></span>
                     </div>
@@ -33,17 +33,17 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Migrant.Gender" class="form-label">Gender</label>
+                        <label asp-for="Migrant.Gender" class="form-label">Пол</label>
                         <select asp-for="Migrant.Gender" class="form-select">
-                            <option value="">-- Select Gender --</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
+                            <option value="">-- Выберите пол --</option>
+                            <option value="Male">Мужской</option>
+                            <option value="Female">Женский</option>
                         </select>
                         <span asp-validation-for="Migrant.Gender" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Migrant.PhoneNumber" class="form-label">Phone Number</label>
+                        <label asp-for="Migrant.PhoneNumber" class="form-label">Номер телефона</label>
                         <input asp-for="Migrant.PhoneNumber" class="form-control" type="tel" />
                         <span asp-validation-for="Migrant.PhoneNumber" class="text-danger"></span>
                     </div>
@@ -51,34 +51,34 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Migrant.CountryID" class="form-label">Country</label>
+                        <label asp-for="Migrant.CountryID" class="form-label">Страна</label>
                         <select asp-for="Migrant.CountryID" class="form-select" asp-items="@(new SelectList(Model.Countries, "CountryID", "CountryName"))">
-                            <option value="">-- Select Country --</option>
+                            <option value="">-- Выберите страну --</option>
                         </select>
                         <span asp-validation-for="Migrant.CountryID" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Migrant.BirthDate" class="form-label">Birth Date</label>
+                        <label asp-for="Migrant.BirthDate" class="form-label">Дата рождения</label>
                         <input asp-for="Migrant.BirthDate" type="date" class="form-control" />
                         <span asp-validation-for="Migrant.BirthDate" class="text-danger"></span>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Migrant.Address" class="form-label">Address</label>
+                    <label asp-for="Migrant.Address" class="form-label">Адрес</label>
                     <input asp-for="Migrant.Address" class="form-control" />
                     <span asp-validation-for="Migrant.Address" class="text-danger"></span>
                 </div>
 
                 <div class="card mb-3">
                     <div class="card-header bg-light">
-                        <h5 class="mb-0">Languages</h5>
+                        <h5 class="mb-0">Языки</h5>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-md-5">
-                                <label class="form-label">Language</label>
+                                <label class="form-label">Язык</label>
                                 <select id="language-select" class="form-select">
                                     @foreach (var lang in Model.Languages)
                                     {
@@ -87,32 +87,32 @@
                                 </select>
                             </div>
                             <div class="col-md-5">
-                                <label class="form-label">Proficiency Level</label>
+                                <label class="form-label">Уровень владения</label>
                                 <select id="proficiency-select" class="form-select">
-                                    <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">Intermediate</option>
-                                    <option value="Advanced">Advanced</option>
-                                    <option value="Fluent">Fluent</option>
+                                    <option value="Beginner">Начинающий</option>
+                                    <option value="Intermediate">Средний</option>
+                                    <option value="Advanced">Продвинутый</option>
+                                    <option value="Fluent">Свободный</option>
                                 </select>
                             </div>
                             <div class="col-md-2 d-flex align-items-end">
                                 <button type="button" id="add-language-btn" class="btn btn-success w-100">
-                                    <i class="fas fa-plus"></i> Add
+                                    <i class="fas fa-plus"></i> Добавить
                                 </button>
                             </div>
                         </div>
 
                         <div id="selected-languages-list" class="mb-3">
-                            <h6 class="mb-2">Selected Languages</h6>
+                            <h6 class="mb-2">Выбранные языки</h6>
                             <div id="language-fields"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Save
+                        <i class="fas fa-save me-2"></i>Сохранить
                     </button>
                 </div>
             </form>
@@ -138,7 +138,7 @@
 
             const entryId = `lang_${langId}`;
             if (document.getElementById(entryId)) {
-                alert("This language has already been added.");
+                alert("Этот язык уже добавлен.");
                 return;
             }
 

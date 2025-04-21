@@ -2,14 +2,14 @@
 @model MigrationService.Models.Application
 
 @{
-    ViewData["Title"] = "Create Application";
+    ViewData["Title"] = "Создать заявление";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Create Application</h2>
+        <h2 class="mb-0">Создать заявление</h2>
         <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to List
+            <i class="fas fa-arrow-left me-2"></i>Вернуться к списку
         </a>
     </div>
 
@@ -20,17 +20,17 @@
                 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label asp-for="MigrantID" class="form-label">Migrant</label>
+                        <label asp-for="MigrantID" class="form-label">Мигрант</label>
                         <select asp-for="MigrantID" class="form-select" asp-items="ViewBag.MigrantID">
-                            <option value="">-- Select Migrant --</option>
+                            <option value="">-- Выберите мигранта --</option>
                         </select>
                         <span asp-validation-for="MigrantID" class="text-danger"></span>
                     </div>
                     
                     <div class="col-md-6 mb-3">
-                        <label asp-for="OfficerID" class="form-label">Officer</label>
+                        <label asp-for="OfficerID" class="form-label">Сотрудник</label>
                         <select asp-for="OfficerID" class="form-select" asp-items="ViewBag.OfficerID">
-                            <option value="">-- Select Officer --</option>
+                            <option value="">-- Выберите сотрудника --</option>
                         </select>
                         <span asp-validation-for="OfficerID" class="text-danger"></span>
                     </div>
@@ -38,33 +38,33 @@
                 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Type" class="form-label">Application Type</label>
+                        <label asp-for="Type" class="form-label">Тип заявления</label>
                         <select asp-for="Type" class="form-select">
-                            <option value="">-- Select Type --</option>
-                            <option value="Visa">Visa</option>
-                            <option value="Residence">Residence</option>
-                            <option value="Citizenship">Citizenship</option>
+                            <option value="">-- Выберите тип --</option>
+                            <option value="Visa">Виза</option>
+                            <option value="Residence">ВНЖ</option>
+                            <option value="Citizenship">Гражданство</option>
                         </select>
                         <span asp-validation-for="Type" class="text-danger"></span>
                     </div>
                     
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Status" class="form-label">Status</label>
+                        <label asp-for="Status" class="form-label">Статус</label>
                         <select asp-for="Status" class="form-select">
-                            <option value="">-- Select Status --</option>
-                            <option value="Pending">Pending</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Rejected">Rejected</option>
+                            <option value="">-- Выберите статус --</option>
+                            <option value="Pending">На рассмотрении</option>
+                            <option value="In Progress">В процессе</option>
+                            <option value="Approved">Одобрено</option>
+                            <option value="Rejected">Отклонено</option>
                         </select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
                 </div>
                 
                 <div class="d-flex justify-content-end gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Save
+                        <i class="fas fa-save me-2"></i>Сохранить
                     </button>
                 </div>
             </form>
