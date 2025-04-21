@@ -1,16 +1,16 @@
 @model MigrationService.Models.Country
 
 @{
-    ViewData["Title"] = "Delete Country";
+    ViewData["Title"] = "Удаление страны";
 }
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
-            <h2>Delete Country</h2>
+            <h2>Удаление страны</h2>
         </div>
         <div class="card-body">
-            <h3>Are you sure you want to delete this country?</h3>
+            <h3>Вы уверены, что хотите удалить эту страну?</h3>
             <div>
                 <dl class="row">
                     <dt class="col-sm-2">@Html.DisplayNameFor(model => model.CountryName)</dt>
@@ -25,10 +25,10 @@
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="CountryID" />
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> Delete
+                        <i class="bi bi-trash"></i> Удалить
                     </button>
                     <a asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to List
+                        <i class="bi bi-arrow-left"></i> Назад к списку
                     </a>
                 </form>
             </div>

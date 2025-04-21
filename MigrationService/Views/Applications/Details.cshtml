@@ -2,42 +2,53 @@
 @model MigrationService.Models.Application
 
 @{
-    ViewData["Title"] = "Application Details";
+    ViewData["Title"] = "Информация о заявлении";
 }
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
-            <h2>Application Details</h2>
+            <h2>Информация о заявлении</h2>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <dl class="row">
-                        <dt class="col-sm-4">Application ID</dt>
+                        <dt class="col-sm-4">ID заявления</dt>
                         <dd class="col-sm-8">@Model.ApplicationID</dd>
 
-                        <dt class="col-sm-4">Type</dt>
-                        <dd class="col-sm-8">@Model.Type</dd>
+                        <dt class="col-sm-4">Тип</dt>
+                        <dd class="col-sm-8">@(Model.Type switch {
+                            "Visa" => "Виза",
+                            "Residence" => "ВНЖ",
+                            "Citizenship" => "Гражданство",
+                            _ => Model.Type
+                        })</dd>
 
-                        <dt class="col-sm-4">Status</dt>
-                        <dd class="col-sm-8">@Model.Status</dd>
+                        <dt class="col-sm-4">Статус</dt>
+                        <dd class="col-sm-8">@(Model.Status switch {
+                            "Pending" => "На рассмотрении",
+                            "In Progress" => "В процессе",
+                            "Approved" => "Одобрено",
+                            "Rejected" => "Отклонено",
+                            _ => Model.Status
+                        })</dd>
 
-                        <dt class="col-sm-4">Submission Date</dt>
+                        <dt class="col-sm-4">Дата подачи</dt>
                         <dd class="col-sm-8">@Model.SubmissionDate.ToString("g")</dd>
 
-                        <dt class="col-sm-4">Decision Date</dt>
+                        <dt class="col-sm-4">Дата решения</dt>
                         <dd class="col-sm-8">
-                            @(Model.DecisionDate?.ToString("g") ?? "Not Resolved")
+                            @(Model.DecisionDate?.ToString("g") ?? "Не принято")
                         </dd>
                     </dl>
                 </div>
                 <div class="col-md-6">
                     <dl class="row">
-                        <dt class="col-sm-4">Migrant</dt>
+                        <dt class="col-sm-4">Мигрант</dt>
                         <dd class="col-sm-8">@Model.Migrant?.FullName</dd>
 
-                        <dt class="col-sm-4">Officer</dt>
+                        <dt class="col-sm-4">Сотрудник</dt>
                         <dd class="col-sm-8">@Model.Officer?.FullName</dd>
                     </dl>
                 </div>
@@ -45,9 +56,9 @@
 
             <div class="mt-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3>Documents</h3>
+                    <h3>Документы</h3>
                     <a asp-controller="Documents" asp-action="Upload" asp-route-id="@Model.ApplicationID" class="btn btn-primary">
-                        <i class="fas fa-upload"></i> Upload Document
+                        <i class="fas fa-upload"></i> Загрузить документ
                     </a>
                 </div>
 
@@ -57,10 +68,10 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>File Name</th>
-                                    <th>Type</th>
-                                    <th>Upload Date</th>
-                                    <th>Actions</th>
+                                    <th>Имя файла</th>
+                                    <th>Тип</th>
+                                    <th>Дата загрузки</th>
+                                    <th>Действия</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,12 +83,12 @@
                                         <td>@doc.UploadedAt.ToString("g")</td>
                                         <td>
                                             <a asp-controller="Documents" asp-action="Download" asp-route-id="@doc.DocumentID" class="btn btn-sm btn-info">
-                                                <i class="fas fa-download"></i> Download
+                                                <i class="fas fa-download"></i> Скачать
                                             </a>
                                             <form asp-controller="Documents" asp-action="Delete" asp-route-id="@doc.DocumentID" method="post" style="display: inline;">
                                                 @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this document?');">
-                                                    <i class="fas fa-trash"></i> Delete
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Вы уверены, что хотите удалить этот документ?');">
+                                                    <i class="fas fa-trash"></i> Удалить
                                                 </button>
                                             </form>
                                         </td>
@@ -90,19 +101,19 @@
                 else
                 {
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> No documents have been uploaded for this application yet.
+                        <i class="fas fa-info-circle"></i> Для этого заявления еще не загружены документы.
                     </div>
                 }
             </div>
 
             <div class="mt-4">
-                <h4>Status History</h4>
+                <h4>История статусов</h4>
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Comment</th>
+                            <th>Дата</th>
+                            <th>Статус</th>
+                            <th>Комментарий</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,7 +121,13 @@
                         {
                             <tr>
                                 <td>@change.ChangedAt.ToString("g")</td>
-                                <td>@change.Status</td>
+                                <td>@(change.Status switch {
+                                    "Pending" => "На рассмотрении",
+                                    "In Progress" => "В процессе",
+                                    "Approved" => "Одобрено",
+                                    "Rejected" => "Отклонено",
+                                    _ => change.Status
+                                })</td>
                                 <td>@change.Comment</td>
                             </tr>
                         }
@@ -120,10 +137,10 @@
 
             <div class="mt-4">
                 <a asp-action="Edit" asp-route-id="@Model.ApplicationID" class="btn btn-primary">
-                    <i class="fas fa-edit"></i> Edit
+                    <i class="fas fa-edit"></i> Редактировать
                 </a>
                 <a asp-action="Index" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left"></i> Вернуться к списку
                 </a>
             </div>
         </div>

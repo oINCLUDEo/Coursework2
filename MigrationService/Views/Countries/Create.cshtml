@@ -1,14 +1,14 @@
 @model MigrationService.Models.Country
 
 @{
-    ViewData["Title"] = "Create Country";
+    ViewData["Title"] = "Создание страны";
 }
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Create Country</h2>
+        <h2 class="mb-0">Создание страны</h2>
         <a asp-action="Index" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to List
+            <i class="fas fa-arrow-left me-2"></i>Назад к списку
         </a>
     </div>
 
@@ -18,13 +18,13 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                 
                 <div class="mb-3">
-                    <label asp-for="CountryName" class="form-label">Country Name</label>
+                    <label asp-for="CountryName" class="form-label">Название страны</label>
                     <input asp-for="CountryName" class="form-control" required />
                     <span asp-validation-for="CountryName" class="text-danger"></span>
                 </div>
                 
                 <div class="mb-3">
-                    <label asp-for="ISOCode" class="form-label">ISO Code</label>
+                    <label asp-for="ISOCode" class="form-label">ISO код</label>
                     <input asp-for="ISOCode" class="form-control" required />
                     <span asp-validation-for="ISOCode" class="text-danger"></span>
                 </div>
@@ -32,14 +32,14 @@
                 <div class="mb-3">
                     <div class="form-check">
                         <input asp-for="VisaRequired" class="form-check-input" />
-                        <label asp-for="VisaRequired" class="form-check-label">Visa Required</label>
+                        <label asp-for="VisaRequired" class="form-check-label">Требуется виза</label>
                     </div>
                 </div>
                 
                 <div class="d-flex justify-content-end gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Отмена</a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Save
+                        <i class="fas fa-save me-2"></i>Сохранить
                     </button>
                 </div>
             </form>

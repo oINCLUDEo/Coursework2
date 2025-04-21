@@ -1,29 +1,40 @@
 @model MigrationService.Models.Application
 
 @{
-    ViewData["Title"] = "Delete Application";
+    ViewData["Title"] = "Удалить заявление";
 }
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
-            <h2>Delete Application</h2>
+            <h2>Удалить заявление</h2>
         </div>
         <div class="card-body">
-            <h3>Are you sure you want to delete this application?</h3>
+            <h3>Вы уверены, что хотите удалить это заявление?</h3>
             <div>
                 <dl class="row">
-                    <dt class="col-sm-3">Migrant</dt>
+                    <dt class="col-sm-3">Мигрант</dt>
                     <dd class="col-sm-9">@Html.DisplayFor(model => model.Migrant.FullName)</dd>
 
-                    <dt class="col-sm-3">Officer</dt>
+                    <dt class="col-sm-3">Сотрудник</dt>
                     <dd class="col-sm-9">@Html.DisplayFor(model => model.Officer.FullName)</dd>
 
                     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Type)</dt>
-                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Type)</dd>
+                    <dd class="col-sm-9">@(Model.Type switch {
+                        "Visa" => "Виза",
+                        "Residence" => "ВНЖ",
+                        "Citizenship" => "Гражданство",
+                        _ => Model.Type
+                    })</dd>
 
                     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Status)</dt>
-                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Status)</dd>
+                    <dd class="col-sm-9">@(Model.Status switch {
+                        "Pending" => "На рассмотрении",
+                        "In Progress" => "В процессе",
+                        "Approved" => "Одобрено",
+                        "Rejected" => "Отклонено",
+                        _ => Model.Status
+                    })</dd>
 
                     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.SubmissionDate)</dt>
                     <dd class="col-sm-9">@Html.DisplayFor(model => model.SubmissionDate)</dd>
@@ -34,10 +45,10 @@
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="ApplicationID" />
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash"></i> Delete
+                        <i class="bi bi-trash"></i> Удалить
                     </button>
                     <a asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to List
+                        <i class="bi bi-arrow-left"></i> Вернуться к списку
                     </a>
                 </form>
             </div>

@@ -9,27 +9,27 @@ public class Application
 {
     public int ApplicationID { get; set; }
 
-    [Required(ErrorMessage = "Migrant is required")]
-    [Display(Name = "Migrant")]
+    [Required(ErrorMessage = "Необходимо выбрать мигранта")]
+    [Display(Name = "Мигрант")]
     public int MigrantID { get; set; }
 
-    [Required(ErrorMessage = "Officer is required")]
-    [Display(Name = "Officer")]
+    [Required(ErrorMessage = "Необходимо выбрать сотрудника")]
+    [Display(Name = "Сотрудник")]
     public int OfficerID { get; set; }
 
-    [Required(ErrorMessage = "Application type is required")]
-    [Display(Name = "Application Type")]
+    [Required(ErrorMessage = "Тип заявления обязателен для заполнения")]
+    [Display(Name = "Тип заявления")]
     public string Type { get; set; }
 
-    [Required(ErrorMessage = "Status is required")]
-    [Display(Name = "Status")]
+    [Required(ErrorMessage = "Статус обязателен для заполнения")]
+    [Display(Name = "Статус")]
     public string Status { get; set; }
 
-    [Display(Name = "Submission Date")]
+    [Display(Name = "Дата подачи")]
     [DataType(DataType.DateTime)]
     public DateTime SubmissionDate { get; set; }
 
-    [Display(Name = "Decision Date")]
+    [Display(Name = "Дата решения")]
     [DataType(DataType.DateTime)]
     public DateTime? DecisionDate { get; set; }
     [ValidateNever]

@@ -1,34 +1,34 @@
 @{
-    ViewData["Title"] = "Upload Document";
+    ViewData["Title"] = "Загрузить документ";
 }
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
-            <h2>Upload Document</h2>
+            <h2>Загрузить документ</h2>
         </div>
         <div class="card-body">
             <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> Uploading document for application of migrant: <strong>@ViewBag.MigrantName</strong>
+                <i class="fas fa-info-circle"></i> Загрузка документа для заявки мигранта: <strong>@ViewBag.MigrantName</strong>
             </div>
 
             <form asp-action="Upload" asp-route-id="@ViewBag.ApplicationID" method="post" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 
                 <div class="form-group mb-3">
-                    <label class="control-label">Select File</label>
+                    <label class="control-label">Выберите файл</label>
                     <input type="file" name="file" class="form-control" required />
                     <small class="form-text text-muted">
-                        Supported formats: PDF, DOC, DOCX, JPG, JPEG, PNG
+                        Поддерживаемые форматы: PDF, DOC, DOCX, JPG, JPEG, PNG
                     </small>
                 </div>
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-upload"></i> Upload
+                        <i class="fas fa-upload"></i> Загрузить
                     </button>
                     <a asp-controller="Applications" asp-action="Details" asp-route-id="@ViewBag.ApplicationID" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to Application
+                        <i class="fas fa-arrow-left"></i> Вернуться к заявке
                     </a>
                 </div>
             </form>

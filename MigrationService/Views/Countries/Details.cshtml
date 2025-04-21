@@ -1,13 +1,13 @@
 @model MigrationService.Models.Country
 
 @{
-    ViewData["Title"] = "Country Details";
+    ViewData["Title"] = "Информация о стране";
 }
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
-            <h2>Country Details</h2>
+            <h2>Информация о стране</h2>
         </div>
         <div class="card-body">
             <dl class="row">
@@ -18,17 +18,17 @@
                 <dd class="col-sm-10">@Html.DisplayFor(model => model.ISOCode)</dd>
 
                 <dt class="col-sm-2">@Html.DisplayNameFor(model => model.VisaRequired)</dt>
-                <dd class="col-sm-10">@Html.DisplayFor(model => model.VisaRequired)</dd>
+                <dd class="col-sm-10">@(Model.VisaRequired ? "Требуется виза" : "Виза не требуется")</dd>
             </dl>
 
-            <h3 class="mt-4">Migrants from this Country</h3>
+            <h3 class="mt-4">Мигранты из этой страны</h3>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Migrant Name</th>
-                            <th>Passport Number</th>
-                            <th>Address</th>
+                            <th>ФИО мигранта</th>
+                            <th>Номер паспорта</th>
+                            <th>Адрес</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -47,10 +47,10 @@
         <div class="card-footer">
             <div class="btn-group">
                 <a asp-action="Edit" asp-route-id="@Model.CountryID" class="btn btn-primary">
-                    <i class="bi bi-pencil"></i> Edit
+                    <i class="bi bi-pencil"></i> Редактировать
                 </a>
                 <a asp-action="Index" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
+                    <i class="bi bi-arrow-left"></i> Назад к списку
                 </a>
             </div>
         </div>

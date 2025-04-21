@@ -9,17 +9,24 @@ public class Officer
 {
     public int OfficerID { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "ФИО обязательно для заполнения")]
+    [Display(Name = "ФИО")]
     public string FullName { get; set; }
 
+    [Display(Name = "Должность")]
     public string Position { get; set; }
 
+    [Display(Name = "Email")]
+    [EmailAddress(ErrorMessage = "Некорректный формат email")]
     public string Email { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Логин обязателен для заполнения")]
+    [Display(Name = "Логин")]
     public string Login { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Пароль обязателен для заполнения")]
+    [Display(Name = "Пароль")]
+    [DataType(DataType.Password)]
     public string Password { get; set; }
 
     [ValidateNever]

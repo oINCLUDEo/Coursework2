@@ -2,13 +2,13 @@
 @model MigrationService.Models.Application
 
 @{
-    ViewData["Title"] = "Edit Application";
+    ViewData["Title"] = "Редактировать заявление";
 }
 
 <div class="container mt-4">
     <div class="card">
         <div class="card-header">
-            <h2>Edit Application</h2>
+            <h2>Редактировать заявление</h2>
         </div>
         <div class="card-body">
             <form asp-action="Edit" asp-route-id="@Model.ApplicationID" method="post">
@@ -17,64 +17,64 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label asp-for="MigrantID" class="control-label">Migrant</label>
+                            <label asp-for="MigrantID" class="control-label">Мигрант</label>
                             <select asp-for="MigrantID" class="form-select" asp-items="ViewBag.MigrantID">
-                                <option value="">-- Select Migrant --</option>
+                                <option value="">-- Выберите мигранта --</option>
                             </select>
                             <span asp-validation-for="MigrantID" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label asp-for="OfficerID" class="control-label">Officer</label>
+                            <label asp-for="OfficerID" class="control-label">Сотрудник</label>
                             <select asp-for="OfficerID" class="form-select" asp-items="ViewBag.OfficerID">
-                                <option value="">-- Select Officer --</option>
+                                <option value="">-- Выберите сотрудника --</option>
                             </select>
                             <span asp-validation-for="OfficerID" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label asp-for="Type" class="control-label">Application Type</label>
+                            <label asp-for="Type" class="control-label">Тип заявления</label>
                             <select asp-for="Type" class="form-select" required>
-                                <option value="">-- Select Type --</option>
-                                <option value="Visa">Visa</option>
-                                <option value="Residence">Residence</option>
-                                <option value="Citizenship">Citizenship</option>
+                                <option value="">-- Выберите тип --</option>
+                                <option value="Visa">Виза</option>
+                                <option value="Residence">ВНЖ</option>
+                                <option value="Citizenship">Гражданство</option>
                             </select>
                             <span asp-validation-for="Type" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label asp-for="Status" class="control-label">Status</label>
+                            <label asp-for="Status" class="control-label">Статус</label>
                             <select asp-for="Status" class="form-select" required>
-                                <option value="">-- Select Status --</option>
-                                <option value="Pending">Pending</option>
-                                <option value="In Progress">In Progress</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Rejected">Rejected</option>
+                                <option value="">-- Выберите статус --</option>
+                                <option value="Pending">На рассмотрении</option>
+                                <option value="In Progress">В процессе</option>
+                                <option value="Approved">Одобрено</option>
+                                <option value="Rejected">Отклонено</option>
                             </select>
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label asp-for="SubmissionDate" class="control-label">Submission Date</label>
+                            <label asp-for="SubmissionDate" class="control-label">Дата подачи</label>
                             <input asp-for="SubmissionDate" class="form-control" type="datetime-local" required />
                             <span asp-validation-for="SubmissionDate" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label asp-for="DecisionDate" class="control-label">Decision Date</label>
+                            <label asp-for="DecisionDate" class="control-label">Дата решения</label>
                             <input asp-for="DecisionDate" class="form-control" type="datetime-local" />
                             <span asp-validation-for="DecisionDate" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="statusComment" class="control-label">Status Comment (Optional)</label>
-                            <textarea id="statusComment" name="statusComment" class="form-control" rows="3" placeholder="Enter your comment about the status change (optional)"></textarea>
+                            <label for="statusComment" class="control-label">Комментарий к статусу (необязательно)</label>
+                            <textarea id="statusComment" name="statusComment" class="form-control" rows="3" placeholder="Введите ваш комментарий к изменению статуса (необязательно)"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save
+                        <i class="fas fa-save"></i> Сохранить
                     </button>
                     <a asp-action="Index" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Back to List
+                        <i class="fas fa-arrow-left"></i> Вернуться к списку
                     </a>
                 </div>
             </form>
@@ -93,7 +93,7 @@
                 
                 if ($('#DecisionDate').val() && decisionDate < submissionDate) {
                     e.preventDefault();
-                    alert('Decision Date must be after Submission Date');
+                    alert('Дата решения должна быть позже даты подачи');
                     return false;
                 }
                 return true;

@@ -7,12 +7,15 @@ public class Country
 {
     public int CountryID { get; set; }
 
-    [Required(ErrorMessage = "Country name is required")]
+    [Required(ErrorMessage = "Название страны обязательно для заполнения")]
+    [Display(Name = "Название страны")]
     public string CountryName { get; set; }
 
-    [Required(ErrorMessage = "ISO code is required")]
+    [Required(ErrorMessage = "ISO код обязателен для заполнения")]
+    [Display(Name = "ISO код")]
     public string ISOCode { get; set; }
 
+    [Display(Name = "Требуется виза")]
     public bool VisaRequired { get; set; }
 
     [ValidateNever]

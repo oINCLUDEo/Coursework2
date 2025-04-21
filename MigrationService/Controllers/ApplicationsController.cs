@@ -169,7 +169,7 @@ namespace MigrationService.Controllers
                         ChangedAt = DateTime.Now,
                         Comment = !string.IsNullOrWhiteSpace(statusComment) 
                             ? statusComment 
-                            : $"Status changed from {existingApplication.Status} to {application.Status}"
+                            : $"Статус изменен с {existingApplication.Status} на {application.Status}"
                     };
                     _context.StatusChanges.Add(statusChange);
 

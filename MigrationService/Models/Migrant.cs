@@ -8,25 +8,31 @@ public class Migrant
 {
     public int MigrantID { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "ФИО обязательно для заполнения")]
+    [Display(Name = "ФИО")]
     public string FullName { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Номер паспорта обязателен для заполнения")]
+    [Display(Name = "Номер паспорта")]
     public string PassportNumber { get; set; }
 
+    [Display(Name = "Дата рождения")]
+    [DataType(DataType.Date)]
     public DateTime? BirthDate { get; set; }
 
+    [Display(Name = "Адрес")]
     public string Address { get; set; }
 
+    [Display(Name = "Страна")]
     public int? CountryID { get; set; }
 
-    [Required]
-    [Display(Name = "Gender")]
+    [Required(ErrorMessage = "Пол обязателен для заполнения")]
+    [Display(Name = "Пол")]
     public string Gender { get; set; }
 
-    [Required]
-    [Display(Name = "Phone Number")]
-    [Phone]
+    [Required(ErrorMessage = "Номер телефона обязателен для заполнения")]
+    [Display(Name = "Номер телефона")]
+    [Phone(ErrorMessage = "Некорректный формат номера телефона")]
     public string PhoneNumber { get; set; }
 
     [ValidateNever]
