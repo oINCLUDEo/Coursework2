@@ -32,9 +32,11 @@
                             <option value="">Все типы</option>
                             @{
                                 var typeFilter = ViewData["TypeFilter"]?.ToString();
-                                <option value="Visa" selected="@(typeFilter == "Visa" ? "selected" : "")">Виза</option>
-                                <option value="Residence" selected="@(typeFilter == "Residence" ? "selected" : "")">ВНЖ</option>
-                                <option value="Citizenship" selected="@(typeFilter == "Citizenship" ? "selected" : null)">Гражданство</option>
+                                <option value="Виза" selected="@(typeFilter == "Виза" ? "selected" : "")">Виза</option>
+                                <option value="Вид на жительство" selected="@(typeFilter == "Вид на жительство" ? "selected" : "")">Вид на жительство</option>
+                                <option value="Рабочая виза" selected="@(typeFilter == "Рабочая виза" ? "selected" : "")">Рабочая виза</option>
+                                <option value="Студенческая виза" selected="@(typeFilter == "Студенческая виза" ? "selected" : "")">Студенческая виза</option>
+                                <option value="Воссоединение семьи" selected="@(typeFilter == "Воссоединение семьи" ? "selected" : null)">Воссоединение семьи</option>
                             }
                         </select>
                     </div>
@@ -43,10 +45,11 @@
                         <select name="statusFilter" class="form-select" id="statusMultiSelect" multiple>
                             @{
                                 var statusFilters = ViewData["StatusFilters"] as string[] ?? new string[0];
-                                <option value="Pending" selected="@(statusFilters.Contains("Pending") ? "selected" : "")">На рассмотрении</option>
-                                <option value="In Progress" selected="@(statusFilters.Contains("In Progress") ? "selected" : "")">В процессе</option>
-                                <option value="Approved" selected="@(statusFilters.Contains("Approved") ? "selected" : "")">Одобрено</option>
-                                <option value="Rejected" selected="@(statusFilters.Contains("Rejected") ? "selected" : "")">Отклонено</option>
+                                <option value="На рассмотрении" selected="@(statusFilters.Contains("На рассмотрении") ? "selected" : "")">На рассмотрении</option>
+                                <option value="Подано" selected="@(statusFilters.Contains("Подано") ? "selected" : "")">Подано</option>
+                                <option value="Одобрено" selected="@(statusFilters.Contains("Одобрено") ? "selected" : "")">Одобрено</option>
+                                <option value="Отклонено" selected="@(statusFilters.Contains("Отклонено") ? "selected" : "")">Отклонено</option>
+                                <option value="Требуются дополнительные документы" selected="@(statusFilters.Contains("Требуются дополнительные документы") ? "selected" : "")">Требуются дополнительные документы</option>
                             }
                         </select>
                     </div>
@@ -113,30 +116,32 @@
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => item.Migrant.FullName)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Officer.FullName)</td>
-                                <td>@(item.Type switch {
-                                    "Visa" => "Виза",
-                                    "Residence" => "ВНЖ",
-                                    "Citizenship" => "Гражданство",
-                                    _ => item.Type
-                                })</td>
+                                <td>
+                                    @{
+                                        var typeDisplay = item.Type switch
+                                        {
+                                            "Виза" => "Виза",
+                                            "Вид на жительство" => "Вид на жительство",
+                                            "Рабочая виза" => "Рабочая виза",
+                                            "Студенческая виза" => "Студенческая виза",
+                                            "Воссоединение семьи" => "Воссоединение семьи",
+                                            _ => item.Type
+                                        };
+                                    }
+                                    @typeDisplay
+                                </td>
                                 <td>
                                     @{
                                         string statusClass = item.Status switch
                                         {
-                                            "Pending" => "bg-warning",
-                                            "InProgress" => "bg-info",
-                                            "Approved" => "bg-success",
-                                            "Rejected" => "bg-danger",
+                                            "На рассмотрении" => "bg-warning",
+                                            "Подано" => "bg-info",
+                                            "Одобрено" => "bg-success",
+                                            "Отклонено" => "bg-danger",
+                                            "Требуются дополнительные документы" => "bg-warning",
                                             _ => "bg-secondary"
                                         };
-                                        string statusText = item.Status switch
-                                        {
-                                            "Pending" => "На рассмотрении",
-                                            "InProgress" => "В процессе",
-                                            "Approved" => "Одобрено",
-                                            "Rejected" => "Отклонено",
-                                            _ => item.Status
-                                        };
+                                        string statusText = item.Status;
                                     }
                                     <span class="badge @statusClass">@statusText</span>
                                 </td>

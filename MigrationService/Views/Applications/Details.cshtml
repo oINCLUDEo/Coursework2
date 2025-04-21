@@ -3,6 +3,16 @@
 
 @{
     ViewData["Title"] = "Информация о заявлении";
+
+    var typeDisplay = Model.Type switch
+    {
+        "Виза" => "Виза",
+        "Вид на жительство" => "Вид на жительство",
+        "Рабочая виза" => "Рабочая виза",
+        "Студенческая виза" => "Студенческая виза",
+        "Воссоединение семьи" => "Воссоединение семьи",
+        _ => Model.Type
+    };
 }
 
 <div class="container mt-4">
@@ -18,21 +28,10 @@
                         <dd class="col-sm-8">@Model.ApplicationID</dd>
 
                         <dt class="col-sm-4">Тип</dt>
-                        <dd class="col-sm-8">@(Model.Type switch {
-                            "Visa" => "Виза",
-                            "Residence" => "ВНЖ",
-                            "Citizenship" => "Гражданство",
-                            _ => Model.Type
-                        })</dd>
+                        <dd class="col-sm-8">@typeDisplay</dd>
 
                         <dt class="col-sm-4">Статус</dt>
-                        <dd class="col-sm-8">@(Model.Status switch {
-                            "Pending" => "На рассмотрении",
-                            "In Progress" => "В процессе",
-                            "Approved" => "Одобрено",
-                            "Rejected" => "Отклонено",
-                            _ => Model.Status
-                        })</dd>
+                        <dd class="col-sm-8">@Model.Status</dd>
 
                         <dt class="col-sm-4">Дата подачи</dt>
                         <dd class="col-sm-8">@Model.SubmissionDate.ToString("g")</dd>

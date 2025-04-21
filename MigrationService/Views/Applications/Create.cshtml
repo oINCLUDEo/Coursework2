@@ -40,10 +40,11 @@
                     <div class="col-md-6 mb-3">
                         <label asp-for="Type" class="form-label">Тип заявления</label>
                         <select asp-for="Type" class="form-select">
-                            <option value="">-- Выберите тип --</option>
-                            <option value="Visa">Виза</option>
-                            <option value="Residence">ВНЖ</option>
-                            <option value="Citizenship">Гражданство</option>
+                            <option value="Виза">Виза</option>
+                            <option value="Вид на жительство">Вид на жительство</option>
+                            <option value="Рабочая виза">Рабочая виза</option>
+                            <option value="Студенческая виза">Студенческая виза</option>
+                            <option value="Воссоединение семьи">Воссоединение семьи</option>
                         </select>
                         <span asp-validation-for="Type" class="text-danger"></span>
                     </div>
@@ -52,10 +53,11 @@
                         <label asp-for="Status" class="form-label">Статус</label>
                         <select asp-for="Status" class="form-select">
                             <option value="">-- Выберите статус --</option>
-                            <option value="Pending">На рассмотрении</option>
-                            <option value="In Progress">В процессе</option>
-                            <option value="Approved">Одобрено</option>
-                            <option value="Rejected">Отклонено</option>
+                            <option value="На рассмотрении">На рассмотрении</option>
+                            <option value="Подано">Подано</option>
+                            <option value="Одобрено">Одобрено</option>
+                            <option value="Отклонено">Отклонено</option>
+                            <option value="Требуются дополнительные документы">Требуются дополнительные документы</option>
                         </select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>

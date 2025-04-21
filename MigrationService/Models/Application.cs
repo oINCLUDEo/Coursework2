@@ -27,10 +27,12 @@ public class Application
 
     [Display(Name = "Дата подачи")]
     [DataType(DataType.DateTime)]
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
     public DateTime SubmissionDate { get; set; }
 
     [Display(Name = "Дата решения")]
     [DataType(DataType.DateTime)]
+    [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}", ApplyFormatInEditMode = true)]
     public DateTime? DecisionDate { get; set; }
     [ValidateNever]
     public virtual Migrant Migrant { get; set; }
