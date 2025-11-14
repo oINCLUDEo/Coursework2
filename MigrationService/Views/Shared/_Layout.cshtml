@@ -3,17 +3,16 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - Миграционная Служба</title>
+    <title>@ViewData["Title"] - Летная школа</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Миграционная Служба</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Летная школа</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -27,16 +26,17 @@
                                 Управление
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" asp-controller="Migrants" asp-action="Index">Мигранты</a></li>
-                                <li><a class="dropdown-item" asp-controller="Applications" asp-action="Index">Заявления</a></li>
-                                <li><a class="dropdown-item" asp-controller="Officers" asp-action="Index">Сотрудники</a></li>
-                                <li><a class="dropdown-item" asp-controller="Countries" asp-action="Index">Страны</a></li>
-                                <li><a class="dropdown-item" asp-controller="Languages" asp-action="Index">Языки</a></li>
-                                <li><a class="dropdown-item" asp-controller="Documents" asp-action="Index">Документы</a></li>
+                                <li><a class="dropdown-item" asp-controller="Students" asp-action="Index">Курсанты</a></li>
+                                <li><a class="dropdown-item" asp-controller="Lessons" asp-action="Index">Занятия</a></li>
+                                <li><a class="dropdown-item" asp-controller="Instructors" asp-action="Index">Инструкторы</a></li>
+                                <li><a class="dropdown-item" asp-controller="Aircraft" asp-action="Index">Самолеты</a></li>
+                                <li><a class="dropdown-item" asp-controller="Courses" asp-action="Index">Курсы</a></li>
+                                <li><a class="dropdown-item" asp-controller="Exams" asp-action="Index">Экзамены</a></li>
+                                <li><a class="dropdown-item" asp-controller="Certificates" asp-action="Index">Сертификаты</a></li>
                             </ul>
                         </li>
                     </ul>
-                    <form class="d-flex" asp-controller="Search" asp-action="Index" method="get">
+                    <form class="d-flex" asp-controller="FlightSearch" asp-action="Index" method="get">
                         <div class="input-group">
                             <input class="form-control" type="search" name="query" placeholder="Поиск..." aria-label="Поиск">
                             <button class="btn btn-outline-primary" type="submit">
@@ -44,6 +44,11 @@
                             </button>
                         </div>
                     </form>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout">Выход</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -56,7 +61,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; @DateTime.Now.Year - Миграционная Служба
+            &copy; @DateTime.Now.Year - Летная школа
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
