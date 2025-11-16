@@ -32,6 +32,54 @@ namespace MigrationService.Controllers
             return View(await query.AsNoTracking().ToListAsync());
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+            
+            var course = await _context.Courses
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CourseID == id);
+            
+            if (course == null) return NotFound();
+
+            // Загружаем связанные данные
+            var lessons = await _context.Lessons
+                .Include(l => l.Student)
+                .Include(l => l.Instructor)
+                .Include(l => l.Aircraft)
+                .Where(l => l.CourseID == id)
+                .OrderByDescending(l => l.Date)
+                .AsNoTracking()
+                .ToListAsync();
+
+            var exams = await _context.Exams
+                .Include(e => e.Student)
+                .Where(e => e.CourseID == id)
+                .OrderByDescending(e => e.Date)
+                .AsNoTracking()
+                .ToListAsync();
+
+            var certificates = await _context.Certificates
+                .Include(c => c.Student)
+                .Where(c => c.CourseID == id)
+                .OrderByDescending(c => c.IssuedDate)
+                .AsNoTracking()
+                .ToListAsync();
+
+            var students = await _context.Students
+                .Where(s => s.CourseID == id)
+                .AsNoTracking()
+                .ToListAsync();
+
+            ViewBag.Lessons = lessons;
+            ViewBag.Exams = exams;
+            ViewBag.Certificates = certificates;
+            ViewBag.Students = students;
+            ViewBag.CourseId = id;
+
+            return View(course);
+        }
+
         public IActionResult Create() => View();
 
         [HttpPost]
@@ -84,7 +132,7 @@ namespace MigrationService.Controllers
             var course = await _context.Courses.FindAsync(id);
             if (course != null)
             {
-                var used = await _context.StudentCourses.AnyAsync(sc => sc.CourseID == id) || await _context.Lessons.AnyAsync(l => l.CourseID == id);
+                var used = await _context.Students.AnyAsync(s => s.CourseID == id) || await _context.Lessons.AnyAsync(l => l.CourseID == id);
                 if (used)
                 {
                     ModelState.AddModelError(string.Empty, "Нельзя удалить курс, используемый в зачислениях или занятиях.");

@@ -63,12 +63,27 @@ namespace MigrationService.Controllers
             return View(exams);
         }
 
-        public IActionResult Create()
+        public IActionResult Create(int? courseId)
         {
             ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName");
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name");
             ViewBag.Instructors = _context.Instructors.AsNoTracking().ToList();
-            return View();
+            
+            var exam = new Exam();
+            
+            // Если передан courseId, автоматически подставляем его
+            if (courseId.HasValue && courseId.Value > 0)
+            {
+                exam.CourseID = courseId.Value;
+                var course = _context.Courses.AsNoTracking().FirstOrDefault(c => c.CourseID == courseId.Value);
+                if (course != null)
+                {
+                    ViewBag.CourseName = course.Name;
+                    ViewBag.CourseId = courseId.Value;
+                }
+            }
+            
+            return View(exam);
         }
 
         [HttpPost]
@@ -120,6 +135,13 @@ namespace MigrationService.Controllers
                 _context.Add(exam);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Экзамен успешно добавлен.";
+                
+                // Если курс был указан, перенаправляем на страницу деталей курса
+                if (exam.CourseID > 0)
+                {
+                    return RedirectToAction("Details", "Courses", new { id = exam.CourseID });
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException ex)

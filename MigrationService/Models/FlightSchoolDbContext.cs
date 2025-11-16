@@ -10,7 +10,6 @@ namespace MigrationService.Models
         public DbSet<Instructor> Instructors { get; set; }
         public DbSet<Aircraft> Aircraft { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<StudentCourse> StudentCourses { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<LessonStatusChange> LessonStatusChanges { get; set; }
         public DbSet<Exam> Exams { get; set; }
@@ -22,26 +21,17 @@ namespace MigrationService.Models
             modelBuilder.Entity<Instructor>().ToTable("Instructors");
             modelBuilder.Entity<Aircraft>().ToTable("Aircraft");
             modelBuilder.Entity<Course>().ToTable("Courses");
-            modelBuilder.Entity<StudentCourse>().ToTable("StudentCourses");
             modelBuilder.Entity<Lesson>().ToTable("Lessons");
             modelBuilder.Entity<LessonStatusChange>().ToTable("LessonStatusChanges");
             modelBuilder.Entity<Exam>().ToTable("Exams");
             modelBuilder.Entity<Certificate>().ToTable("Certificates");
 
-            modelBuilder.Entity<StudentCourse>()
-                .HasKey(sc => new { sc.StudentID, sc.CourseID });
-
-            modelBuilder.Entity<StudentCourse>()
-                .HasOne(sc => sc.Student)
-                .WithMany(s => s.StudentCourses)
-                .HasForeignKey(sc => sc.StudentID)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<StudentCourse>()
-                .HasOne(sc => sc.Course)
-                .WithMany(c => c.StudentCourses)
-                .HasForeignKey(sc => sc.CourseID)
-                .OnDelete(DeleteBehavior.Cascade);
+            // Связь Student-Course: один студент - один курс
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.Course)
+                .WithMany(c => c.Students)
+                .HasForeignKey(s => s.CourseID)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Lesson>()
                 .HasOne(l => l.Student)

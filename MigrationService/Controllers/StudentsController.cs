@@ -26,8 +26,7 @@ namespace MigrationService.Controllers
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name");
 
             var query = _context.Students
-                .Include(s => s.StudentCourses)
-                    .ThenInclude(sc => sc.Course)
+                .Include(s => s.Course)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
@@ -42,7 +41,7 @@ namespace MigrationService.Controllers
 
             if (courseFilter.HasValue)
             {
-                query = query.Where(s => s.StudentCourses.Any(sc => sc.CourseID == courseFilter.Value));
+                query = query.Where(s => s.CourseID == courseFilter.Value);
             }
 
             var students = await query.AsNoTracking().ToListAsync();
@@ -55,8 +54,7 @@ namespace MigrationService.Controllers
             if (id == null) return NotFound();
 
             var student = await _context.Students
-                .Include(s => s.StudentCourses)
-                    .ThenInclude(sc => sc.Course)
+                .Include(s => s.Course)
                 .FirstOrDefaultAsync(m => m.StudentID == id);
             if (student == null) return NotFound();
             return View(student);
@@ -65,14 +63,30 @@ namespace MigrationService.Controllers
         // GET: Students/Create
         public IActionResult Create()
         {
+            ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().Where(c => c.IsActive).ToList(), "CourseID", "Name");
             return View();
         }
 
         // POST: Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FullName,Email,Phone,Address,BirthDate,MedicalCertificateNo,EnrollmentDate,Notes")] Student student)
+        public async Task<IActionResult> Create(Student student)
         {
+            // Очищаем ошибки привязки модели для CourseID и Course
+            ModelState.Remove("CourseID");
+            ModelState.Remove("Course");
+            
+            // Обработка CourseID из формы
+            var courseIdValue = Request.Form["CourseID"].ToString();
+            if (!string.IsNullOrEmpty(courseIdValue) && int.TryParse(courseIdValue, out int courseId) && courseId > 0)
+            {
+                student.CourseID = courseId;
+            }
+            else
+            {
+                student.CourseID = null;
+            }
+
             if (ModelState.IsValid)
             {
                 if (!string.IsNullOrWhiteSpace(student.Email))
@@ -80,6 +94,7 @@ namespace MigrationService.Controllers
                     if (await _context.Students.AnyAsync(s => s.Email == student.Email))
                     {
                         ModelState.AddModelError("Email", "Курсант с таким Email уже существует.");
+                        ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().Where(c => c.IsActive).ToList(), "CourseID", "Name", student.CourseID);
                         return View(student);
                     }
                 }
@@ -88,6 +103,7 @@ namespace MigrationService.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().Where(c => c.IsActive).ToList(), "CourseID", "Name", student.CourseID);
             return View(student);
         }
 
@@ -97,22 +113,44 @@ namespace MigrationService.Controllers
             if (id == null) return NotFound();
             var student = await _context.Students.FindAsync(id);
             if (student == null) return NotFound();
+            ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().Where(c => c.IsActive).ToList(), "CourseID", "Name", student.CourseID);
             return View(student);
         }
 
         // POST: Students/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StudentID,FullName,Email,Phone,Address,BirthDate,MedicalCertificateNo,EnrollmentDate,Notes")] Student student)
+        public async Task<IActionResult> Edit(int id, Student student)
         {
             if (id != student.StudentID) return NotFound();
-            if (!ModelState.IsValid) return View(student);
+
+            // Очищаем ошибки привязки модели для CourseID и Course
+            ModelState.Remove("CourseID");
+            ModelState.Remove("Course");
+            
+            // Обработка CourseID из формы
+            var courseIdValue = Request.Form["CourseID"].ToString();
+            if (!string.IsNullOrEmpty(courseIdValue) && int.TryParse(courseIdValue, out int courseId) && courseId > 0)
+            {
+                student.CourseID = courseId;
+            }
+            else
+            {
+                student.CourseID = null;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().Where(c => c.IsActive).ToList(), "CourseID", "Name", student.CourseID);
+                return View(student);
+            }
 
             if (!string.IsNullOrWhiteSpace(student.Email))
             {
                 if (await _context.Students.AnyAsync(s => s.Email == student.Email && s.StudentID != id))
                 {
                     ModelState.AddModelError("Email", "Курсант с таким Email уже существует.");
+                    ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().Where(c => c.IsActive).ToList(), "CourseID", "Name", student.CourseID);
                     return View(student);
                 }
             }
@@ -128,6 +166,7 @@ namespace MigrationService.Controllers
             existing.MedicalCertificateNo = student.MedicalCertificateNo;
             existing.EnrollmentDate = student.EnrollmentDate;
             existing.Notes = student.Notes;
+            existing.CourseID = student.CourseID;
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -149,7 +188,6 @@ namespace MigrationService.Controllers
         {
             var student = await _context.Students
                 .Include(s => s.Lessons)
-                .Include(s => s.StudentCourses)
                 .FirstOrDefaultAsync(s => s.StudentID == id);
             if (student == null) return RedirectToAction(nameof(Index));
 
@@ -159,7 +197,6 @@ namespace MigrationService.Controllers
                 return View("Delete", student);
             }
 
-            _context.StudentCourses.RemoveRange(student.StudentCourses);
             _context.Students.Remove(student);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

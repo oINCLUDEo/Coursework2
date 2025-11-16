@@ -39,7 +39,14 @@
             <td>@s.Email</td>
             <td>@s.Phone</td>
             <td>
-                @string.Join(", ", s.StudentCourses?.Select(sc => sc.Course?.Name) ?? Array.Empty<string>())
+                @if (s.Course != null)
+                {
+                    <a href="@Url.Action("Details", "Courses", new { id = s.Course.CourseID })">@s.Course.Name</a>
+                }
+                else
+                {
+                    <span class="text-muted">Не зачислен</span>
+                }
             </td>
             <td>
                 <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = s.StudentID })">Изменить</a>

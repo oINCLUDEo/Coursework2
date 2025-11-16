@@ -23,7 +23,7 @@ namespace MigrationService.Models
         [Display(Name = "Активен")]
         public bool IsActive { get; set; } = true;
 
-        public virtual ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
+        public virtual ICollection<Student> Students { get; set; } = new List<Student>();
     }
 }
 

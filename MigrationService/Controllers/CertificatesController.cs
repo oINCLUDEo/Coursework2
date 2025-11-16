@@ -56,11 +56,26 @@ namespace MigrationService.Controllers
             return View(list);
         }
 
-        public IActionResult Create()
+        public IActionResult Create(int? courseId)
         {
             ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName");
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name");
-            return View();
+            
+            var certificate = new Certificate();
+            
+            // Если передан courseId, автоматически подставляем его
+            if (courseId.HasValue && courseId.Value > 0)
+            {
+                certificate.CourseID = courseId.Value;
+                var course = _context.Courses.AsNoTracking().FirstOrDefault(c => c.CourseID == courseId.Value);
+                if (course != null)
+                {
+                    ViewBag.CourseName = course.Name;
+                    ViewBag.CourseId = courseId.Value;
+                }
+            }
+            
+            return View(certificate);
         }
 
         [HttpPost]
@@ -111,6 +126,13 @@ namespace MigrationService.Controllers
                 _context.Add(certificate);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Сертификат успешно добавлен.";
+                
+                // Если курс был указан, перенаправляем на страницу деталей курса
+                if (certificate.CourseID > 0)
+                {
+                    return RedirectToAction("Details", "Courses", new { id = certificate.CourseID });
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException ex)

@@ -83,10 +83,23 @@ namespace MigrationService.Controllers
         }
 
         // GET: Lessons/Create
-        public IActionResult Create()
+        public IActionResult Create(int? courseId)
         {
             PopulateLookups();
             var model = new Lesson { Date = DateTime.Today, Status = "Planned" };
+            
+            // Если передан courseId, автоматически подставляем его
+            if (courseId.HasValue && courseId.Value > 0)
+            {
+                model.CourseID = courseId.Value;
+                var course = _context.Courses.AsNoTracking().FirstOrDefault(c => c.CourseID == courseId.Value);
+                if (course != null)
+                {
+                    ViewBag.CourseName = course.Name;
+                    ViewBag.CourseId = courseId.Value;
+                }
+            }
+            
             return View(model);
         }
 
@@ -188,6 +201,13 @@ namespace MigrationService.Controllers
                 }
                 
                 TempData["Success"] = "Занятие успешно добавлено.";
+                
+                // Если курс был указан, перенаправляем на страницу деталей курса
+                if (lesson.CourseID.HasValue && lesson.CourseID.Value > 0)
+                {
+                    return RedirectToAction("Details", "Courses", new { id = lesson.CourseID.Value });
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException ex)

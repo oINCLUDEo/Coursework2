@@ -1,9 +1,19 @@
 @model MigrationService.Models.Certificate
 @{
     ViewData["Title"] = "Добавить сертификат";
+    var courseId = ViewBag.CourseId as int?;
+    var courseName = ViewBag.CourseName as string;
 }
 
 <h2>Добавить сертификат</h2>
+
+@if (courseId.HasValue && !string.IsNullOrEmpty(courseName))
+{
+    <div class="alert alert-info">
+        <strong>Курс:</strong> @courseName 
+        <a href="@Url.Action("Details", "Courses", new { id = courseId.Value })" class="btn btn-sm btn-outline-primary ms-2">← Вернуться к курсу</a>
+    </div>
+}
 
 @if (TempData["Error"] != null)
 {
@@ -21,7 +31,16 @@
     </div>
     <div class="mb-3">
         @Html.LabelFor(m => m.CourseID, "Курс")
-        @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите курс...", new { @class = "form-select" })
+        @if (courseId.HasValue)
+        {
+            @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите курс...", new { @class = "form-select", @disabled = "disabled" })
+            @Html.HiddenFor(m => m.CourseID)
+            <small class="form-text text-muted">Курс выбран из контекста: <strong>@courseName</strong></small>
+        }
+        else
+        {
+            @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите курс...", new { @class = "form-select" })
+        }
         @Html.ValidationMessageFor(m => m.CourseID, "", new { @class = "text-danger" })
     </div>
     <div class="mb-3">

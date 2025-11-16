@@ -12,15 +12,18 @@
     <dt class="col-sm-3">Мед. сертификат</dt><dd class="col-sm-9">@Model.MedicalCertificateNo</dd>
     <dt class="col-sm-3">Дата зачисления</dt><dd class="col-sm-9">@Model.EnrollmentDate?.ToString("yyyy-MM-dd")</dd>
     <dt class="col-sm-3">Заметки</dt><dd class="col-sm-9">@Model.Notes</dd>
+    <dt class="col-sm-3">Курс</dt>
+    <dd class="col-sm-9">
+        @if (Model.Course != null)
+        {
+            <a href="@Url.Action("Details", "Courses", new { id = Model.Course.CourseID })">@Model.Course.Name</a>
+        }
+        else
+        {
+            <span class="text-muted">Не зачислен на курс</span>
+        }
+    </dd>
 </dl>
-
-<h4>Курсы</h4>
-<ul>
-@foreach (var sc in Model.StudentCourses)
-{
-    <li>@sc.Course?.Name (@sc.Status, @sc.ProgressHours ч.)</li>
-}
-</ul>
 
 <a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
 <a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.StudentID })">Изменить</a>

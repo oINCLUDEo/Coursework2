@@ -38,7 +38,10 @@ namespace MigrationService.Models
         [Display(Name = "Заметки")]
         public string Notes { get; set; }
 
-        public virtual ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
+        [Display(Name = "Курс")]
+        public int? CourseID { get; set; }
+
+        public virtual Course Course { get; set; }
         public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
     }
 }

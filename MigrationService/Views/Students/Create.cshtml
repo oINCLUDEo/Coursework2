@@ -8,7 +8,7 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
     <div class="mb-3">
         @Html.LabelFor(m => m.FullName)
@@ -44,6 +44,11 @@
         @Html.LabelFor(m => m.EnrollmentDate)
         @Html.TextBoxFor(m => m.EnrollmentDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
         @Html.ValidationMessageFor(m => m.EnrollmentDate, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.CourseID, "Курс")
+        @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Не зачислен на курс", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.CourseID, "", new { @class = "text-danger" })
     </div>
     <div class="mb-3">
         @Html.LabelFor(m => m.Notes)
