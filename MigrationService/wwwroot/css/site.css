@@ -151,3 +151,67 @@ body {
   border-radius: 5px;
   font-weight: 500;
 }
+
+/* KPI Dashboard Styles */
+:root {
+  --kpi-radius: 16px;
+  --kpi-shadow: 0 10px 20px rgba(0,0,0,.12), 0 6px 6px rgba(0,0,0,.08);
+}
+
+.kpi {
+  border: 0;
+  border-radius: var(--kpi-radius);
+  box-shadow: var(--kpi-shadow);
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+  transition: transform .25s ease, box-shadow .25s ease;
+  backdrop-filter: saturate(140%) blur(2px);
+}
+.kpi:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(1200px 300px at -10% -20%, rgba(255,255,255,.15), transparent);
+  pointer-events: none;
+}
+.kpi:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 28px rgba(0,0,0,.18), 0 8px 10px rgba(0,0,0,.12);
+}
+
+.kpi .card-body {
+  padding: 1.25rem 1.25rem 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  align-items: flex-start;
+}
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.18);
+  margin-bottom: .25rem;
+}
+.kpi-icon i { font-size: 1.25rem; }
+.kpi-title { font-weight: 600; opacity: .95; letter-spacing: .2px; }
+.kpi-value { font-size: 2.25rem; line-height: 1.1; font-weight: 700; margin-top: .15rem; }
+.kpi-action { margin-top: .35rem; border-color: rgba(255,255,255,.55) !important; color: #fff !important; }
+.kpi-action:hover { background: rgba(255,255,255,.15) !important; }
+
+/* Gradients */
+.kpi-students { background: linear-gradient(135deg, #17a2b8 0%, #238bd1 100%); }
+.kpi-instructors { background: linear-gradient(135deg, #28a745 0%, #24935b 100%); }
+.kpi-aircraft { background: linear-gradient(135deg, #f0ad4e 0%, #ff8746 100%); }
+.kpi-courses { background: linear-gradient(135deg, #dc3545 0%, #c12b63 100%); }
+.kpi-lessons { background: linear-gradient(135deg, #6c757d 0%, #495057 100%); }
+.kpi-exams { background: linear-gradient(135deg, #343a40 0%, #23272b 100%); }
+.kpi-certificates { background: linear-gradient(135deg, #20c997 0%, #10b392 100%); }
+
+@media (max-width: 575.98px) {
+  .kpi-value { font-size: 1.9rem; }
+  .kpi .card-body { padding: 1rem; }
+}

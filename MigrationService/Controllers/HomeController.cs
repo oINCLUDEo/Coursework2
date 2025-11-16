@@ -1,27 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using MigrationService.Models;
+using MigrationService.Filters;
 
 namespace MigrationService.Controllers
 {
+    [RequireAuth]
     public class HomeController : Controller
     {
-        private readonly MigrationDbContext _context;
+        private readonly FlightSchoolDbContext _context;
 
-        public HomeController(MigrationDbContext context)
+        public HomeController(FlightSchoolDbContext context)
         {
             _context = context;
         }
 
         public IActionResult Index()
         {
-            // Get counts for dashboard
-            ViewBag.MigrantsCount = _context.Migrants.Count();
-            ViewBag.OfficersCount = _context.Officers.Count();
-            ViewBag.ApplicationsCount = _context.Applications.Count();
-            ViewBag.CountriesCount = _context.Countries.Count();
-            ViewBag.LanguagesCount = _context.Languages.Count();
-            ViewBag.DocumentsCount = _context.Documents.Count();
+            ViewBag.StudentsCount = _context.Students.Count();
+            ViewBag.InstructorsCount = _context.Instructors.Count();
+            ViewBag.CoursesCount = _context.Courses.Count();
+            ViewBag.AircraftCount = _context.Aircraft.Count();
+            ViewBag.LessonsCount = _context.Lessons.Count();
+            ViewBag.ExamsCount = _context.Exams.Count();
+            ViewBag.CertificatesCount = _context.Certificates.Count();
             
             return View();
         }

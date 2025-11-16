@@ -5,74 +5,81 @@
 <div class="container mt-4">
     <div class="card shadow-sm mb-4">
         <div class="card-body text-center py-5">
-            <h1 class="display-4 mb-3">Миграционная Служба</h1>
-            <p class="lead mb-4">Добро пожаловать в систему управления миграционной службой</p>
+            <h1 class="display-4 mb-3">Летная школа</h1>
+            <p class="lead mb-4">Добро пожаловать в систему управления учебными полетами</p>
             <hr class="my-4">
-            <p class="mb-0">Управляйте мигрантами, заявлениями, сотрудниками, странами и языками в одном месте.</p>
+            <p class="mb-0">Управляйте курсантами, занятиями, инструкторами, самолетами и курсами в одном месте.</p>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-md-4 mb-4">
-            <div class="card bg-info text-white h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-users fa-3x mb-3"></i>
-                    <h5 class="card-title">Мигранты</h5>
-                    <p class="card-text display-4">@ViewBag.MigrantsCount</p>
-                    <a href="@Url.Action("Index", "Migrants")" class="btn btn-light">Управление мигрантами</a>
+    <div class="row mt-4 g-3 justify-content-center">
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card kpi kpi-students h-100">
+                <div class="card-body">
+                    <div class="kpi-icon"><i class="fas fa-user-graduate"></i></div>
+                    <div class="kpi-title">Курсанты</div>
+                    <div class="kpi-value">@ViewBag.StudentsCount</div>
+                    <a href="@Url.Action("Index", "Students")" class="btn btn-outline-light btn-sm kpi-action">Управление</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card bg-success text-white h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-file-alt fa-3x mb-3"></i>
-                    <h5 class="card-title">Заявления</h5>
-                    <p class="card-text display-4">@ViewBag.ApplicationsCount</p>
-                    <a href="@Url.Action("Index", "Applications")" class="btn btn-light">Управление заявлениями</a>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card kpi kpi-instructors h-100">
+                <div class="card-body">
+                    <div class="kpi-icon"><i class="fas fa-chalkboard-teacher"></i></div>
+                    <div class="kpi-title">Инструкторы</div>
+                    <div class="kpi-value">@ViewBag.InstructorsCount</div>
+                    <a href="@Url.Action("Index", "Instructors")" class="btn btn-outline-light btn-sm kpi-action">Управление</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card bg-warning text-white h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-user-tie fa-3x mb-3"></i>
-                    <h5 class="card-title">Сотрудники</h5>
-                    <p class="card-text display-4">@ViewBag.OfficersCount</p>
-                    <a href="@Url.Action("Index", "Officers")" class="btn btn-light">Управление сотрудниками</a>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card kpi kpi-aircraft h-100">
+                <div class="card-body">
+                    <div class="kpi-icon"><i class="fas fa-plane"></i></div>
+                    <div class="kpi-title">Самолеты</div>
+                    <div class="kpi-value">@ViewBag.AircraftCount</div>
+                    <a href="@Url.Action("Index", "Aircraft")" class="btn btn-outline-light btn-sm kpi-action">Управление</a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card bg-danger text-white h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-globe fa-3x mb-3"></i>
-                    <h5 class="card-title">Страны</h5>
-                    <p class="card-text display-4">@ViewBag.CountriesCount</p>
-                    <a href="@Url.Action("Index", "Countries")" class="btn btn-light">Управление странами</a>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card kpi kpi-courses h-100">
+                <div class="card-body">
+                    <div class="kpi-icon"><i class="fas fa-book"></i></div>
+                    <div class="kpi-title">Курсы</div>
+                    <div class="kpi-value">@ViewBag.CoursesCount</div>
+                    <a href="@Url.Action("Index", "Courses")" class="btn btn-outline-light btn-sm kpi-action">Управление</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card bg-secondary text-white h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-language fa-3x mb-3"></i>
-                    <h5 class="card-title">Языки</h5>
-                    <p class="card-text display-4">@ViewBag.LanguagesCount</p>
-                    <a href="@Url.Action("Index", "Languages")" class="btn btn-light">Управление языками</a>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card kpi kpi-lessons h-100">
+                <div class="card-body">
+                    <div class="kpi-icon"><i class="fas fa-clock"></i></div>
+                    <div class="kpi-title">Занятия</div>
+                    <div class="kpi-value">@ViewBag.LessonsCount</div>
+                    <a href="@Url.Action("Index", "Lessons")" class="btn btn-outline-light btn-sm kpi-action">Перейти</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-4">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body text-center">
-                    <i class="fas fa-file-upload fa-3x mb-3"></i>
-                    <h5 class="card-title">Документы</h5>
-                    <p class="card-text display-4">@ViewBag.DocumentsCount</p>
-                    <a href="@Url.Action("Index", "Documents")" class="btn btn-light">Управление документами</a>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card kpi kpi-exams h-100">
+                <div class="card-body">
+                    <div class="kpi-icon"><i class="fas fa-check-double"></i></div>
+                    <div class="kpi-title">Экзамены</div>
+                    <div class="kpi-value">@ViewBag.ExamsCount</div>
+                    <a href="@Url.Action("Index", "Exams")" class="btn btn-outline-light btn-sm kpi-action">Управление</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card kpi kpi-certificates h-100">
+                <div class="card-body">
+                    <div class="kpi-icon"><i class="fas fa-certificate"></i></div>
+                    <div class="kpi-title">Сертификаты</div>
+                    <div class="kpi-value">@ViewBag.CertificatesCount</div>
+                    <a href="@Url.Action("Index", "Certificates")" class="btn btn-outline-light btn-sm kpi-action">Управление</a>
                 </div>
             </div>
         </div>
@@ -81,20 +88,4 @@
 
 @section Styles {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        .card {
-            transition: transform 0.3s;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .btn-light {
-            transition: all 0.3s;
-        }
-        .btn-light:hover {
-            background-color: #f8f9fa;
-            transform: scale(1.05);
-        }
-    </style>
 } 

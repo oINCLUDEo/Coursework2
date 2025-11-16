@@ -6,10 +6,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".FlightSchool.Session";
+    options.IdleTimeout = TimeSpan.FromHours(8);
+    options.Cookie.HttpOnly = true;
+});
 
-// Configure DB context (use your connection string name)
-builder.Services.AddDbContext<MigrationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Configure DB context
+builder.Services.AddDbContext<FlightSchoolDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FlightSchoolConnection")));
 
 var app = builder.Build();
 
@@ -26,14 +33,47 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapControllerRoute(
-    name: "delete",
-    pattern: "{controller=Migrants}/{action=Delete}/{id?}");
+// Old route removed
+// Initialize FlightSchool database and seed
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var env = services.GetRequiredService<IWebHostEnvironment>();
+    var db = services.GetRequiredService<FlightSchoolDbContext>();
+    db.Database.EnsureCreated();
+
+    try
+    {
+        var sqlRoot = Path.Combine(env.ContentRootPath, "Data");
+        var udfSpPath = Path.Combine(sqlRoot, "FlightSchool.sql");
+        if (File.Exists(udfSpPath))
+        {
+            var sql = File.ReadAllText(udfSpPath);
+            db.Database.ExecuteSqlRaw(sql);
+        }
+
+        if (!db.Students.Any())
+        {
+            var seedPath = Path.Combine(sqlRoot, "FlightSchoolSeed.sql");
+            if (File.Exists(seedPath))
+            {
+                var seed = File.ReadAllText(seedPath);
+                db.Database.ExecuteSqlRaw(seed);
+            }
+        }
+    }
+    catch (Exception)
+    {
+        // Swallow seeding errors in dev; for production, log properly
+    }
+}
 
 app.Run();
