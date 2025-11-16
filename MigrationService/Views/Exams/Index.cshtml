@@ -1,0 +1,72 @@
+@model IEnumerable<MigrationService.Models.Exam>
+@{
+    ViewData["Title"] = "Экзамены";
+}
+
+<h2>Экзамены</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Поиск..." />
+    </div>
+    <div class="col-md-2">
+        @Html.DropDownList("studentFilter", (SelectList)ViewBag.Students, "Все курсанты", new { @class = "form-select" })
+    </div>
+    <div class="col-md-2">
+        @Html.DropDownList("courseFilter", (SelectList)ViewBag.Courses, "Все курсы", new { @class = "form-select" })
+    </div>
+    <div class="col-md-2">
+        <input type="text" name="resultFilter" value="@ViewData["ResultFilter"]" class="form-control" placeholder="Результат" />
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a class="btn btn-success" href="@Url.Action("Create")">Добавить</a>
+    </div>
+    <div class="col-12">
+        <a class="btn btn-link" href="@Url.Action("Index")">Сбросить</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Курсант</th>
+            <th>Курс</th>
+            <th>Оценка</th>
+            <th>Результат</th>
+            <th>Экзаменатор</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var e in Model)
+    {
+        <tr>
+            <td>@e.Date.ToString("yyyy-MM-dd")</td>
+            <td>@e.Student?.FullName</td>
+            <td>@e.Course?.Name</td>
+            <td>@e.Score</td>
+            <td>@e.Result</td>
+            <td>@e.Examiner</td>
+            <td>
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = e.ExamID })">Подробнее</a>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = e.ExamID })">Изменить</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = e.ExamID })">Удалить</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+

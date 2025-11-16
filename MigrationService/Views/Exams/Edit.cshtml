@@ -1,0 +1,48 @@
+@model MigrationService.Models.Exam
+@{
+    ViewData["Title"] = "Изменить экзамен";
+}
+
+<h2>Изменить экзамен</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.ExamID)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="mb-3">
+        @Html.LabelFor(m => m.StudentID, "Курсант")
+        @Html.DropDownListFor(m => m.StudentID, (SelectList)ViewBag.Students, "Выберите...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.StudentID, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.CourseID, "Курс")
+        @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.CourseID, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Date)
+        @Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+        @Html.ValidationMessageFor(m => m.Date, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Score)
+        @Html.TextBoxFor(m => m.Score, new { @class = "form-control", type = "number", step = "0.1" })
+        @Html.ValidationMessageFor(m => m.Score, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Result)
+        @Html.TextBoxFor(m => m.Result, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Result, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Examiner, "Экзаменатор")
+        @Html.DropDownListFor(m => m.Examiner, new SelectList((IEnumerable<MigrationService.Models.Instructor>)ViewBag.Instructors, "FullName", "FullName", Model.Examiner), "Выберите...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.Examiner, "", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Отмена</a>
+}
+
+
+

@@ -1,0 +1,18 @@
+@model MigrationService.Models.Certificate
+@{
+    ViewData["Title"] = "Сертификат";
+}
+
+<h2>Сертификат @Model.CertificateNumber</h2>
+<dl class="row">
+    <dt class="col-sm-3">Курсант</dt><dd class="col-sm-9">@Model.Student?.FullName</dd>
+    <dt class="col-sm-3">Курс</dt><dd class="col-sm-9">@Model.Course?.Name</dd>
+    <dt class="col-sm-3">Дата выдачи</dt><dd class="col-sm-9">@Model.IssuedDate.ToString("yyyy-MM-dd")</dd>
+    <dt class="col-sm-3">Действителен до</dt><dd class="col-sm-9">@Model.ValidUntil?.ToString("yyyy-MM-dd")</dd>
+</dl>
+
+<a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
+<a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.CertificateID })">Изменить</a>
+
+
+

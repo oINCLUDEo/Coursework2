@@ -1,0 +1,50 @@
+@model IEnumerable<MigrationService.Models.Instructor>
+@{
+    ViewData["Title"] = "Инструкторы";
+}
+
+<h2>Инструкторы</h2>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-6">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Поиск по ФИО/Email" />
+    </div>
+    <div class="col-md-3 form-check align-self-center">
+        <input type="checkbox" class="form-check-input" id="onlyActive" name="onlyActive" value="true" @(true.Equals(ViewData["OnlyActive"]) ? "checked" : "") />
+        <label for="onlyActive" class="form-check-label">Только активные</label>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a href="@Url.Action("Create")" class="btn btn-success">Добавить</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>Email</th>
+            <th>Звание</th>
+            <th>Активен</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var i in Model)
+    {
+        <tr>
+            <td>@i.FullName</td>
+            <td>@i.Email</td>
+            <td>@i.Rank</td>
+            <td>@(i.IsActive ? "Да" : "Нет")</td>
+            <td>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = i.InstructorID })">Изменить</a>
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = i.InstructorID })">Подробнее</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = i.InstructorID })">Удалить</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

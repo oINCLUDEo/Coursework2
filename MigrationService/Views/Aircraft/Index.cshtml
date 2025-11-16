@@ -1,0 +1,52 @@
+@model IEnumerable<MigrationService.Models.Aircraft>
+@{
+    ViewData["Title"] = "Самолеты";
+}
+
+<h2>Самолеты</h2>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="search" value="@ViewData["Search"]" class="form-control" placeholder="Поиск по бортовому/модели" />
+    </div>
+    <div class="col-md-3">
+        <input type="text" name="status" value="@ViewData["Status"]" class="form-control" placeholder="Статус (например, Available)" />
+    </div>
+    <div class="col-md-6">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a href="@Url.Action("Create")" class="btn btn-success">Добавить</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Бортовой</th>
+            <th>Модель</th>
+            <th>Тип</th>
+            <th>Год</th>
+            <th>Налет</th>
+            <th>Статус</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var a in Model)
+    {
+        <tr>
+            <td>@a.TailNumber</td>
+            <td>@a.Model</td>
+            <td>@a.Type</td>
+            <td>@a.Year</td>
+            <td>@a.TotalHours</td>
+            <td>@a.Status</td>
+            <td>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = a.AircraftID })">Изменить</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = a.AircraftID })">Удалить</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

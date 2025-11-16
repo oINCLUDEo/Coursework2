@@ -1,0 +1,62 @@
+@model MigrationService.Models.Lesson
+@{
+    ViewData["Title"] = "Изменить занятие";
+}
+
+<h2>Изменить занятие</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.LessonID)
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="mb-3">
+        @Html.LabelFor(m => m.StudentID, "Курсант")
+        @Html.DropDownListFor(m => m.StudentID, (SelectList)ViewBag.Students, "Выберите...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.StudentID, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.InstructorID, "Инструктор")
+        @Html.DropDownListFor(m => m.InstructorID, (SelectList)ViewBag.Instructors, "Выберите...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.InstructorID, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.CourseID, "Курс")
+        @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.CourseID, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.AircraftID, "Самолет")
+        @Html.DropDownListFor(m => m.AircraftID, (SelectList)ViewBag.Aircraft, "Выберите...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.AircraftID, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Date)
+        @Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+        @Html.ValidationMessageFor(m => m.Date, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.DurationHours)
+        @Html.TextBoxFor(m => m.DurationHours, new { @class = "form-control", type = "number", step = "0.1" })
+        @Html.ValidationMessageFor(m => m.DurationHours, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Topic)
+        @Html.TextBoxFor(m => m.Topic, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Topic, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Status)
+        @Html.DropDownListFor(m => m.Status, new SelectList(new[] {"Planned","InProgress","Completed","Approved","Cancelled"}), "Выберите...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Remarks)
+        @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Remarks, "", new { @class = "text-danger" })
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Отмена</a>
+}
+
+

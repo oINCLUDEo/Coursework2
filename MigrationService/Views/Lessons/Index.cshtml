@@ -1,0 +1,79 @@
+@model IEnumerable<MigrationService.Models.Lesson>
+@{
+    ViewData["Title"] = "Занятия";
+}
+
+<h2>Занятия</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-2">
+        <input type="date" name="startDate" value="@ViewData["StartDate"]" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="endDate" value="@ViewData["EndDate"]" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        @Html.DropDownList("instructorId", (SelectList)ViewBag.Instructors, "Все инструкторы", new { @class = "form-select" })
+    </div>
+    <div class="col-md-3">
+        @Html.DropDownList("courseId", (SelectList)ViewBag.Courses, "Все курсы", new { @class = "form-select" })
+    </div>
+    <div class="col-md-2">
+        <select name="sortBy" class="form-select">
+            <option value="">Дата ↑</option>
+            <option value="date_desc">Дата ↓</option>
+            <option value="duration">Длительность ↑</option>
+            <option value="duration_desc">Длительность ↓</option>
+        </select>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a class="btn btn-success" href="@Url.Action("Create")">Добавить</a>
+        <a class="btn btn-link" href="@Url.Action("Index")">Сбросить</a>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Дата</th>
+            <th>Курсант</th>
+            <th>Инструктор</th>
+            <th>Курс</th>
+            <th>Самолет</th>
+            <th>Часы</th>
+            <th>Статус</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var l in Model)
+    {
+        <tr>
+            <td>@l.Date.ToString("yyyy-MM-dd")</td>
+            <td>@l.Student?.FullName</td>
+            <td>@l.Instructor?.FullName</td>
+            <td>@l.Course?.Name</td>
+            <td>@l.Aircraft?.TailNumber</td>
+            <td>@l.DurationHours</td>
+            <td>@l.Status</td>
+            <td>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = l.LessonID })">Изменить</a>
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = l.LessonID })">Подробнее</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = l.LessonID })">Удалить</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

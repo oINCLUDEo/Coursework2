@@ -1,0 +1,17 @@
+@model MigrationService.Models.Student
+@{
+    ViewData["Title"] = "Удалить курсанта";
+}
+
+<h2>Удалить курсанта</h2>
+<div class="alert alert-warning">Вы уверены, что хотите удалить: <strong>@Model.FullName</strong>?</div>
+
+@using (Html.BeginForm("Delete", "Students", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.StudentID)
+    <button type="submit" class="btn btn-danger">Удалить</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Отмена</a>
+}
+
+

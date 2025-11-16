@@ -1,0 +1,19 @@
+@model MigrationService.Models.Exam
+@{
+    ViewData["Title"] = "Экзамен";
+}
+
+<h2>Экзамен @Model.Date.ToString("yyyy-MM-dd")</h2>
+<dl class="row">
+    <dt class="col-sm-3">Курсант</dt><dd class="col-sm-9">@Model.Student?.FullName</dd>
+    <dt class="col-sm-3">Курс</dt><dd class="col-sm-9">@Model.Course?.Name</dd>
+    <dt class="col-sm-3">Оценка</dt><dd class="col-sm-9">@Model.Score</dd>
+    <dt class="col-sm-3">Результат</dt><dd class="col-sm-9">@Model.Result</dd>
+    <dt class="col-sm-3">Экзаменатор</dt><dd class="col-sm-9">@Model.Examiner</dd>
+</dl>
+
+<a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
+<a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.ExamID })">Изменить</a>
+
+
+

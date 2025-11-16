@@ -1,0 +1,29 @@
+@model MigrationService.Models.Lesson
+@{
+    ViewData["Title"] = "Занятие";
+}
+
+<h2>Занятие @Model.Date.ToString("yyyy-MM-dd")</h2>
+<dl class="row">
+    <dt class="col-sm-3">Курсант</dt><dd class="col-sm-9">@Model.Student?.FullName</dd>
+    <dt class="col-sm-3">Инструктор</dt><dd class="col-sm-9">@Model.Instructor?.FullName</dd>
+    <dt class="col-sm-3">Курс</dt><dd class="col-sm-9">@Model.Course?.Name</dd>
+    <dt class="col-sm-3">Самолет</dt><dd class="col-sm-9">@Model.Aircraft?.TailNumber</dd>
+    <dt class="col-sm-3">Часы</dt><dd class="col-sm-9">@Model.DurationHours</dd>
+    <dt class="col-sm-3">Тема</dt><dd class="col-sm-9">@Model.Topic</dd>
+    <dt class="col-sm-3">Статус</dt><dd class="col-sm-9">@Model.Status</dd>
+    <dt class="col-sm-3">Примечания</dt><dd class="col-sm-9">@Model.Remarks</dd>
+</dl>
+
+<h4>История статусов</h4>
+<ul>
+@foreach (var sc in Model.StatusChanges.OrderByDescending(x => x.ChangedAt))
+{
+    <li>@sc.ChangedAt.ToLocalTime(): @sc.OldStatus -> @sc.NewStatus (@sc.Comment)</li>
+}
+</ul>
+
+<a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
+<a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.LessonID })">Изменить</a>
+
+

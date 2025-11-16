@@ -1,0 +1,28 @@
+@model MigrationService.Models.Student
+@{
+    ViewData["Title"] = "Курсант";
+}
+
+<h2>@Model.FullName</h2>
+<dl class="row">
+    <dt class="col-sm-3">Email</dt><dd class="col-sm-9">@Model.Email</dd>
+    <dt class="col-sm-3">Телефон</dt><dd class="col-sm-9">@Model.Phone</dd>
+    <dt class="col-sm-3">Адрес</dt><dd class="col-sm-9">@Model.Address</dd>
+    <dt class="col-sm-3">Дата рождения</dt><dd class="col-sm-9">@Model.BirthDate?.ToString("yyyy-MM-dd")</dd>
+    <dt class="col-sm-3">Мед. сертификат</dt><dd class="col-sm-9">@Model.MedicalCertificateNo</dd>
+    <dt class="col-sm-3">Дата зачисления</dt><dd class="col-sm-9">@Model.EnrollmentDate?.ToString("yyyy-MM-dd")</dd>
+    <dt class="col-sm-3">Заметки</dt><dd class="col-sm-9">@Model.Notes</dd>
+</dl>
+
+<h4>Курсы</h4>
+<ul>
+@foreach (var sc in Model.StudentCourses)
+{
+    <li>@sc.Course?.Name (@sc.Status, @sc.ProgressHours ч.)</li>
+}
+</ul>
+
+<a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
+<a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.StudentID })">Изменить</a>
+
+

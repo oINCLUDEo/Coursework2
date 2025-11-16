@@ -1,0 +1,54 @@
+@model IEnumerable<MigrationService.Models.Student>
+@{
+    ViewData["Title"] = "Курсанты";
+}
+
+<h2>Курсанты</h2>
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-4">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Поиск по ФИО/Email/Телефон" />
+    </div>
+    <div class="col-md-4">
+        @Html.DropDownList("courseFilter", (SelectList)ViewBag.Courses, "Все курсы", new { @class = "form-select" })
+    </div>
+    <div class="col-md-4">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a href="@Url.Action("Create")" class="btn btn-success">Добавить</a>
+    </div>
+    <div class="col-12">
+        <a class="btn btn-link" href="@Url.Action("Index")">Сбросить</a>
+    </div>
+    </form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>Email</th>
+            <th>Телефон</th>
+            <th>Курсы</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var s in Model)
+    {
+        <tr>
+            <td>@s.FullName</td>
+            <td>@s.Email</td>
+            <td>@s.Phone</td>
+            <td>
+                @string.Join(", ", s.StudentCourses?.Select(sc => sc.Course?.Name) ?? Array.Empty<string>())
+            </td>
+            <td>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = s.StudentID })">Изменить</a>
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = s.StudentID })">Подробнее</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = s.StudentID })">Удалить</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

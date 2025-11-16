@@ -1,0 +1,18 @@
+@model MigrationService.Models.Instructor
+@{
+    ViewData["Title"] = "Инструктор";
+}
+
+<h2>@Model.FullName</h2>
+<dl class="row">
+    <dt class="col-sm-3">Email</dt><dd class="col-sm-9">@Model.Email</dd>
+    <dt class="col-sm-3">Телефон</dt><dd class="col-sm-9">@Model.Phone</dd>
+    <dt class="col-sm-3">Звание</dt><dd class="col-sm-9">@Model.Rank</dd>
+    <dt class="col-sm-3">Дата найма</dt><dd class="col-sm-9">@Model.HireDate?.ToString("yyyy-MM-dd")</dd>
+    <dt class="col-sm-3">Активен</dt><dd class="col-sm-9">@(Model.IsActive ? "Да" : "Нет")</dd>
+</dl>
+
+<a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
+<a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.InstructorID })">Изменить</a>
+
+

@@ -1,0 +1,22 @@
+@model MigrationService.Models.Instructor
+@{
+    ViewData["Title"] = "Изменить инструктора";
+}
+
+<h2>Изменить инструктора</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.InstructorID)
+    <div class="mb-3">@Html.LabelFor(m => m.FullName) @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })</div>
+    <div class="mb-3">@Html.LabelFor(m => m.Email) @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })</div>
+    <div class="mb-3">@Html.LabelFor(m => m.Phone) @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })</div>
+    <div class="mb-3">@Html.LabelFor(m => m.Rank) @Html.TextBoxFor(m => m.Rank, new { @class = "form-control" })</div>
+    <div class="mb-3">@Html.LabelFor(m => m.HireDate) @Html.TextBoxFor(m => m.HireDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })</div>
+    <div class="form-check mb-3">@Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input" }) @Html.LabelFor(m => m.IsActive, new { @class = "form-check-label" })</div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Отмена</a>
+}
+
+
