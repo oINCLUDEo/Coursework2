@@ -84,6 +84,51 @@
             </div>
         </div>
     </div>
+
+    @if (ViewBag.UpcomingLessons != null && ((List<MigrationService.Controllers.HomeController.UpcomingLessonResult>)ViewBag.UpcomingLessons).Any())
+    {
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Предстоящие занятия (ближайшие 7 дней)</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Курсант</th>
+                                <th>Инструктор</th>
+                                <th>Самолет</th>
+                                <th>Тема</th>
+                                <th>Длительность</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var lesson in (List<MigrationService.Controllers.HomeController.UpcomingLessonResult>)ViewBag.UpcomingLessons)
+                            {
+                                <tr>
+                                    <td>@lesson.Date.ToString("yyyy-MM-dd")</td>
+                                    <td>@lesson.StudentName</td>
+                                    <td>@lesson.InstructorName</td>
+                                    <td>@lesson.TailNumber</td>
+                                    <td>@lesson.Topic</td>
+                                    <td>@lesson.DurationHours ч</td>
+                                    <td>
+                                        <span class="badge bg-@(lesson.Status == "Planned" ? "info" : lesson.Status == "InProgress" ? "warning" : "success")">
+                                            @lesson.Status
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <small class="text-muted">Данные получены через хранимую процедуру sp_GetUpcomingLessons</small>
+            </div>
+        </div>
+    }
 </div>
 
 @section Styles {

@@ -57,6 +57,13 @@ namespace MigrationService.Controllers
                 .Include(s => s.Course)
                 .FirstOrDefaultAsync(m => m.StudentID == id);
             if (student == null) return NotFound();
+
+            // Использование пользовательской функции: fn_TotalFlightHoursByStudent
+            var totalHours = await _context.Database
+                .SqlQueryRaw<decimal>("SELECT dbo.fn_TotalFlightHoursByStudent({0})", id.Value)
+                .FirstOrDefaultAsync();
+            
+            ViewBag.TotalFlightHours = totalHours;
             return View(student);
         }
 

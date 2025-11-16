@@ -62,11 +62,22 @@ using (var scope = app.Services.CreateScope())
 
         if (!db.Students.Any())
         {
-            var seedPath = Path.Combine(sqlRoot, "FlightSchoolSeed.sql");
+            // Используем новый полный файл заполнения
+            var seedPath = Path.Combine(sqlRoot, "FlightSchoolSeed_Complete.sql");
             if (File.Exists(seedPath))
             {
                 var seed = File.ReadAllText(seedPath);
                 db.Database.ExecuteSqlRaw(seed);
+            }
+            else
+            {
+                // Fallback на старый файл, если новый не найден
+                var oldSeedPath = Path.Combine(sqlRoot, "FlightSchoolSeed.sql");
+                if (File.Exists(oldSeedPath))
+                {
+                    var seed = File.ReadAllText(oldSeedPath);
+                    db.Database.ExecuteSqlRaw(seed);
+                }
             }
         }
     }

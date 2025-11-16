@@ -26,7 +26,6 @@ namespace MigrationService.Models
             modelBuilder.Entity<Exam>().ToTable("Exams");
             modelBuilder.Entity<Certificate>().ToTable("Certificates");
 
-            // Связь Student-Course: один студент - один курс
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.Course)
                 .WithMany(c => c.Students)

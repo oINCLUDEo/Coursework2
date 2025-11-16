@@ -83,7 +83,7 @@ namespace MigrationService.Controllers
         }
 
         // GET: Lessons/Create
-        public IActionResult Create(int? courseId)
+        public async Task<IActionResult> Create(int? courseId)
         {
             PopulateLookups();
             var model = new Lesson { Date = DateTime.Today, Status = "Planned" };
@@ -98,6 +98,29 @@ namespace MigrationService.Controllers
                     ViewBag.CourseName = course.Name;
                     ViewBag.CourseId = courseId.Value;
                 }
+            }
+
+            // Использование пользовательской функции: fn_AvailableAircraftOnDate
+            // Получаем доступные самолеты на выбранную дату
+            var selectedDate = model.Date;
+            try
+            {
+                var availableAircraft = await _context.Database
+                    .SqlQueryRaw<Aircraft>(
+                        "SELECT AircraftID, TailNumber, Model, Type, Year, TotalHours, Status FROM dbo.fn_AvailableAircraftOnDate({0})", 
+                        selectedDate)
+                    .ToListAsync();
+
+                // Обновляем список самолетов только доступными
+                if (availableAircraft.Any())
+                {
+                    ViewBag.Aircraft = new SelectList(availableAircraft, "AircraftID", "TailNumber", model.AircraftID);
+                }
+            }
+            catch
+            {
+                // Если функция не работает, используем все самолеты
+                // Это может произойти при первом запуске, если функция еще не создана
             }
             
             return View(model);

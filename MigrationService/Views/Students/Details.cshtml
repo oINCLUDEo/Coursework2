@@ -23,6 +23,14 @@
             <span class="text-muted">Не зачислен на курс</span>
         }
     </dd>
+    @if (ViewBag.TotalFlightHours != null)
+    {
+        <dt class="col-sm-3">Общий налет (часы)</dt>
+        <dd class="col-sm-9">
+            <strong>@ViewBag.TotalFlightHours.ToString("F2")</strong>
+            <small class="text-muted">(рассчитано через функцию БД)</small>
+        </dd>
+    }
 </dl>
 
 <a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
