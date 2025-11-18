@@ -9,6 +9,12 @@ using MigrationService.Filters;
 
 namespace MigrationService.Controllers
 {
+    // Класс для результата скалярной функции
+    public class FunctionResult
+    {
+        public decimal TotalHours { get; set; }
+    }
+
     [RequireAuth]
     public class StudentsController : Controller
     {
@@ -59,11 +65,12 @@ namespace MigrationService.Controllers
             if (student == null) return NotFound();
 
             // Использование пользовательской функции: fn_TotalFlightHoursByStudent
-            var totalHours = await _context.Database
-                .SqlQueryRaw<decimal>("SELECT dbo.fn_TotalFlightHoursByStudent({0})", id.Value)
+            var sql = $"SELECT dbo.fn_TotalFlightHoursByStudent({id.Value}) AS TotalHours";
+            var result = await _context.Database
+                .SqlQueryRaw<FunctionResult>(sql)
                 .FirstOrDefaultAsync();
+            ViewBag.TotalFlightHours = result?.TotalHours ?? 0m;
             
-            ViewBag.TotalFlightHours = totalHours;
             return View(student);
         }
 

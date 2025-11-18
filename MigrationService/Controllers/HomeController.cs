@@ -18,6 +18,7 @@ namespace MigrationService.Controllers
 
         public async Task<IActionResult> Index()
         {
+            // Счетчики записей на каждой странице/сущности
             ViewBag.StudentsCount = _context.Students.Count();
             ViewBag.InstructorsCount = _context.Instructors.Count();
             ViewBag.CoursesCount = _context.Courses.Count();
@@ -32,7 +33,6 @@ namespace MigrationService.Controllers
                 .SqlQueryRaw<UpcomingLessonResult>(
                     "EXEC sp_GetUpcomingLessons @daysAhead = {0}", 7)
                 .ToListAsync();
-
             ViewBag.UpcomingLessons = upcomingLessons;
             
             return View();

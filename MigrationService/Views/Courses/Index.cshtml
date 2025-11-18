@@ -38,7 +38,7 @@
             <td>@c.RequiredHours</td>
             <td>@(c.IsActive ? "Да" : "Нет")</td>
             <td>
-                <a class="btn btn-sm btn-primary" href="@Url.Action("Details", new { id = c.CourseID })">Детали</a>
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = c.CourseID })">Подробнее</a>
                 <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = c.CourseID })">Изменить</a>
                 <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = c.CourseID })">Удалить</a>
             </td>

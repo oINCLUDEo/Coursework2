@@ -38,8 +38,8 @@
             <td>@i.Rank</td>
             <td>@(i.IsActive ? "Да" : "Нет")</td>
             <td>
-                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = i.InstructorID })">Изменить</a>
                 <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = i.InstructorID })">Подробнее</a>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = i.InstructorID })">Изменить</a>
                 <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = i.InstructorID })">Удалить</a>
             </td>
         </tr>

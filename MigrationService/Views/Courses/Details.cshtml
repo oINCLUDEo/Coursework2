@@ -1,0 +1,301 @@
+@model MigrationService.Models.Course
+@{
+    ViewData["Title"] = "Детали курса";
+    var lessons = (List<MigrationService.Models.Lesson>)ViewBag.Lessons;
+    var exams = (List<MigrationService.Models.Exam>)ViewBag.Exams;
+    var certificates = (List<MigrationService.Models.Certificate>)ViewBag.Certificates;
+    var students = (List<MigrationService.Models.Student>)ViewBag.Students;
+    var courseId = (int)ViewBag.CourseId;
+}
+
+<h2>Детали курса: @Model.Name</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="mb-3">
+    <a href="@Url.Action("Index")" class="btn btn-secondary">← Назад к списку курсов</a>
+    <a href="@Url.Action("Edit", new { id = Model.CourseID })" class="btn btn-primary">Изменить курс</a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Информация о курсе</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Название:</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+                    
+                    <dt class="col-sm-4">Категория:</dt>
+                    <dd class="col-sm-8">@(Model.Category ?? "Не указана")</dd>
+                    
+                    <dt class="col-sm-4">Описание:</dt>
+                    <dd class="col-sm-8">@(Model.Description ?? "Не указано")</dd>
+                    
+                    <dt class="col-sm-4">Требуемые часы:</dt>
+                    <dd class="col-sm-8">@(Model.RequiredHours?.ToString("F1") ?? "Не указано")</dd>
+                    
+                    <dt class="col-sm-4">Статус:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Активен</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Неактивен</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Статистика</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-6">Курсантов зачислено:</dt>
+                    <dd class="col-sm-6"><strong>@students.Count</strong></dd>
+                    
+                    <dt class="col-sm-6">Занятий проведено:</dt>
+                    <dd class="col-sm-6"><strong>@lessons.Count</strong></dd>
+                    
+                    <dt class="col-sm-6">Экзаменов сдано:</dt>
+                    <dd class="col-sm-6"><strong>@exams.Count</strong></dd>
+                    
+                    <dt class="col-sm-6">Сертификатов выдано:</dt>
+                    <dd class="col-sm-6"><strong>@certificates.Count</strong></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <h4>Быстрые действия</h4>
+    <div class="btn-group" role="group">
+        <a href="@Url.Action("Create", "Lessons", new { courseId = courseId })" class="btn btn-success">+ Добавить занятие</a>
+        <a href="@Url.Action("Create", "Exams", new { courseId = courseId })" class="btn btn-primary">+ Добавить экзамен</a>
+        <a href="@Url.Action("Create", "Certificates", new { courseId = courseId })" class="btn btn-info">+ Выдать сертификат</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Занятия (@lessons.Count)</h5>
+                <a href="@Url.Action("Index", "Lessons", new { courseId = courseId })" class="btn btn-sm btn-outline-primary">Все занятия курса</a>
+            </div>
+            <div class="card-body">
+                @if (lessons.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Курсант</th>
+                                    <th>Инструктор</th>
+                                    <th>Самолет</th>
+                                    <th>Длительность</th>
+                                    <th>Статус</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var lesson in lessons.Take(10))
+                                {
+                                    <tr>
+                                        <td>@lesson.Date.ToString("yyyy-MM-dd")</td>
+                                        <td>@lesson.Student?.FullName</td>
+                                        <td>@lesson.Instructor?.FullName</td>
+                                        <td>@lesson.Aircraft?.TailNumber</td>
+                                        <td>@lesson.DurationHours ч</td>
+                                        <td><span class="badge bg-secondary">@lesson.Status</span></td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Lessons", new { id = lesson.LessonID })" class="btn btn-sm btn-outline-info">Подробнее</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (lessons.Count > 10)
+                    {
+                        <p class="text-muted">Показано 10 из @lessons.Count. <a href="@Url.Action("Index", "Lessons", new { courseId = courseId })">Показать все</a></p>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Занятия еще не проводились.</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Экзамены (@exams.Count)</h5>
+                <a href="@Url.Action("Index", "Exams", new { courseFilter = courseId })" class="btn btn-sm btn-outline-primary">Все экзамены</a>
+            </div>
+            <div class="card-body">
+                @if (exams.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Курсант</th>
+                                    <th>Результат</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exam in exams.Take(5))
+                                {
+                                    <tr>
+                                        <td>@exam.Date.ToString("yyyy-MM-dd")</td>
+                                        <td>@exam.Student?.FullName</td>
+                                        <td>
+                                            @if (exam.Result == "Passed" || exam.Result == "Сдал")
+                                            {
+                                                <span class="badge bg-success">@exam.Result</span>
+                                            }
+                                            else if (exam.Result == "Failed" || exam.Result == "Не сдал")
+                                            {
+                                                <span class="badge bg-danger">@exam.Result</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">@exam.Result</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Exams", new { id = exam.ExamID })" class="btn btn-sm btn-outline-info">Подробнее</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (exams.Count > 5)
+                    {
+                        <p class="text-muted">Показано 5 из @exams.Count.</p>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Экзамены еще не проводились.</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Сертификаты (@certificates.Count)</h5>
+                <a href="@Url.Action("Index", "Certificates", new { courseFilter = courseId })" class="btn btn-sm btn-outline-primary">Все сертификаты</a>
+            </div>
+            <div class="card-body">
+                @if (certificates.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Дата выдачи</th>
+                                    <th>Курсант</th>
+                                    <th>Номер</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cert in certificates.Take(5))
+                                {
+                                    <tr>
+                                        <td>@cert.IssuedDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@cert.Student?.FullName</td>
+                                        <td>@cert.CertificateNumber</td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Certificates", new { id = cert.CertificateID })" class="btn btn-sm btn-outline-info">Подробнее</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @if (certificates.Count > 5)
+                    {
+                        <p class="text-muted">Показано 5 из @certificates.Count.</p>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">Сертификаты еще не выдавались.</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-12 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Зачисленные курсанты (@students.Count)</h5>
+            </div>
+            <div class="card-body">
+                @if (students.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ФИО</th>
+                                    <th>Дата рождения</th>
+                                    <th>Email</th>
+                                    <th>Телефон</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var student in students)
+                                {
+                                    <tr>
+                                        <td>@student.FullName</td>
+                                        <td>@(student.BirthDate?.ToString("yyyy-MM-dd") ?? "Не указана")</td>
+                                        <td>@(student.Email ?? "Не указан")</td>
+                                        <td>@(student.Phone ?? "Не указан")</td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Students", new { id = student.StudentID })" class="btn btn-sm btn-outline-info">Подробнее</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">На курс еще никто не зачислен.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
