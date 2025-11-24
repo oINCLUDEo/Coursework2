@@ -123,7 +123,7 @@ namespace MigrationService.Controllers
         public async Task<IActionResult> Create(int? courseId)
         {
             PopulateLookups();
-            var model = new Lesson { Date = DateTime.Today, Status = "Planned" };
+            var model = new Lesson { Date = DateTime.Today, Status = "Запланировано" };
             
             // Если передан courseId, автоматически подставляем его
             if (courseId.HasValue && courseId.Value > 0)
@@ -223,7 +223,7 @@ namespace MigrationService.Controllers
             }
             else if (string.IsNullOrWhiteSpace(lesson.Status))
             {
-                lesson.Status = "Planned";
+                lesson.Status = "Запланировано";
             }
             
             // Валидация обязательных полей

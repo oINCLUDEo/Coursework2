@@ -34,19 +34,19 @@ namespace MigrationService.Models
         public decimal DurationHours { get; set; }
 
         [Display(Name = "Тема")]
-        public string Topic { get; set; }
+        public string Topic { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Статус")]
-        public string Status { get; set; } = "Planned";
+        public string Status { get; set; } = "Запланировано";
 
         [Display(Name = "Примечания")]
-        public string Remarks { get; set; }
+        public string Remarks { get; set; } = string.Empty;
 
-        public virtual Student Student { get; set; }
-        public virtual Instructor Instructor { get; set; }
-        public virtual Course Course { get; set; }
-        public virtual Aircraft Aircraft { get; set; }
+        public virtual Student Student { get; set; } = null!;
+        public virtual Instructor Instructor { get; set; } = null!;
+        public virtual Course Course { get; set; } = null!;
+        public virtual Aircraft? Aircraft { get; set; }
         public virtual ICollection<LessonStatusChange> StatusChanges { get; set; } = new List<LessonStatusChange>();
     }
 }

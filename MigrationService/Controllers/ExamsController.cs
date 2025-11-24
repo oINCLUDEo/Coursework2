@@ -144,7 +144,7 @@ namespace MigrationService.Controllers
                 
                 return RedirectToAction(nameof(Index));
             }
-            catch (DbUpdateException ex)
+            catch (DbUpdateException)
             {
                 TempData["Error"] = "Не удалось сохранить экзамен. Проверьте введенные данные.";
                 ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", exam.StudentID);

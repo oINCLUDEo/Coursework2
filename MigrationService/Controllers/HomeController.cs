@@ -25,7 +25,7 @@ namespace MigrationService.Controllers
             ViewBag.AircraftCount = _context.Aircraft.Count();
             ViewBag.LessonsCount = _context.Lessons.Count();
             ViewBag.ExamsCount = _context.Exams.Count();
-            ViewBag.CertificatesCount = _context.Certificates.Count();
+            ViewBag.CertificatesCount = _context.StudentCertificates.Count();
 
             var startDate = DateTime.Today;
             var endDate = startDate.AddDays(7);
@@ -62,11 +62,11 @@ namespace MigrationService.Controllers
             public int LessonID { get; set; }
             public DateTime Date { get; set; }
             public decimal DurationHours { get; set; }
-            public string Topic { get; set; }
-            public string Status { get; set; }
-            public string StudentName { get; set; }
-            public string InstructorName { get; set; }
-            public string TailNumber { get; set; }
+            public string Topic { get; set; } = string.Empty;
+            public string Status { get; set; } = string.Empty;
+            public string StudentName { get; set; } = string.Empty;
+            public string InstructorName { get; set; } = string.Empty;
+            public string? TailNumber { get; set; }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

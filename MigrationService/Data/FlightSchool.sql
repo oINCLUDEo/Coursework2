@@ -9,7 +9,7 @@ BEGIN
     DECLARE @total DECIMAL(10,2);
     SELECT @total = ISNULL(SUM(CAST(DurationHours AS DECIMAL(10,2))), 0)
     FROM Lessons
-    WHERE StudentID = @studentId AND Status IN ('Completed','Approved');
+    WHERE StudentID = @studentId AND Status IN ('Завершено','Одобрено');
     RETURN @total;
 END;
 GO
@@ -24,12 +24,12 @@ AS
 RETURN (
     SELECT a.*
     FROM Aircraft a
-    WHERE a.Status = 'Available'
+    WHERE a.Status = 'Доступен'
       AND NOT EXISTS (
           SELECT 1 FROM Lessons l
           WHERE l.AircraftID = a.AircraftID
             AND CAST(l.Date AS DATE) = @date
-            AND l.Status IN ('Planned','InProgress')
+            AND l.Status IN ('Запланировано','В процессе')
       )
 );
 GO

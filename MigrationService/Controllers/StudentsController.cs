@@ -64,12 +64,11 @@ namespace MigrationService.Controllers
                 .FirstOrDefaultAsync(m => m.StudentID == id);
             if (student == null) return NotFound();
 
-            // Использование пользовательской функции: fn_TotalFlightHoursByStudent
-            var sql = $"SELECT dbo.fn_TotalFlightHoursByStudent({id.Value}) AS TotalHours";
-            var result = await _context.Database
-                .SqlQueryRaw<FunctionResult>(sql)
-                .FirstOrDefaultAsync();
-            ViewBag.TotalFlightHours = result?.TotalHours ?? 0m;
+            // Вычисляем общее количество часов полета для студента
+            var totalHours = await _context.Lessons
+                .Where(l => l.StudentID == id.Value && (l.Status == "Завершено" || l.Status == "Одобрено"))
+                .SumAsync(l => (decimal?)l.DurationHours) ?? 0m;
+            ViewBag.TotalFlightHours = totalHours;
             
             return View(student);
         }

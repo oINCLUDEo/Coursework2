@@ -1,66 +1,35 @@
 @model MigrationService.Models.Certificate
 @{
-    ViewData["Title"] = "Добавить сертификат";
-    var courseId = ViewBag.CourseId as int?;
-    var courseName = ViewBag.CourseName as string;
+    ViewData["Title"] = "Создать шаблон сертификата";
 }
 
-<h2>Добавить сертификат</h2>
-
-@if (courseId.HasValue && !string.IsNullOrEmpty(courseName))
-{
-    <div class="alert alert-info">
-        <strong>Курс:</strong> @courseName 
-        <a href="@Url.Action("Details", "Courses", new { id = courseId.Value })" class="btn btn-sm btn-outline-primary ms-2">← Вернуться к курсу</a>
-    </div>
-}
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+<h2>Создать шаблон сертификата</h2>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <div class="mb-3">
-        @Html.LabelFor(m => m.StudentID, "Курсант")
-        @Html.DropDownListFor(m => m.StudentID, (SelectList)ViewBag.Students, "Выберите курсанта...", new { @class = "form-select" })
-        @Html.ValidationMessageFor(m => m.StudentID, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Title)
+        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
     </div>
     <div class="mb-3">
-        @Html.LabelFor(m => m.CourseID, "Курс")
-        @if (courseId.HasValue)
-        {
-            @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите курс...", new { @class = "form-select", @disabled = "disabled" })
-            @Html.HiddenFor(m => m.CourseID)
-            <small class="form-text text-muted">Курс выбран из контекста: <strong>@courseName</strong></small>
-        }
-        else
-        {
-            @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите курс...", new { @class = "form-select" })
-        }
+        @Html.LabelFor(m => m.Description)
+        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 4 })
+        @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.CourseID, "Связанный курс")
+        @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Без привязки", new { @class = "form-select" })
         @Html.ValidationMessageFor(m => m.CourseID, "", new { @class = "text-danger" })
     </div>
     <div class="mb-3">
-        @Html.LabelFor(m => m.IssuedDate)
-        @Html.TextBoxFor(m => m.IssuedDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-        @Html.ValidationMessageFor(m => m.IssuedDate, "", new { @class = "text-danger" })
-    </div>
-    <div class="mb-3">
-        @Html.LabelFor(m => m.CertificateNumber)
-        @Html.TextBoxFor(m => m.CertificateNumber, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.CertificateNumber, "", new { @class = "text-danger" })
-    </div>
-    <div class="mb-3">
-        @Html.LabelFor(m => m.ValidUntil)
-        @Html.TextBoxFor(m => m.ValidUntil, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
-        @Html.ValidationMessageFor(m => m.ValidUntil, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.DefaultValidityDays)
+        @Html.TextBoxFor(m => m.DefaultValidityDays, new { @class = "form-control", type = "number", min = "1" })
+        <small class="form-text text-muted">Используется как подсказка при выдаче сертификата курсантам.</small>
+        @Html.ValidationMessageFor(m => m.DefaultValidityDays, "", new { @class = "text-danger" })
     </div>
     <button type="submit" class="btn btn-primary">Сохранить</button>
     <a class="btn btn-secondary" href="@Url.Action("Index")">Отмена</a>
 }
-
-
-

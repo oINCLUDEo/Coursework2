@@ -40,6 +40,11 @@ namespace MigrationService.Controllers
             if (!ModelState.IsValid) return View(request);
 
             var email = request.Email?.Trim().ToLower();
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError(nameof(LoginRequest.Email), "Введите email.");
+                return View(request);
+            }
             var student = await _context.Students.FirstOrDefaultAsync(s => s.Email != null && s.Email.ToLower() == email);
             var instructor = student == null ? await _context.Instructors.FirstOrDefaultAsync(i => i.Email != null && i.Email.ToLower() == email) : null;
             if (student == null && instructor == null)
@@ -176,7 +181,7 @@ namespace MigrationService.Controllers
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
-            public string Email { get; set; }
+            public string Email { get; set; } = string.Empty;
         }
     }
 }

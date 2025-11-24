@@ -12,17 +12,17 @@ namespace MigrationService.Models
 
         [Required]
         [Display(Name = "ФИО")]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
 
         [EmailAddress]
         [Display(Name = "Email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         [Display(Name = "Телефон")]
-        public string Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
 
         [Display(Name = "Звание")]
-        public string Rank { get; set; }
+        public string Rank { get; set; } = string.Empty;
 
         [Display(Name = "Дата найма")]
         [DataType(DataType.Date)]

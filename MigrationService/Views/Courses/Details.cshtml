@@ -3,7 +3,7 @@
     ViewData["Title"] = "Детали курса";
     var lessons = (List<MigrationService.Models.Lesson>)ViewBag.Lessons;
     var exams = (List<MigrationService.Models.Exam>)ViewBag.Exams;
-    var certificates = (List<MigrationService.Models.Certificate>)ViewBag.Certificates;
+    var studentCertificates = (List<MigrationService.Models.StudentCertificate>)ViewBag.StudentCertificates;
     var students = (List<MigrationService.Models.Student>)ViewBag.Students;
     var courseId = (int)ViewBag.CourseId;
 }
@@ -77,7 +77,7 @@
                     <dd class="col-sm-6"><strong>@exams.Count</strong></dd>
                     
                     <dt class="col-sm-6">Сертификатов выдано:</dt>
-                    <dd class="col-sm-6"><strong>@certificates.Count</strong></dd>
+                    <dd class="col-sm-6"><strong>@studentCertificates.Count</strong></dd>
                 </dl>
             </div>
         </div>
@@ -89,7 +89,7 @@
     <div class="btn-group" role="group">
         <a href="@Url.Action("Create", "Lessons", new { courseId = courseId })" class="btn btn-success">+ Добавить занятие</a>
         <a href="@Url.Action("Create", "Exams", new { courseId = courseId })" class="btn btn-primary">+ Добавить экзамен</a>
-        <a href="@Url.Action("Create", "Certificates", new { courseId = courseId })" class="btn btn-info">+ Выдать сертификат</a>
+        <a href="@Url.Action("Create", "StudentCertificates", new { courseId = courseId })" class="btn btn-info">+ Выдать сертификат</a>
     </div>
 </div>
 
@@ -210,11 +210,11 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5>Сертификаты (@certificates.Count)</h5>
-                <a href="@Url.Action("Index", "Certificates", new { courseFilter = courseId })" class="btn btn-sm btn-outline-primary">Все сертификаты</a>
+                <h5>Сертификаты (@studentCertificates.Count)</h5>
+                <a href="@Url.Action("Index", "StudentCertificates", new { courseFilter = courseId })" class="btn btn-sm btn-outline-primary">Все сертификаты</a>
             </div>
             <div class="card-body">
-                @if (certificates.Any())
+                @if (studentCertificates.Any())
                 {
                     <div class="table-responsive">
                         <table class="table table-sm table-hover">
@@ -222,28 +222,30 @@
                                 <tr>
                                     <th>Дата выдачи</th>
                                     <th>Курсант</th>
+                                    <th>Шаблон</th>
                                     <th>Номер</th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var cert in certificates.Take(5))
+                                @foreach (var cert in studentCertificates.Take(5))
                                 {
                                     <tr>
                                         <td>@cert.IssuedDate.ToString("yyyy-MM-dd")</td>
                                         <td>@cert.Student?.FullName</td>
+                                        <td>@cert.Certificate?.Title</td>
                                         <td>@cert.CertificateNumber</td>
                                         <td>
-                                            <a href="@Url.Action("Details", "Certificates", new { id = cert.CertificateID })" class="btn btn-sm btn-outline-info">Подробнее</a>
+                                            <a href="@Url.Action("Details", "StudentCertificates", new { id = cert.StudentCertificateID })" class="btn btn-sm btn-outline-info">Подробнее</a>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
-                    @if (certificates.Count > 5)
+                    @if (studentCertificates.Count > 5)
                     {
-                        <p class="text-muted">Показано 5 из @certificates.Count.</p>
+                        <p class="text-muted">Показано 5 из @studentCertificates.Count.</p>
                     }
                 }
                 else

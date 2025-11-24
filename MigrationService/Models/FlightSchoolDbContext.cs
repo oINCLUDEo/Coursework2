@@ -14,6 +14,7 @@ namespace MigrationService.Models
         public DbSet<LessonStatusChange> LessonStatusChanges { get; set; }
         public DbSet<Exam> Exams { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
+        public DbSet<StudentCertificate> StudentCertificates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,6 +26,7 @@ namespace MigrationService.Models
             modelBuilder.Entity<LessonStatusChange>().ToTable("LessonStatusChanges");
             modelBuilder.Entity<Exam>().ToTable("Exams");
             modelBuilder.Entity<Certificate>().ToTable("Certificates");
+            modelBuilder.Entity<StudentCertificate>().ToTable("StudentCertificates");
 
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.Course)
@@ -75,16 +77,26 @@ namespace MigrationService.Models
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Certificate>()
-                .HasOne(c => c.Student)
-                .WithMany()
-                .HasForeignKey(c => c.StudentID)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Certificate>()
                 .HasOne(c => c.Course)
                 .WithMany()
                 .HasForeignKey(c => c.CourseID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Certificate>()
+                .HasMany(c => c.StudentCertificates)
+                .WithOne(sc => sc.Certificate)
+                .HasForeignKey(sc => sc.CertificateID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Student>()
+                .HasMany(s => s.StudentCertificates)
+                .WithOne(sc => sc.Student)
+                .HasForeignKey(sc => sc.StudentID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StudentCertificate>()
+                .Property(sc => sc.Status)
+                .HasDefaultValue("Активен");
 
             modelBuilder.Entity<Instructor>()
                 .Property(i => i.IsActive)
@@ -96,7 +108,7 @@ namespace MigrationService.Models
 
             modelBuilder.Entity<Lesson>()
                 .Property(l => l.Status)
-                .HasDefaultValue("Planned");
+                .HasDefaultValue("Запланировано");
 
             modelBuilder.Entity<LessonStatusChange>()
                 .Property(lsc => lsc.ChangedAt)

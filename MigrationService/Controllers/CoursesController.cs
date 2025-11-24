@@ -59,10 +59,11 @@ namespace MigrationService.Controllers
                 .AsNoTracking()
                 .ToListAsync();
 
-            var certificates = await _context.Certificates
-                .Include(c => c.Student)
-                .Where(c => c.CourseID == id)
-                .OrderByDescending(c => c.IssuedDate)
+            var studentCertificates = await _context.StudentCertificates
+                .Include(sc => sc.Student)
+                .Include(sc => sc.Certificate)
+                .Where(sc => sc.Certificate.CourseID == id)
+                .OrderByDescending(sc => sc.IssuedDate)
                 .AsNoTracking()
                 .ToListAsync();
 
@@ -73,7 +74,7 @@ namespace MigrationService.Controllers
 
             ViewBag.Lessons = lessons;
             ViewBag.Exams = exams;
-            ViewBag.Certificates = certificates;
+            ViewBag.StudentCertificates = studentCertificates;
             ViewBag.Students = students;
             ViewBag.CourseId = id;
 

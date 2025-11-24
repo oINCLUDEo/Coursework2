@@ -116,7 +116,7 @@
                                     <td>@lesson.Topic</td>
                                     <td>@lesson.DurationHours ч</td>
                                     <td>
-                                        <span class="badge bg-@(lesson.Status == "Planned" ? "info" : lesson.Status == "InProgress" ? "warning" : "success")">
+                                        <span class="badge bg-@(lesson.Status == "Запланировано" ? "info" : lesson.Status == "В процессе" ? "warning" : "success")">
                                             @lesson.Status
                                         </span>
                                     </td>

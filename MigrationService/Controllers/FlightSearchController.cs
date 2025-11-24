@@ -57,11 +57,11 @@ namespace MigrationService.Controllers
 
     public class FlightSearchResults
     {
-        public string Query { get; set; }
-        public System.Collections.Generic.List<Student> Students { get; set; }
-        public System.Collections.Generic.List<Instructor> Instructors { get; set; }
-        public System.Collections.Generic.List<Lesson> Lessons { get; set; }
-        public System.Collections.Generic.List<Aircraft> Aircraft { get; set; }
+        public string Query { get; set; } = string.Empty;
+        public System.Collections.Generic.List<Student> Students { get; set; } = new();
+        public System.Collections.Generic.List<Instructor> Instructors { get; set; } = new();
+        public System.Collections.Generic.List<Lesson> Lessons { get; set; } = new();
+        public System.Collections.Generic.List<Aircraft> Aircraft { get; set; } = new();
     }
 }
 

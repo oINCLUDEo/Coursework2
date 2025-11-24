@@ -1,0 +1,84 @@
+@model IEnumerable<MigrationService.Models.StudentCertificate>
+@{
+    ViewData["Title"] = "Выданные сертификаты";
+}
+
+<h2>Выданные сертификаты</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="get" class="row g-3 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Поиск по номеру / ФИО / сертификату" />
+    </div>
+    <div class="col-md-2">
+        @Html.DropDownList("studentFilter", (SelectList)ViewBag.Students, "Все курсанты", new { @class = "form-select" })
+    </div>
+    <div class="col-md-2">
+        @Html.DropDownList("courseFilter", (SelectList)ViewBag.Courses, "Все курсы", new { @class = "form-select" })
+    </div>
+    <div class="col-md-2">
+        @Html.DropDownList("certificateFilter", (SelectList)ViewBag.Certificates, "Все шаблоны", new { @class = "form-select" })
+    </div>
+    <div class="col-md-2">
+        @{
+            var selectedStatus = ViewBag.StatusFilter as string;
+        }
+        <select name="statusFilter" class="form-select">
+            <option value="" selected="@(string.IsNullOrEmpty(selectedStatus) ? "selected" : null)">Любой статус</option>
+            <option value="Активен" selected="@(selectedStatus == "Активен" ? "selected" : null)">Активен</option>
+            <option value="Истёк" selected="@(selectedStatus == "Истёк" ? "selected" : null)">Истёк</option>
+            <option value="Аннулирован" selected="@(selectedStatus == "Аннулирован" ? "selected" : null)">Аннулирован</option>
+        </select>
+    </div>
+    <div class="col-md-1 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">OK</button>
+        <a class="btn btn-link" href="@Url.Action("Index")">Сброс</a>
+    </div>
+    <div class="col-12">
+        <a class="btn btn-success" href="@Url.Action("Create")">Выдать сертификат</a>
+        <a class="btn btn-outline-secondary" href="@Url.Action("Index", "Certificates")">Управление шаблонами</a>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Курсант</th>
+            <th>Сертификат</th>
+            <th>Курс</th>
+            <th>Дата выдачи</th>
+            <th>Номер</th>
+            <th>Действителен до</th>
+            <th>Статус</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var sc in Model)
+    {
+        <tr>
+            <td>@sc.Student?.FullName</td>
+            <td>@sc.Certificate?.Title</td>
+            <td>@(sc.Certificate?.Course?.Name ?? "—")</td>
+            <td>@sc.IssuedDate.ToString("yyyy-MM-dd")</td>
+            <td>@sc.CertificateNumber</td>
+            <td>@sc.ValidUntil?.ToString("yyyy-MM-dd")</td>
+            <td>@sc.Status</td>
+            <td class="text-end">
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = sc.StudentCertificateID })">Подробнее</a>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = sc.StudentCertificateID })">Изменить</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = sc.StudentCertificateID })">Удалить</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+

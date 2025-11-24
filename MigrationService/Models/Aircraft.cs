@@ -10,13 +10,13 @@ namespace MigrationService.Models
 
         [Required]
         [Display(Name = "Бортовой номер")]
-        public string TailNumber { get; set; }
+        public string TailNumber { get; set; } = string.Empty;
 
         [Display(Name = "Модель")]
-        public string Model { get; set; }
+        public string Model { get; set; } = string.Empty;
 
         [Display(Name = "Тип")]
-        public string Type { get; set; }
+        public string Type { get; set; } = string.Empty;
 
         [Display(Name = "Год выпуска")]
         public int? Year { get; set; }
@@ -25,7 +25,7 @@ namespace MigrationService.Models
         public decimal? TotalHours { get; set; }
 
         [Display(Name = "Статус")]
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
     }
 }
 

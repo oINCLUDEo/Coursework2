@@ -22,13 +22,13 @@ namespace MigrationService.Models
         public decimal? Score { get; set; }
 
         [Display(Name = "Результат")]
-        public string Result { get; set; }
+        public string Result { get; set; } = string.Empty;
 
         [Display(Name = "Экзаменатор")]
-        public string Examiner { get; set; }
+        public string Examiner { get; set; } = string.Empty;
 
-        public virtual Student Student { get; set; }
-        public virtual Course Course { get; set; }
+        public virtual Student Student { get; set; } = null!;
+        public virtual Course Course { get; set; } = null!;
     }
 }
 

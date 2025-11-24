@@ -1,5 +1,5 @@
-using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace MigrationService.Models
 {
@@ -8,25 +8,21 @@ namespace MigrationService.Models
         public int CertificateID { get; set; }
 
         [Required]
-        public int StudentID { get; set; }
-        
-        [Required]
-        public int CourseID { get; set; }
+        [Display(Name = "Название сертификата")]
+        public string Title { get; set; } = string.Empty;
 
-        [Required]
-        [DataType(DataType.Date)]
-        [Display(Name = "Дата выдачи")]
-        public DateTime IssuedDate { get; set; }
+        [Display(Name = "Описание")]
+        public string Description { get; set; } = string.Empty;
 
-        [Display(Name = "Номер сертификата")]
-        public string CertificateNumber { get; set; }
+        [Display(Name = "Привязанный курс")]
+        public int? CourseID { get; set; }
 
-        [DataType(DataType.Date)]
-        [Display(Name = "Действителен до")]
-        public DateTime? ValidUntil { get; set; }
+        [Display(Name = "Базовый срок действия (дни)")]
+        public int? DefaultValidityDays { get; set; }
 
-        public virtual Student Student { get; set; }
-        public virtual Course Course { get; set; }
+        public virtual Course? Course { get; set; }
+
+        public virtual ICollection<StudentCertificate> StudentCertificates { get; set; } = new List<StudentCertificate>();
     }
 }
 

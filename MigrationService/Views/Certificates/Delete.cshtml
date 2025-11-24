@@ -1,10 +1,12 @@
 @model MigrationService.Models.Certificate
 @{
-    ViewData["Title"] = "Удалить сертификат";
+    ViewData["Title"] = "Удалить шаблон сертификата";
 }
 
-<h2>Удалить сертификат</h2>
-<div class="alert alert-warning">Удалить сертификат <strong>@Model.CertificateNumber</strong>?</div>
+<h2>Удалить шаблон</h2>
+<div class="alert alert-warning">
+    Удалить шаблон <strong>@Model.Title</strong>? Все выданные по нему сертификаты будут удалены.
+</div>
 
 @using (Html.BeginForm("Delete", "Certificates", FormMethod.Post))
 {

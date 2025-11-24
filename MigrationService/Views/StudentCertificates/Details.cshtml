@@ -1,0 +1,25 @@
+@model MigrationService.Models.StudentCertificate
+@{
+    ViewData["Title"] = "Сертификат курсанта";
+}
+
+<h2>Сертификат @Model.Student?.FullName</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Курсант</dt><dd class="col-sm-9">@Model.Student?.FullName</dd>
+    <dt class="col-sm-3">Сертификат</dt><dd class="col-sm-9">@Model.Certificate?.Title</dd>
+    <dt class="col-sm-3">Курс</dt><dd class="col-sm-9">@(Model.Certificate?.Course?.Name ?? "—")</dd>
+    <dt class="col-sm-3">Дата выдачи</dt><dd class="col-sm-9">@Model.IssuedDate.ToString("yyyy-MM-dd")</dd>
+    <dt class="col-sm-3">Действителен до</dt><dd class="col-sm-9">@Model.ValidUntil?.ToString("yyyy-MM-dd")</dd>
+    <dt class="col-sm-3">Статус</dt><dd class="col-sm-9">@Model.Status</dd>
+    <dt class="col-sm-3">Номер</dt><dd class="col-sm-9">@Model.CertificateNumber</dd>
+    <dt class="col-sm-3">Комментарий</dt><dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model.Notes) ? Model.Notes : "—")</dd>
+</dl>
+
+<div class="d-flex gap-2">
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
+    <a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.StudentCertificateID })">Изменить</a>
+    <a class="btn btn-danger" href="@Url.Action("Delete", new { id = Model.StudentCertificateID })">Удалить</a>
+</div>
+
+

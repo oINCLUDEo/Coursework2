@@ -18,14 +18,12 @@ namespace MigrationService.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string searchString, int? studentFilter, int? courseFilter)
+        public async Task<IActionResult> Index(string searchString, int? courseFilter)
         {
             ViewData["CurrentFilter"] = searchString;
-            ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName");
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name");
 
             var query = _context.Certificates
-                .Include(c => c.Student)
                 .Include(c => c.Course)
                 .AsQueryable();
 
@@ -33,15 +31,8 @@ namespace MigrationService.Controllers
             {
                 var lowered = searchString.ToLower();
                 query = query.Where(c =>
-                    (c.CertificateNumber != null && c.CertificateNumber.ToLower().Contains(lowered)) ||
-                    (c.Student != null && c.Student.FullName != null && c.Student.FullName.ToLower().Contains(lowered)) ||
-                    (c.Course != null && c.Course.Name != null && c.Course.Name.ToLower().Contains(lowered))
-                );
-            }
-
-            if (studentFilter.HasValue)
-            {
-                query = query.Where(c => c.StudentID == studentFilter.Value);
+                    (c.Title != null && c.Title.ToLower().Contains(lowered)) ||
+                    (c.Description != null && c.Description.ToLower().Contains(lowered)));
             }
 
             if (courseFilter.HasValue)
@@ -50,7 +41,7 @@ namespace MigrationService.Controllers
             }
 
             var list = await query
-                .OrderByDescending(c => c.IssuedDate)
+                .OrderBy(c => c.Title)
                 .AsNoTracking()
                 .ToListAsync();
             return View(list);
@@ -58,23 +49,11 @@ namespace MigrationService.Controllers
 
         public IActionResult Create(int? courseId)
         {
-            ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName");
-            ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name");
-            
-            var certificate = new Certificate();
-            
-            // Если передан courseId, автоматически подставляем его
-            if (courseId.HasValue && courseId.Value > 0)
+            ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", courseId);
+            var certificate = new Certificate
             {
-                certificate.CourseID = courseId.Value;
-                var course = _context.Courses.AsNoTracking().FirstOrDefault(c => c.CourseID == courseId.Value);
-                if (course != null)
-                {
-                    ViewBag.CourseName = course.Name;
-                    ViewBag.CourseId = courseId.Value;
-                }
-            }
-            
+                CourseID = courseId
+            };
             return View(certificate);
         }
 
@@ -82,66 +61,16 @@ namespace MigrationService.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Certificate certificate)
         {
-            // Очищаем все ошибки привязки модели для полей, которые мы обработаем вручную
-            ModelState.Remove("StudentID");
-            ModelState.Remove("CourseID");
-            ModelState.Remove("Student");
-            ModelState.Remove("Course");
-            
-            // Обработка значений из формы
-            var studentIdValue = Request.Form["StudentID"].ToString();
-            var courseIdValue = Request.Form["CourseID"].ToString();
-            
-            if (string.IsNullOrEmpty(studentIdValue) || !int.TryParse(studentIdValue, out int studentId) || studentId <= 0)
-            {
-                ModelState.AddModelError("StudentID", "Выберите курсанта");
-            }
-            else
-            {
-                certificate.StudentID = studentId;
-            }
-            
-            if (string.IsNullOrEmpty(courseIdValue) || !int.TryParse(courseIdValue, out int courseId) || courseId <= 0)
-            {
-                ModelState.AddModelError("CourseID", "Выберите курс");
-            }
-            else
-            {
-                certificate.CourseID = courseId;
-            }
-            
-            if (certificate.IssuedDate == default(DateTime))
-                ModelState.AddModelError("IssuedDate", "Укажите дату выдачи");
-            
             if (!ModelState.IsValid)
             {
-                ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", certificate.StudentID);
-                ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", certificate.CourseID);
-                TempData["Error"] = "Проверьте правильность заполнения всех обязательных полей.";
-                return View(certificate);
-            }
-            
-            try
-            {
-                _context.Add(certificate);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Сертификат успешно добавлен.";
-                
-                // Если курс был указан, перенаправляем на страницу деталей курса
-                if (certificate.CourseID > 0)
-                {
-                    return RedirectToAction("Details", "Courses", new { id = certificate.CourseID });
-                }
-                
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException ex)
-            {
-                TempData["Error"] = "Не удалось сохранить сертификат. Проверьте введенные данные.";
-                ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", certificate.StudentID);
                 ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", certificate.CourseID);
                 return View(certificate);
             }
+
+            _context.Add(certificate);
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Шаблон сертификата создан.";
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -149,40 +78,31 @@ namespace MigrationService.Controllers
             if (id == null) return NotFound();
             var certificate = await _context.Certificates.FindAsync(id);
             if (certificate == null) return NotFound();
-            ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", certificate.StudentID);
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", certificate.CourseID);
             return View(certificate);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CertificateID,StudentID,CourseID,IssuedDate,CertificateNumber,ValidUntil")] Certificate certificate)
+        public async Task<IActionResult> Edit(int id, [Bind("CertificateID,Title,Description,CourseID,DefaultValidityDays")] Certificate certificate)
         {
             if (id != certificate.CertificateID) return NotFound();
             if (!ModelState.IsValid)
             {
-                ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", certificate.StudentID);
                 ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", certificate.CourseID);
                 return View(certificate);
             }
+
             var existing = await _context.Certificates.FindAsync(id);
             if (existing == null) return NotFound();
-            existing.StudentID = certificate.StudentID;
+
+            existing.Title = certificate.Title;
+            existing.Description = certificate.Description;
             existing.CourseID = certificate.CourseID;
-            existing.IssuedDate = certificate.IssuedDate;
-            existing.CertificateNumber = certificate.CertificateNumber;
-            existing.ValidUntil = certificate.ValidUntil;
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                TempData["Error"] = "Не удалось сохранить изменения. Проверьте введенные данные.";
-                ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", certificate.StudentID);
-                ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", certificate.CourseID);
-                return View(certificate);
-            }
+            existing.DefaultValidityDays = certificate.DefaultValidityDays;
+
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Шаблон обновлен.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -190,8 +110,9 @@ namespace MigrationService.Controllers
         {
             if (id == null) return NotFound();
             var certificate = await _context.Certificates
-                .Include(c => c.Student)
                 .Include(c => c.Course)
+                .Include(c => c.StudentCertificates)
+                    .ThenInclude(sc => sc.Student)
                 .FirstOrDefaultAsync(c => c.CertificateID == id);
             if (certificate == null) return NotFound();
             return View(certificate);
@@ -201,7 +122,6 @@ namespace MigrationService.Controllers
         {
             if (id == null) return NotFound();
             var certificate = await _context.Certificates
-                .Include(c => c.Student)
                 .Include(c => c.Course)
                 .FirstOrDefaultAsync(c => c.CertificateID == id);
             if (certificate == null) return NotFound();

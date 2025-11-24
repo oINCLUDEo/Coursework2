@@ -1,18 +1,53 @@
 @model MigrationService.Models.Certificate
 @{
-    ViewData["Title"] = "Сертификат";
+    ViewData["Title"] = "Шаблон сертификата";
 }
 
-<h2>Сертификат @Model.CertificateNumber</h2>
+<h2>@Model.Title</h2>
 <dl class="row">
-    <dt class="col-sm-3">Курсант</dt><dd class="col-sm-9">@Model.Student?.FullName</dd>
-    <dt class="col-sm-3">Курс</dt><dd class="col-sm-9">@Model.Course?.Name</dd>
-    <dt class="col-sm-3">Дата выдачи</dt><dd class="col-sm-9">@Model.IssuedDate.ToString("yyyy-MM-dd")</dd>
-    <dt class="col-sm-3">Действителен до</dt><dd class="col-sm-9">@Model.ValidUntil?.ToString("yyyy-MM-dd")</dd>
+    <dt class="col-sm-3">Описание</dt><dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model.Description) ? Model.Description : "—")</dd>
+    <dt class="col-sm-3">Курс</dt><dd class="col-sm-9">@(Model.Course?.Name ?? "—")</dd>
+    <dt class="col-sm-3">Базовый срок</dt><dd class="col-sm-9">@((Model.DefaultValidityDays.HasValue ? $"{Model.DefaultValidityDays} дн." : "—"))</dd>
 </dl>
 
-<a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
-<a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.CertificateID })">Изменить</a>
+<div class="d-flex gap-2 mb-4">
+    <a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
+    <a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.CertificateID })">Изменить</a>
+    <a class="btn btn-success" href="@Url.Action("Create", "StudentCertificates", new { certificateId = Model.CertificateID })">Выдать сертификат</a>
+</div>
 
-
-
+<h4>Выданные сертификаты</h4>
+@if (Model.StudentCertificates != null && Model.StudentCertificates.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Курсант</th>
+                <th>Дата выдачи</th>
+                <th>Номер</th>
+                <th>Действителен до</th>
+                <th>Статус</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var sc in Model.StudentCertificates.OrderByDescending(x => x.IssuedDate))
+        {
+            <tr>
+                <td>@sc.Student?.FullName</td>
+                <td>@sc.IssuedDate.ToString("yyyy-MM-dd")</td>
+                <td>@sc.CertificateNumber</td>
+                <td>@sc.ValidUntil?.ToString("yyyy-MM-dd")</td>
+                <td>@sc.Status</td>
+                <td>
+                    <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Details", "StudentCertificates", new { id = sc.StudentCertificateID })">Подробнее</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">По этому шаблону еще не выдавались сертификаты.</div>
+}

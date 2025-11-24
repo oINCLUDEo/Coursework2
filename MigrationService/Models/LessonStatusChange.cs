@@ -13,15 +13,15 @@ namespace MigrationService.Models
         public DateTime ChangedAt { get; set; } = DateTime.UtcNow;
 
         [Display(Name = "Было")]
-        public string OldStatus { get; set; }
+        public string OldStatus { get; set; } = string.Empty;
 
         [Display(Name = "Стало")]
-        public string NewStatus { get; set; }
+        public string NewStatus { get; set; } = string.Empty;
 
         [Display(Name = "Комментарий")]
-        public string Comment { get; set; }
+        public string Comment { get; set; } = string.Empty;
 
-        public virtual Lesson Lesson { get; set; }
+        public virtual Lesson Lesson { get; set; } = null!;
     }
 }
 
