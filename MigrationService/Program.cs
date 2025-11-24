@@ -1,11 +1,15 @@
 using Microsoft.EntityFrameworkCore;
+using MigrationService.Binders;
 using MigrationService.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+});
 builder.Services.AddMemoryCache();
 builder.Services.AddSession(options =>
 {
