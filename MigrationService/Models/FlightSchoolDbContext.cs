@@ -48,7 +48,7 @@ namespace MigrationService.Models
                 .HasOne(l => l.Course)
                 .WithMany()
                 .HasForeignKey(l => l.CourseID)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Lesson>()
                 .HasOne(l => l.Aircraft)

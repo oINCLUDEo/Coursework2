@@ -44,7 +44,8 @@
         }
         else
         {
-            @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите курс...", new { @class = "form-select" })
+            @Html.DropDownListFor(m => m.CourseID, (SelectList)ViewBag.Courses, "Выберите курс...", new { @class = "form-select", id = "CourseID" })
+            <small class="form-text text-muted" id="course-autofill-message"></small>
         }
         @Html.ValidationMessageFor(m => m.CourseID, "", new { @class = "text-danger" })
     </div>
@@ -80,6 +81,79 @@
     </div>
     <button type="submit" class="btn btn-primary">Сохранить</button>
     <a class="btn btn-secondary" href="@Url.Action("Index")">Отмена</a>
+}
+
+@section Scripts
+{
+    <script>
+        (function () {
+            const studentSelect = document.getElementById('StudentID');
+            const courseSelect = document.getElementById('CourseID');
+            const message = document.getElementById('course-autofill-message');
+            const fetchUrl = '@Url.Action("GetCourseForStudent", "Lessons")';
+
+            if (!studentSelect || !courseSelect || courseSelect.disabled) {
+                return;
+            }
+
+            const defaultMessage = message ? message.textContent : '';
+
+            function showMessage(text, cssClass) {
+                if (!message) return;
+                message.textContent = text || defaultMessage || '';
+                message.classList.remove('text-muted', 'text-success', 'text-warning');
+                message.classList.add(cssClass || 'text-muted');
+            }
+
+            function setCourseOption(courseId, courseName) {
+                const option = Array.from(courseSelect.options).find(opt => opt.value === String(courseId));
+                if (option) {
+                    courseSelect.value = option.value;
+                } else if (courseId) {
+                    const newOption = new Option(courseName || `Курс #${courseId}`, courseId, true, true);
+                    newOption.dataset.tempInserted = 'true';
+                    courseSelect.add(newOption);
+                }
+                courseSelect.dataset.autofilled = 'true';
+                showMessage(courseName ? `Курс "${courseName}" выбран автоматически.` : 'Курс выбран автоматически.', 'text-success');
+            }
+
+            studentSelect.addEventListener('change', function () {
+                const studentId = this.value;
+                if (!studentId) {
+                    courseSelect.dataset.autofilled = '';
+                    courseSelect.selectedIndex = 0;
+                    showMessage('Выберите курс вручную.', 'text-warning');
+                    return;
+                }
+
+                fetch(`${fetchUrl}?studentId=${encodeURIComponent(studentId)}`, {
+                    headers: { 'Accept': 'application/json' }
+                })
+                    .then(response => response.ok ? response.json() : null)
+                    .then(data => {
+                        if (!data || !data.hasCourse) {
+                            courseSelect.dataset.autofilled = '';
+                            courseSelect.selectedIndex = 0;
+                            showMessage('У выбранного курсанта нет назначенного курса — выберите его вручную.', 'text-warning');
+                            return;
+                        }
+                        setCourseOption(data.courseId, data.courseName);
+                    })
+                    .catch(() => {
+                        courseSelect.dataset.autofilled = '';
+                        showMessage('Не удалось определить курс. Выберите его вручную.', 'text-warning');
+                    });
+            });
+
+            courseSelect.addEventListener('change', function () {
+                if (this.dataset.autofilled === 'true') {
+                    this.dataset.autofilled = '';
+                    showMessage('Курс изменен вручную.', 'text-warning');
+                }
+            });
+        })();
+    </script>
 }
 
 

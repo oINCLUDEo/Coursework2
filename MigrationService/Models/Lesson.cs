@@ -16,8 +16,9 @@ namespace MigrationService.Models
         [Display(Name = "Инструктор")]
         public int InstructorID { get; set; }
 
+        [Required]
         [Display(Name = "Курс")]
-        public int? CourseID { get; set; }
+        public int CourseID { get; set; }
 
         [Display(Name = "Самолет")]
         public int? AircraftID { get; set; }

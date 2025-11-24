@@ -27,6 +27,43 @@ namespace MigrationService.Controllers
             ViewBag.Aircraft = new SelectList(_context.Aircraft.AsNoTracking().ToList(), "AircraftID", "TailNumber", selectedAircraft);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCourseForStudent(int studentId)
+        {
+            if (studentId <= 0)
+            {
+                return Json(new { hasCourse = false });
+            }
+
+            var studentCourse = await _context.Students
+                .AsNoTracking()
+                .Where(s => s.StudentID == studentId)
+                .Select(s => new
+                {
+                    s.CourseID,
+                    CourseName = s.Course != null ? s.Course.Name : null
+                })
+                .FirstOrDefaultAsync();
+
+            if (studentCourse == null || studentCourse.CourseID == null)
+            {
+                return Json(new { hasCourse = false });
+            }
+
+            var courseName = studentCourse.CourseName
+                             ?? await _context.Courses.AsNoTracking()
+                                 .Where(c => c.CourseID == studentCourse.CourseID)
+                                 .Select(c => c.Name)
+                                 .FirstOrDefaultAsync();
+
+            return Json(new
+            {
+                hasCourse = true,
+                courseId = studentCourse.CourseID,
+                courseName = courseName
+            });
+        }
+
         // GET: Lessons
         public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate, int? instructorId, int? courseId, string status, string sortBy)
         {
@@ -134,7 +171,6 @@ namespace MigrationService.Controllers
             // Очищаем все ошибки привязки модели для полей, которые мы обработаем вручную
             ModelState.Remove("StudentID");
             ModelState.Remove("InstructorID");
-            ModelState.Remove("CourseID");
             ModelState.Remove("AircraftID");
             ModelState.Remove("Status");
             ModelState.Remove("Student");
@@ -164,7 +200,12 @@ namespace MigrationService.Controllers
                 lesson.InstructorID = instructorId;
             }
             
-            if (!string.IsNullOrEmpty(Request.Form["CourseID"]) && int.TryParse(Request.Form["CourseID"], out int courseId) && courseId > 0)
+            var courseIdValue = Request.Form["CourseID"].ToString();
+            if (string.IsNullOrEmpty(courseIdValue) || !int.TryParse(courseIdValue, out int courseId) || courseId <= 0)
+            {
+                ModelState.AddModelError("CourseID", "Выберите курс");
+            }
+            else
             {
                 lesson.CourseID = courseId;
             }
@@ -225,12 +266,12 @@ namespace MigrationService.Controllers
                 
                 TempData["Success"] = "Занятие успешно добавлено.";
                 
-                // Если курс был указан, перенаправляем на страницу деталей курса
-                if (lesson.CourseID.HasValue && lesson.CourseID.Value > 0)
+                // Перенаправляем на страницу деталей курса
+                if (lesson.CourseID > 0)
                 {
-                    return RedirectToAction("Details", "Courses", new { id = lesson.CourseID.Value });
+                    return RedirectToAction("Details", "Courses", new { id = lesson.CourseID });
                 }
-                
+
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException ex)
@@ -267,6 +308,8 @@ namespace MigrationService.Controllers
                 ModelState.AddModelError("StudentID", "Выберите курсанта");
             if (lesson.InstructorID <= 0)
                 ModelState.AddModelError("InstructorID", "Выберите инструктора");
+            if (lesson.CourseID <= 0)
+                ModelState.AddModelError("CourseID", "Выберите курс");
             if (lesson.DurationHours <= 0)
                 ModelState.AddModelError("DurationHours", "Укажите длительность занятия больше 0");
 
