@@ -54,6 +54,7 @@ namespace MigrationService.Controllers
 
             var exams = await _context.Exams
                 .Include(e => e.Student)
+                .Include(e => e.Instructor)
                 .Where(e => e.CourseID == id)
                 .OrderByDescending(e => e.Date)
                 .AsNoTracking()
@@ -131,17 +132,20 @@ namespace MigrationService.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await _context.Courses.FindAsync(id);
-            if (course != null)
+            if (course == null) return RedirectToAction(nameof(Index));
+
+            var hasStudents = await _context.Students.AnyAsync(s => s.CourseID == id);
+            var hasLessons = await _context.Lessons.AnyAsync(l => l.CourseID == id);
+            var hasExams = await _context.Exams.AnyAsync(e => e.CourseID == id);
+
+            if (hasStudents || hasLessons || hasExams)
             {
-                var used = await _context.Students.AnyAsync(s => s.CourseID == id) || await _context.Lessons.AnyAsync(l => l.CourseID == id);
-                if (used)
-                {
-                    ModelState.AddModelError(string.Empty, "Нельзя удалить курс, используемый в зачислениях или занятиях.");
-                    return View("Delete", course);
-                }
-                _context.Courses.Remove(course);
-                await _context.SaveChangesAsync();
+                TempData["ErrorMessage"] = "Нельзя удалить курс, пока к нему привязаны студенты, занятия или экзамены. Сначала удалите или перепривяжите дочерние записи.";
+                return RedirectToAction(nameof(Delete), new { id });
             }
+
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }

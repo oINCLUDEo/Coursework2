@@ -120,8 +120,8 @@ namespace MigrationService.Controllers
                 var hasLessons = await _context.Lessons.AnyAsync(l => l.InstructorID == id);
                 if (hasLessons)
                 {
-                    ModelState.AddModelError(string.Empty, "Нельзя удалить инструктора с занятиями.");
-                    return View("Delete", instructor);
+                    TempData["ErrorMessage"] = "Нельзя удалить инструктора, пока за ним закреплены занятия. Сначала удалите или перепривяжите связанные записи.";
+                    return RedirectToAction(nameof(Delete), new { id });
                 }
                 _context.Instructors.Remove(instructor);
                 await _context.SaveChangesAsync();

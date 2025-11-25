@@ -28,13 +28,14 @@ namespace MigrationService.Controllers
             var query = _context.Exams
                 .Include(e => e.Student)
                 .Include(e => e.Course)
+                .Include(e => e.Instructor)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var lowered = searchString.ToLower();
                 query = query.Where(e =>
-                    (e.Examiner != null && e.Examiner.ToLower().Contains(lowered)) ||
+                    (e.Instructor != null && e.Instructor.FullName != null && e.Instructor.FullName.ToLower().Contains(lowered)) ||
                     (e.Result != null && e.Result.ToLower().Contains(lowered)) ||
                     (e.Student != null && e.Student.FullName != null && e.Student.FullName.ToLower().Contains(lowered)) ||
                     (e.Course != null && e.Course.Name != null && e.Course.Name.ToLower().Contains(lowered))
@@ -67,7 +68,7 @@ namespace MigrationService.Controllers
         {
             ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName");
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name");
-            ViewBag.Instructors = _context.Instructors.AsNoTracking().ToList();
+            ViewBag.Instructors = new SelectList(_context.Instructors.AsNoTracking().Where(i => i.IsActive).ToList(), "InstructorID", "FullName");
             
             var exam = new Exam();
             
@@ -93,12 +94,15 @@ namespace MigrationService.Controllers
             // Очищаем все ошибки привязки модели для полей, которые мы обработаем вручную
             ModelState.Remove("StudentID");
             ModelState.Remove("CourseID");
+            ModelState.Remove("InstructorID");
             ModelState.Remove("Student");
             ModelState.Remove("Course");
+            ModelState.Remove("Instructor");
             
             // Обработка значений из формы
             var studentIdValue = Request.Form["StudentID"].ToString();
             var courseIdValue = Request.Form["CourseID"].ToString();
+            var instructorIdValue = Request.Form["InstructorID"].ToString();
             
             if (string.IsNullOrEmpty(studentIdValue) || !int.TryParse(studentIdValue, out int studentId) || studentId <= 0)
             {
@@ -118,6 +122,15 @@ namespace MigrationService.Controllers
                 exam.CourseID = courseId;
             }
             
+            if (!string.IsNullOrEmpty(instructorIdValue) && int.TryParse(instructorIdValue, out int instructorId) && instructorId > 0)
+            {
+                exam.InstructorID = instructorId;
+            }
+            else
+            {
+                exam.InstructorID = null;
+            }
+            
             if (exam.Date == default(DateTime))
                 ModelState.AddModelError("Date", "Укажите дату экзамена");
             
@@ -125,7 +138,7 @@ namespace MigrationService.Controllers
             {
                 ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", exam.StudentID);
                 ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", exam.CourseID);
-                ViewBag.Instructors = _context.Instructors.AsNoTracking().ToList();
+                ViewBag.Instructors = new SelectList(_context.Instructors.AsNoTracking().Where(i => i.IsActive).ToList(), "InstructorID", "FullName", exam.InstructorID);
                 TempData["Error"] = "Проверьте правильность заполнения всех обязательных полей.";
                 return View(exam);
             }
@@ -149,7 +162,7 @@ namespace MigrationService.Controllers
                 TempData["Error"] = "Не удалось сохранить экзамен. Проверьте введенные данные.";
                 ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", exam.StudentID);
                 ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", exam.CourseID);
-                ViewBag.Instructors = _context.Instructors.AsNoTracking().ToList();
+                ViewBag.Instructors = new SelectList(_context.Instructors.AsNoTracking().Where(i => i.IsActive).ToList(), "InstructorID", "FullName", exam.InstructorID);
                 return View(exam);
             }
         }
@@ -161,20 +174,37 @@ namespace MigrationService.Controllers
             if (exam == null) return NotFound();
             ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", exam.StudentID);
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", exam.CourseID);
-            ViewBag.Instructors = _context.Instructors.AsNoTracking().ToList();
+            ViewBag.Instructors = new SelectList(_context.Instructors.AsNoTracking().Where(i => i.IsActive).ToList(), "InstructorID", "FullName", exam.InstructorID);
             return View(exam);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ExamID,StudentID,CourseID,Date,Score,Result,Examiner")] Exam exam)
+        public async Task<IActionResult> Edit(int id, Exam exam)
         {
             if (id != exam.ExamID) return NotFound();
+            
+            // Очищаем ошибки привязки для навигационных свойств
+            ModelState.Remove("Student");
+            ModelState.Remove("Course");
+            ModelState.Remove("Instructor");
+            
+            // Обработка InstructorID из формы
+            var instructorIdValue = Request.Form["InstructorID"].ToString();
+            if (!string.IsNullOrEmpty(instructorIdValue) && int.TryParse(instructorIdValue, out int instructorId) && instructorId > 0)
+            {
+                exam.InstructorID = instructorId;
+            }
+            else
+            {
+                exam.InstructorID = null;
+            }
+            
             if (!ModelState.IsValid)
             {
                 ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", exam.StudentID);
                 ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", exam.CourseID);
-                ViewBag.Instructors = _context.Instructors.AsNoTracking().ToList();
+                ViewBag.Instructors = new SelectList(_context.Instructors.AsNoTracking().Where(i => i.IsActive).ToList(), "InstructorID", "FullName", exam.InstructorID);
                 return View(exam);
             }
             var existing = await _context.Exams.FindAsync(id);
@@ -184,7 +214,7 @@ namespace MigrationService.Controllers
             existing.Date = exam.Date;
             existing.Score = exam.Score;
             existing.Result = exam.Result;
-            existing.Examiner = exam.Examiner;
+            existing.InstructorID = exam.InstructorID;
             try
             {
                 await _context.SaveChangesAsync();
@@ -194,7 +224,7 @@ namespace MigrationService.Controllers
                 TempData["Error"] = "Не удалось сохранить изменения. Проверьте введенные данные.";
                 ViewBag.Students = new SelectList(_context.Students.AsNoTracking().ToList(), "StudentID", "FullName", exam.StudentID);
                 ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", exam.CourseID);
-                ViewBag.Instructors = _context.Instructors.AsNoTracking().ToList();
+                ViewBag.Instructors = new SelectList(_context.Instructors.AsNoTracking().Where(i => i.IsActive).ToList(), "InstructorID", "FullName", exam.InstructorID);
                 return View(exam);
             }
             return RedirectToAction(nameof(Index));
@@ -206,6 +236,7 @@ namespace MigrationService.Controllers
             var exam = await _context.Exams
                 .Include(e => e.Student)
                 .Include(e => e.Course)
+                .Include(e => e.Instructor)
                 .FirstOrDefaultAsync(e => e.ExamID == id);
             if (exam == null) return NotFound();
             return View(exam);
@@ -217,6 +248,7 @@ namespace MigrationService.Controllers
             var exam = await _context.Exams
                 .Include(e => e.Student)
                 .Include(e => e.Course)
+                .Include(e => e.Instructor)
                 .FirstOrDefaultAsync(e => e.ExamID == id);
             if (exam == null) return NotFound();
             return View(exam);

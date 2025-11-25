@@ -25,10 +25,11 @@ namespace MigrationService.Models
         public string Result { get; set; } = string.Empty;
 
         [Display(Name = "Экзаменатор")]
-        public string Examiner { get; set; } = string.Empty;
+        public int? InstructorID { get; set; }
 
         public virtual Student Student { get; set; } = null!;
         public virtual Course Course { get; set; } = null!;
+        public virtual Instructor? Instructor { get; set; }
     }
 }
 

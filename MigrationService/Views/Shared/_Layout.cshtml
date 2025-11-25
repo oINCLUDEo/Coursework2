@@ -55,6 +55,13 @@
         </nav>
     </header>
     <div class="container">
+        @if (TempData["ErrorMessage"] is string errorMessage && !string.IsNullOrWhiteSpace(errorMessage))
+        {
+            <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                @errorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

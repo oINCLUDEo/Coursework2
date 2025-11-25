@@ -59,9 +59,9 @@
         @Html.ValidationMessageFor(m => m.Result, "", new { @class = "text-danger" })
     </div>
     <div class="mb-3">
-        @Html.LabelFor(m => m.Examiner, "Экзаменатор")
-        @Html.DropDownListFor(m => m.Examiner, new SelectList((IEnumerable<MigrationService.Models.Instructor>)ViewBag.Instructors, "FullName", "FullName"), "Выберите...", new { @class = "form-select" })
-        @Html.ValidationMessageFor(m => m.Examiner, "", new { @class = "text-danger" })
+        @Html.LabelFor(m => m.InstructorID, "Экзаменатор")
+        @Html.DropDownListFor(m => m.InstructorID, (SelectList)ViewBag.Instructors, "Выберите экзаменатора...", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.InstructorID, "", new { @class = "text-danger" })
     </div>
     <button type="submit" class="btn btn-primary">Сохранить</button>
     <a class="btn btn-secondary" href="@Url.Action("Index")">Отмена</a>

@@ -9,7 +9,7 @@
     <dt class="col-sm-3">Курс</dt><dd class="col-sm-9">@Model.Course?.Name</dd>
     <dt class="col-sm-3">Оценка</dt><dd class="col-sm-9">@Model.Score</dd>
     <dt class="col-sm-3">Результат</dt><dd class="col-sm-9">@Model.Result</dd>
-    <dt class="col-sm-3">Экзаменатор</dt><dd class="col-sm-9">@Model.Examiner</dd>
+    <dt class="col-sm-3">Экзаменатор</dt><dd class="col-sm-9">@Model.Instructor?.FullName</dd>
 </dl>
 
 <a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>

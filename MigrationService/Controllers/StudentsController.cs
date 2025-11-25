@@ -206,8 +206,8 @@ namespace MigrationService.Controllers
 
             if (student.Lessons.Any())
             {
-                ModelState.AddModelError(string.Empty, "Нельзя удалить курсанта с занятиями.");
-                return View("Delete", student);
+                TempData["ErrorMessage"] = "Нельзя удалить курсанта, пока за ним закреплены занятия. Сначала удалите или перепривяжите связанные записи.";
+                return RedirectToAction(nameof(Delete), new { id });
             }
 
             _context.Students.Remove(student);

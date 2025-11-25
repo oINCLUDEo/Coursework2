@@ -57,7 +57,7 @@
             <td>@e.Course?.Name</td>
             <td>@e.Score</td>
             <td>@e.Result</td>
-            <td>@e.Examiner</td>
+            <td>@e.Instructor?.FullName</td>
             <td>
                 <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = e.ExamID })">Подробнее</a>
                 <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = e.ExamID })">Изменить</a>

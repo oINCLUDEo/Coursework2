@@ -99,8 +99,8 @@ namespace MigrationService.Controllers
                 var inUse = await _context.Lessons.AnyAsync(l => l.AircraftID == id);
                 if (inUse)
                 {
-                    ModelState.AddModelError(string.Empty, "Нельзя удалить самолет, используемый в занятиях.");
-                    return View("Delete", aircraft);
+                    TempData["ErrorMessage"] = "Нельзя удалить самолет, пока он используется в занятиях. Сначала удалите или перепривяжите связанные записи.";
+                    return RedirectToAction(nameof(Delete), new { id });
                 }
                 _context.Aircraft.Remove(aircraft);
                 await _context.SaveChangesAsync();

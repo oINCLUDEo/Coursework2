@@ -76,6 +76,12 @@ namespace MigrationService.Models
                 .HasForeignKey(e => e.CourseID)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Exam>()
+                .HasOne(e => e.Instructor)
+                .WithMany()
+                .HasForeignKey(e => e.InstructorID)
+                .OnDelete(DeleteBehavior.SetNull);
+
             modelBuilder.Entity<Certificate>()
                 .HasOne(c => c.Course)
                 .WithMany()
