@@ -41,6 +41,7 @@
             <td>@a.TotalHours</td>
             <td>@a.Status</td>
             <td>
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = a.AircraftID })">Подробнее</a>
                 <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = a.AircraftID })">Изменить</a>
                 <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = a.AircraftID })">Удалить</a>
             </td>

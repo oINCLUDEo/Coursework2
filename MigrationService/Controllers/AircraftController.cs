@@ -31,6 +31,14 @@ namespace MigrationService.Controllers
             }
             return View(await query.AsNoTracking().ToListAsync());
         }
+        
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null) return NotFound();
+            var aircraft = await _context.Aircraft.FirstOrDefaultAsync(m => m.AircraftID == id);
+            if (aircraft == null) return NotFound();
+            return View(aircraft);
+        }
 
         public IActionResult Create() => View();
 

@@ -1,0 +1,17 @@
+﻿@model MigrationService.Models.Aircraft
+
+@{
+    ViewData["Title"] = "Самолёт";
+}
+
+<h2>Самолёт @Model.TailNumber</h2>
+<dl class="row">
+    <dt class="col-sm-3">Модель</dt><dd class="col-sm-9">@Model.Model</dd>
+    <dt class="col-sm-3">Тип</dt><dd class="col-sm-9">@Model.Type</dd>
+    <dt class="col-sm-3">Год выпуска</dt><dd class="col-sm-9">@Model.Year</dd>
+    <dt class="col-sm-3">Налёт (часы)</dt><dd class="col-sm-9">@Model.TotalHours</dd>
+    <dt class="col-sm-3">Статус</dt><dd class="col-sm-9">@Model.Status</dd>
+</dl>
+
+<a class="btn btn-secondary" href="@Url.Action("Index")">Назад</a>
+<a class="btn btn-primary" href="@Url.Action("Edit", new { id = Model.AircraftID })">Изменить</a>
