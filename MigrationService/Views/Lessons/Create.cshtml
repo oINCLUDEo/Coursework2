@@ -53,6 +53,7 @@
         @Html.LabelFor(m => m.AircraftID, "Самолет")
         @Html.DropDownListFor(m => m.AircraftID, (SelectList)ViewBag.Aircraft, "Выберите самолет...", new { @class = "form-select" })
         @Html.ValidationMessageFor(m => m.AircraftID, "", new { @class = "text-danger" })
+        <small class="form-text text-muted" id="aircraft-availability-message">Список обновляется в соответствии с выбранной датой.</small>
     </div>
     <div class="mb-3">
         @Html.LabelFor(m => m.Date)
@@ -91,67 +92,133 @@
             const courseSelect = document.getElementById('CourseID');
             const message = document.getElementById('course-autofill-message');
             const fetchUrl = '@Url.Action("GetCourseForStudent", "Lessons")';
+            const aircraftSelect = document.getElementById('AircraftID');
+            const dateInput = document.getElementById('Date');
+            const aircraftMessage = document.getElementById('aircraft-availability-message');
+            const aircraftFetchUrl = '@Url.Action("GetAvailableAircraft", "Lessons")';
 
-            if (!studentSelect || !courseSelect || courseSelect.disabled) {
-                return;
-            }
+            if (studentSelect && courseSelect && !courseSelect.disabled) {
+                const defaultMessage = message ? message.textContent : '';
 
-            const defaultMessage = message ? message.textContent : '';
-
-            function showMessage(text, cssClass) {
-                if (!message) return;
-                message.textContent = text || defaultMessage || '';
-                message.classList.remove('text-muted', 'text-success', 'text-warning');
-                message.classList.add(cssClass || 'text-muted');
-            }
-
-            function setCourseOption(courseId, courseName) {
-                const option = Array.from(courseSelect.options).find(opt => opt.value === String(courseId));
-                if (option) {
-                    courseSelect.value = option.value;
-                } else if (courseId) {
-                    const newOption = new Option(courseName || `Курс #${courseId}`, courseId, true, true);
-                    newOption.dataset.tempInserted = 'true';
-                    courseSelect.add(newOption);
-                }
-                courseSelect.dataset.autofilled = 'true';
-                showMessage(courseName ? `Курс "${courseName}" выбран автоматически.` : 'Курс выбран автоматически.', 'text-success');
-            }
-
-            studentSelect.addEventListener('change', function () {
-                const studentId = this.value;
-                if (!studentId) {
-                    courseSelect.dataset.autofilled = '';
-                    courseSelect.selectedIndex = 0;
-                    showMessage('Выберите курс вручную.', 'text-warning');
-                    return;
+                function showMessage(text, cssClass) {
+                    if (!message) return;
+                    message.textContent = text || defaultMessage || '';
+                    message.classList.remove('text-muted', 'text-success', 'text-warning');
+                    message.classList.add(cssClass || 'text-muted');
                 }
 
-                fetch(`${fetchUrl}?studentId=${encodeURIComponent(studentId)}`, {
-                    headers: { 'Accept': 'application/json' }
-                })
+                function setCourseOption(courseId, courseName) {
+                    const option = Array.from(courseSelect.options).find(opt => opt.value === String(courseId));
+                    if (option) {
+                        courseSelect.value = option.value;
+                    } else if (courseId) {
+                        const newOption = new Option(courseName || `Курс #${courseId}`, courseId, true, true);
+                        newOption.dataset.tempInserted = 'true';
+                        courseSelect.add(newOption);
+                    }
+                    courseSelect.dataset.autofilled = 'true';
+                    showMessage(courseName ? `Курс "${courseName}" выбран автоматически.` : 'Курс выбран автоматически.', 'text-success');
+                }
+
+                studentSelect.addEventListener('change', function () {
+                    const studentId = this.value;
+                    if (!studentId) {
+                        courseSelect.dataset.autofilled = '';
+                        courseSelect.selectedIndex = 0;
+                        showMessage('Выберите курс вручную.', 'text-warning');
+                        return;
+                    }
+
+                    fetch(`${fetchUrl}?studentId=${encodeURIComponent(studentId)}`, {
+                        headers: { 'Accept': 'application/json' }
+                    })
+                        .then(response => response.ok ? response.json() : null)
+                        .then(data => {
+                            if (!data || !data.hasCourse) {
+                                courseSelect.dataset.autofilled = '';
+                                courseSelect.selectedIndex = 0;
+                                showMessage('У выбранного курсанта нет назначенного курса — выберите его вручную.', 'text-warning');
+                                return;
+                            }
+                            setCourseOption(data.courseId, data.courseName);
+                        })
+                        .catch(() => {
+                            courseSelect.dataset.autofilled = '';
+                            showMessage('Не удалось определить курс. Выберите его вручную.', 'text-warning');
+                        });
+                });
+
+                courseSelect.addEventListener('change', function () {
+                    if (this.dataset.autofilled === 'true') {
+                        this.dataset.autofilled = '';
+                        showMessage('Курс изменен вручную.', 'text-warning');
+                    }
+                });
+            }
+
+            function showAircraftMessage(text, cssClass) {
+                if (!aircraftMessage) return;
+                aircraftMessage.textContent = text;
+                aircraftMessage.className = `form-text ${cssClass || 'text-muted'}`;
+            }
+
+            function refreshAircraftList(dateValue) {
+                if (!aircraftSelect || !dateValue) return;
+                aircraftSelect.disabled = true;
+                showAircraftMessage('Проверяем доступные самолеты...', 'text-muted');
+
+                fetch(`${aircraftFetchUrl}?date=${encodeURIComponent(dateValue)}`, { headers: { 'Accept': 'application/json' } })
                     .then(response => response.ok ? response.json() : null)
                     .then(data => {
-                        if (!data || !data.hasCourse) {
-                            courseSelect.dataset.autofilled = '';
-                            courseSelect.selectedIndex = 0;
-                            showMessage('У выбранного курсанта нет назначенного курса — выберите его вручную.', 'text-warning');
+                        if (!data || data.success !== true) {
+                            showAircraftMessage('Не удалось получить данные о самолетах. Список может быть неполным.', 'text-warning');
+                            aircraftSelect.disabled = false;
                             return;
                         }
-                        setCourseOption(data.courseId, data.courseName);
+
+                        const selectedValue = aircraftSelect.value;
+                        aircraftSelect.innerHTML = '';
+                        const defaultOption = new Option('Выберите самолет...', '', true, false);
+                        aircraftSelect.add(defaultOption);
+
+                        data.items.forEach(item => {
+                            const option = new Option(item.tailNumber, item.id, false, false);
+                            option.dataset.status = item.status;
+                            option.dataset.model = item.model;
+                            aircraftSelect.add(option);
+                        });
+
+                        const stillAvailable = data.items.some(item => String(item.id) === selectedValue);
+                        if (stillAvailable) {
+                            aircraftSelect.value = selectedValue;
+                        }
+
+                        aircraftSelect.disabled = false;
+
+                        if (data.items.length === 0) {
+                            showAircraftMessage('На выбранную дату нет доступных самолетов.', 'text-warning');
+                        }
+                        else {
+                            showAircraftMessage(`Доступно самолетов: ${data.items.length}.`, 'text-success');
+                        }
                     })
                     .catch(() => {
-                        courseSelect.dataset.autofilled = '';
-                        showMessage('Не удалось определить курс. Выберите его вручную.', 'text-warning');
+                        showAircraftMessage('Не удалось получить данные о самолетах. Список может быть неполным.', 'text-warning');
+                        aircraftSelect.disabled = false;
                     });
-            });
+            }
 
-            courseSelect.addEventListener('change', function () {
-                if (this.dataset.autofilled === 'true') {
-                    this.dataset.autofilled = '';
-                    showMessage('Курс изменен вручную.', 'text-warning');
+            if (dateInput && aircraftSelect) {
+                if (dateInput.value) {
+                    refreshAircraftList(dateInput.value);
                 }
-            });
+
+                dateInput.addEventListener('change', function () {
+                    if (this.value) {
+                        refreshAircraftList(this.value);
+                    }
+                });
+            }
         })();
     </script>
 }

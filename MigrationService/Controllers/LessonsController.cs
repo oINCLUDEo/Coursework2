@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,41 @@ namespace MigrationService.Controllers
             ViewBag.Instructors = new SelectList(_context.Instructors.AsNoTracking().ToList(), "InstructorID", "FullName", selectedInstructor);
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().ToList(), "CourseID", "Name", selectedCourse);
             ViewBag.Aircraft = new SelectList(_context.Aircraft.AsNoTracking().ToList(), "AircraftID", "TailNumber", selectedAircraft);
+        }
+
+        private async Task<List<Aircraft>> GetAvailableAircraftInternalAsync(DateTime date)
+        {
+            try
+            {
+                var availableAircraft = await _context.Database
+                    .SqlQueryRaw<Aircraft>(
+                        "SELECT AircraftID, TailNumber, Model, Type, Year, TotalHours, Status FROM dbo.fn_AvailableAircraftOnDate({0})",
+                        date.Date)
+                    .ToListAsync();
+
+                return availableAircraft;
+            }
+            catch
+            {
+                // Если пользовательская функция недоступна, возвращаем все самолеты как запасной вариант
+                return await _context.Aircraft.AsNoTracking().ToListAsync();
+            }
+        }
+
+        private async Task PopulateAircraftSelectListAsync(DateTime? date, object? selectedAircraft = null)
+        {
+            if (date.HasValue && date.Value != default)
+            {
+                var available = await GetAvailableAircraftInternalAsync(date.Value);
+                ViewBag.Aircraft = new SelectList(available, "AircraftID", "TailNumber", selectedAircraft);
+                return;
+            }
+
+            ViewBag.Aircraft = new SelectList(
+                await _context.Aircraft.AsNoTracking().ToListAsync(),
+                "AircraftID",
+                "TailNumber",
+                selectedAircraft);
         }
 
         [HttpGet]
@@ -61,6 +97,28 @@ namespace MigrationService.Controllers
                 hasCourse = true,
                 courseId = studentCourse.CourseID,
                 courseName = courseName
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableAircraft(DateTime date)
+        {
+            if (date == default)
+            {
+                return Json(new { success = false, message = "Некорректная дата" });
+            }
+
+            var available = await GetAvailableAircraftInternalAsync(date);
+            return Json(new
+            {
+                success = true,
+                items = available.Select(a => new
+                {
+                    id = a.AircraftID,
+                    tailNumber = a.TailNumber,
+                    model = a.Model,
+                    status = a.Status
+                })
             });
         }
 
@@ -137,28 +195,7 @@ namespace MigrationService.Controllers
                 }
             }
 
-            // Использование пользовательской функции: fn_AvailableAircraftOnDate
-            // Получаем доступные самолеты на выбранную дату
-            var selectedDate = model.Date;
-            try
-            {
-                var availableAircraft = await _context.Database
-                    .SqlQueryRaw<Aircraft>(
-                        "SELECT AircraftID, TailNumber, Model, Type, Year, TotalHours, Status FROM dbo.fn_AvailableAircraftOnDate({0})", 
-                        selectedDate)
-                    .ToListAsync();
-
-                // Обновляем список самолетов только доступными
-                if (availableAircraft.Any())
-                {
-                    ViewBag.Aircraft = new SelectList(availableAircraft, "AircraftID", "TailNumber", model.AircraftID);
-                }
-            }
-            catch
-            {
-                // Если функция не работает, используем все самолеты
-                // Это может произойти при первом запуске, если функция еще не создана
-            }
+            await PopulateAircraftSelectListAsync(model.Date, model.AircraftID);
             
             return View(model);
         }
@@ -238,6 +275,7 @@ namespace MigrationService.Controllers
             if (!ModelState.IsValid)
             {
                 PopulateLookups(lesson.StudentID, lesson.InstructorID, lesson.CourseID, lesson.AircraftID);
+                await PopulateAircraftSelectListAsync(lesson.Date, lesson.AircraftID);
                 TempData["Error"] = "Проверьте правильность заполнения всех обязательных полей.";
                 return View(lesson);
             }
@@ -278,12 +316,14 @@ namespace MigrationService.Controllers
             {
                 TempData["Error"] = $"Ошибка сохранения занятия: {ex.InnerException?.Message ?? ex.Message}";
                 PopulateLookups(lesson.StudentID, lesson.InstructorID, lesson.CourseID, lesson.AircraftID);
+                await PopulateAircraftSelectListAsync(lesson.Date, lesson.AircraftID);
                 return View(lesson);
             }
             catch (Exception ex)
             {
                 TempData["Error"] = $"Ошибка: {ex.Message}";
                 PopulateLookups(lesson.StudentID, lesson.InstructorID, lesson.CourseID, lesson.AircraftID);
+                await PopulateAircraftSelectListAsync(lesson.Date, lesson.AircraftID);
                 return View(lesson);
             }
         }
