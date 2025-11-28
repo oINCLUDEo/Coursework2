@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace MigrationService.Models
@@ -37,4 +36,3 @@ namespace MigrationService.Models
         public virtual Certificate Certificate { get; set; } = null!;
     }
 }
-

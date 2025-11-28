@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -122,7 +118,6 @@ namespace MigrationService.Controllers
             });
         }
 
-        // GET: Lessons
         public async Task<IActionResult> Index(DateTime? startDate, DateTime? endDate, int? instructorId, int? courseId, string status, string sortBy)
         {
             ViewBag.Instructors = new SelectList(_context.Instructors.AsNoTracking().ToList(), "InstructorID", "FullName");
@@ -162,7 +157,6 @@ namespace MigrationService.Controllers
             return View(lessons);
         }
 
-        // GET: Lessons/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -177,7 +171,6 @@ namespace MigrationService.Controllers
             return View(lesson);
         }
 
-        // GET: Lessons/Create
         public async Task<IActionResult> Create(int? courseId)
         {
             PopulateLookups();
@@ -200,7 +193,6 @@ namespace MigrationService.Controllers
             return View(model);
         }
 
-        // POST: Lessons/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Lesson lesson)
@@ -328,7 +320,6 @@ namespace MigrationService.Controllers
             }
         }
 
-        // GET: Lessons/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -338,7 +329,6 @@ namespace MigrationService.Controllers
             return View(lesson);
         }
 
-        // POST: Lessons/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("LessonID,StudentID,InstructorID,CourseID,AircraftID,Date,DurationHours,Topic,Status,Remarks")] Lesson lesson)
@@ -400,7 +390,6 @@ namespace MigrationService.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Lessons/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -412,7 +401,6 @@ namespace MigrationService.Controllers
             return View(lesson);
         }
 
-        // POST: Lessons/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -427,5 +415,3 @@ namespace MigrationService.Controllers
         }
     }
 }
-
-

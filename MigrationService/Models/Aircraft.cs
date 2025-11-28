@@ -28,5 +28,3 @@ namespace MigrationService.Models
         public string Status { get; set; } = string.Empty;
     }
 }
-
-

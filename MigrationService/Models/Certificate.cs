@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
 
 namespace MigrationService.Models
 {
@@ -25,5 +24,3 @@ namespace MigrationService.Models
         public virtual ICollection<StudentCertificate> StudentCertificates { get; set; } = new List<StudentCertificate>();
     }
 }
-
-

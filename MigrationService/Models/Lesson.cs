@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MigrationService.Models
@@ -29,7 +27,7 @@ namespace MigrationService.Models
         public DateTime Date { get; set; }
 
         [Required]
-        [Range(0.1, 1000)]
+        [Range(0.1, 24)]
         [Display(Name = "Длительность (часы)")]
         public decimal DurationHours { get; set; }
 
@@ -50,5 +48,3 @@ namespace MigrationService.Models
         public virtual ICollection<LessonStatusChange> StatusChanges { get; set; } = new List<LessonStatusChange>();
     }
 }
-
-

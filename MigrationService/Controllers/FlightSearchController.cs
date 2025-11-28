@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MigrationService.Models;
@@ -64,5 +62,3 @@ namespace MigrationService.Controllers
         public System.Collections.Generic.List<Aircraft> Aircraft { get; set; } = new();
     }
 }
-
-

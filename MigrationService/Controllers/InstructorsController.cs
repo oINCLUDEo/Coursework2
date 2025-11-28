@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MigrationService.Models;
@@ -17,7 +15,6 @@ namespace MigrationService.Controllers
             _context = context;
         }
 
-        // GET: Instructors
         public async Task<IActionResult> Index(string searchString, bool? onlyActive)
         {
             ViewData["CurrentFilter"] = searchString;
@@ -39,7 +36,6 @@ namespace MigrationService.Controllers
             return View(await query.AsNoTracking().ToListAsync());
         }
 
-        // GET: Instructors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -130,5 +126,3 @@ namespace MigrationService.Controllers
         }
     }
 }
-
-

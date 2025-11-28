@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace MigrationService.Models
@@ -32,5 +31,3 @@ namespace MigrationService.Models
         public virtual Instructor? Instructor { get; set; }
     }
 }
-
-

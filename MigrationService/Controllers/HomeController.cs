@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.Data.SqlClient;
 using MigrationService.Models;
 using MigrationService.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -30,25 +31,9 @@ namespace MigrationService.Controllers
             var startDate = DateTime.Today;
             var endDate = startDate.AddDays(7);
 
-            var upcomingLessons = await _context.Lessons
+            var upcomingLessons = await _context.Set<UpcomingLessonResult>()
+                .FromSqlRaw("EXEC dbo.sp_GetUpcomingLessons")
                 .AsNoTracking()
-                .Include(l => l.Student)
-                .Include(l => l.Instructor)
-                .Include(l => l.Aircraft)
-                .Where(l => l.Date >= startDate && l.Date < endDate)
-                .OrderBy(l => l.Date)
-                .Take(200)
-                .Select(l => new UpcomingLessonResult
-                {
-                    LessonID = l.LessonID,
-                    Date = l.Date,
-                    DurationHours = l.DurationHours,
-                    Topic = l.Topic,
-                    Status = l.Status,
-                    StudentName = l.Student.FullName,
-                    InstructorName = l.Instructor.FullName,
-                    TailNumber = l.Aircraft != null ? l.Aircraft.TailNumber : null
-                })
                 .ToListAsync();
 
             ViewBag.UpcomingLessons = upcomingLessons;
@@ -57,6 +42,7 @@ namespace MigrationService.Controllers
         }
 
         // Класс для результатов хранимой процедуры
+        [Keyless]
         public class UpcomingLessonResult
         {
             public int LessonID { get; set; }

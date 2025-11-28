@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MigrationService.Controllers;
 
 namespace MigrationService.Models
 {
@@ -15,6 +16,8 @@ namespace MigrationService.Models
         public DbSet<Exam> Exams { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<StudentCertificate> StudentCertificates { get; set; }
+        public DbSet<HomeController.UpcomingLessonResult> UpcomingLessonResults { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -119,8 +122,12 @@ namespace MigrationService.Models
             modelBuilder.Entity<LessonStatusChange>()
                 .Property(lsc => lsc.ChangedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
+            
+            modelBuilder.Entity<HomeController.UpcomingLessonResult>(entity =>
+            {
+                entity.HasNoKey();
+                entity.ToView(null);
+            });
         }
     }
 }
-
-

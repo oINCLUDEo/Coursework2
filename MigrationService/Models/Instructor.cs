@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,5 +32,3 @@ namespace MigrationService.Models
         public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
     }
 }
-
-

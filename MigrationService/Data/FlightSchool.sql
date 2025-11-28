@@ -1,4 +1,3 @@
--- UDF: Total flight hours by student
 IF OBJECT_ID(N'dbo.fn_TotalFlightHoursByStudent', N'FN') IS NOT NULL
     DROP FUNCTION dbo.fn_TotalFlightHoursByStudent;
 GO
@@ -14,7 +13,6 @@ BEGIN
 END;
 GO
 
--- UDF: Available aircraft on date (not scheduled that day and with Status='Available')
 IF OBJECT_ID(N'dbo.fn_AvailableAircraftOnDate', N'IF') IS NOT NULL
     DROP FUNCTION dbo.fn_AvailableAircraftOnDate;
 GO

@@ -30,7 +30,6 @@ body {
   line-height: 60px;
 }
 
-/* Custom Styles */
 .navbar {
   box-shadow: 0 2px 4px rgba(0,0,0,.1);
 }
@@ -70,7 +69,7 @@ body {
   font-weight: 300;
 }
 
-/* Table Styles */
+/* СТтили таблиц */
 .table {
   background-color: white;
   border-radius: 10px;
@@ -88,7 +87,7 @@ body {
   background-color: #f8f9fa;
 }
 
-/* Form Styles */
+/* Стили форм */
 .form-control {
   border-radius: 5px;
   border: 1px solid #dee2e6;
@@ -100,7 +99,7 @@ body {
   box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
 }
 
-/* Button Styles */
+/* Стили кнопок */
 .btn-primary {
   background-color: #0d6efd;
   border-color: #0d6efd;
@@ -131,28 +130,28 @@ body {
   border-color: #b02a37;
 }
 
-/* Card Styles */
+/* Стили карточек */
 .card-header {
   background-color: #f8f9fa;
   border-bottom: 1px solid #dee2e6;
   font-weight: 600;
 }
 
-/* Alert Styles */
+/* Стили уведомлений */
 .alert {
   border-radius: 10px;
   border: none;
   box-shadow: 0 2px 4px rgba(0,0,0,.05);
 }
 
-/* Badge Styles */
+/* Бейдж стили */
 .badge {
   padding: 0.5em 1em;
   border-radius: 5px;
   font-weight: 500;
 }
 
-/* KPI Dashboard Styles */
+/* KPI Дэшборд стили */
 :root {
   --kpi-radius: 16px;
   --kpi-shadow: 0 10px 20px rgba(0,0,0,.12), 0 6px 6px rgba(0,0,0,.08);
@@ -202,7 +201,7 @@ body {
 .kpi-action { margin-top: .35rem; border-color: rgba(255,255,255,.55) !important; color: #fff !important; }
 .kpi-action:hover { background: rgba(255,255,255,.15) !important; }
 
-/* Gradients */
+/* Градиенты */
 .kpi-students { background: linear-gradient(135deg, #17a2b8 0%, #238bd1 100%); }
 .kpi-instructors { background: linear-gradient(135deg, #28a745 0%, #24935b 100%); }
 .kpi-aircraft { background: linear-gradient(135deg, #f0ad4e 0%, #ff8746 100%); }

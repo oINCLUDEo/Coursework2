@@ -1,11 +1,8 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
 using MigrationService.Models;
 
 namespace MigrationService.Controllers
@@ -122,7 +119,6 @@ namespace MigrationService.Controllers
             if (string.IsNullOrWhiteSpace(code) || !string.Equals(storedHash, Hash(code), StringComparison.Ordinal))
             {
                 ModelState.AddModelError("code", "Неверный код. Попробуйте снова.");
-                // Восстанавливаем ViewBag.DevOtp для Development
                 var isDev = HttpContext.RequestServices.GetService<IWebHostEnvironment>()?.IsDevelopment() ?? false;
                 if (isDev)
                 {
@@ -185,5 +181,3 @@ namespace MigrationService.Controllers
         }
     }
 }
-
-

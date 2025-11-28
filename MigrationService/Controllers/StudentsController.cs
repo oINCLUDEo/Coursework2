@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +6,6 @@ using MigrationService.Filters;
 
 namespace MigrationService.Controllers
 {
-    // Класс для результата скалярной функции
-    public class FunctionResult
-    {
-        public decimal TotalHours { get; set; }
-    }
-
     [RequireAuth]
     public class StudentsController : Controller
     {
@@ -25,7 +16,6 @@ namespace MigrationService.Controllers
             _context = context;
         }
 
-        // GET: Students
         public async Task<IActionResult> Index(string searchString, int? courseFilter)
         {
             ViewData["CurrentFilter"] = searchString;
@@ -54,7 +44,6 @@ namespace MigrationService.Controllers
             return View(students);
         }
 
-        // GET: Students/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -64,7 +53,6 @@ namespace MigrationService.Controllers
                 .FirstOrDefaultAsync(m => m.StudentID == id);
             if (student == null) return NotFound();
 
-            // Вычисляем общее количество часов полета для студента
             var totalHours = await _context.Lessons
                 .Where(l => l.StudentID == id.Value && (l.Status == "Завершено" || l.Status == "Одобрено"))
                 .SumAsync(l => (decimal?)l.DurationHours) ?? 0m;
@@ -73,14 +61,12 @@ namespace MigrationService.Controllers
             return View(student);
         }
 
-        // GET: Students/Create
         public IActionResult Create()
         {
             ViewBag.Courses = new SelectList(_context.Courses.AsNoTracking().Where(c => c.IsActive).ToList(), "CourseID", "Name");
             return View();
         }
 
-        // POST: Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Student student)
@@ -120,7 +106,6 @@ namespace MigrationService.Controllers
             return View(student);
         }
 
-        // GET: Students/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -130,7 +115,6 @@ namespace MigrationService.Controllers
             return View(student);
         }
 
-        // POST: Students/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Student student)
@@ -185,7 +169,6 @@ namespace MigrationService.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Students/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -194,7 +177,6 @@ namespace MigrationService.Controllers
             return View(student);
         }
 
-        // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -216,5 +198,3 @@ namespace MigrationService.Controllers
         }
     }
 }
-
-
