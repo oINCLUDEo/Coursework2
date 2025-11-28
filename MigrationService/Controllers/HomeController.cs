@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Microsoft.Data.SqlClient;
 using MigrationService.Models;
 using MigrationService.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -31,10 +30,7 @@ namespace MigrationService.Controllers
             var startDate = DateTime.Today;
             var endDate = startDate.AddDays(7);
 
-            var upcomingLessons = await _context.Set<UpcomingLessonResult>()
-                .FromSqlRaw("EXEC dbo.sp_GetUpcomingLessons")
-                .AsNoTracking()
-                .ToListAsync();
+            var upcomingLessons = await _context.GetUpcomingLessonsAsync();
 
             ViewBag.UpcomingLessons = upcomingLessons;
             

@@ -53,9 +53,8 @@ namespace MigrationService.Controllers
                 .FirstOrDefaultAsync(m => m.StudentID == id);
             if (student == null) return NotFound();
 
-            var totalHours = await _context.Lessons
-                .Where(l => l.StudentID == id.Value && (l.Status == "Завершено" || l.Status == "Одобрено"))
-                .SumAsync(l => (decimal?)l.DurationHours) ?? 0m;
+            var totalHours = await _context.GetTotalFlightHoursByStudentAsync(id.Value);
+
             ViewBag.TotalFlightHours = totalHours;
             
             return View(student);

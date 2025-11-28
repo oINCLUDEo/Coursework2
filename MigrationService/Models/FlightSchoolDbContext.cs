@@ -122,12 +122,23 @@ namespace MigrationService.Models
             modelBuilder.Entity<LessonStatusChange>()
                 .Property(lsc => lsc.ChangedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
-            
-            modelBuilder.Entity<HomeController.UpcomingLessonResult>(entity =>
-            {
-                entity.HasNoKey();
-                entity.ToView(null);
-            });
+        }
+        
+        public async Task<decimal> GetTotalFlightHoursByStudentAsync(int studentId)
+        {
+            var result = await Database.SqlQueryRaw<decimal>(
+                    "SELECT dbo.fn_TotalFlightHoursByStudent({0})", studentId)
+                .ToListAsync();
+        
+            return result.First();
+        }
+        
+        public async Task<List<HomeController.UpcomingLessonResult>> GetUpcomingLessonsAsync()
+        {
+            return await UpcomingLessonResults
+                .FromSqlRaw("EXEC dbo.sp_GetUpcomingLessons")
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }
