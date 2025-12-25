@@ -4,18 +4,35 @@
 
 ### IDEF0 Диаграммы (Функциональное моделирование)
 
+**Автоматизированная версия:**
+```
+diagrams/idef0/automated/
+├── A-0_context.puml              (Контекстная диаграмма с АИС)
+├── A0_decomposition.puml         (Декомпозиция 1-го уровня)
+├── A1_admission.puml             (Прием и регистрация)
+├── A2_planning.puml              (Планирование обучения)
+├── A3_lessons.puml               (Проведение занятий)
+└── A4_control.puml               (Контроль успеваемости)
+```
+
+**Неавтоматизированная версия:**
+```
+diagrams/idef0/non-automated/
+├── A-0_context.puml              (Контекстная диаграмма без АИС)
+├── A0_decomposition.puml         (Декомпозиция 1-го уровня)
+├── A1_admission.puml             (Прием и регистрация)
+├── A2_planning.puml              (Планирование обучения)
+├── A3_lessons.puml               (Проведение занятий)
+└── A4_control.puml               (Контроль успеваемости)
+```
+
+**Документация:**
 ```
 diagrams/idef0/
-├── A-0_context_diagram.puml              (Контекстная диаграмма)
-├── A0_decomposition.puml                 (Декомпозиция 1-го уровня)
-├── A0_decomposition_automated.puml       (Автоматизированная версия)
-├── A0_decomposition_nonAutomated.puml    (Неавтоматизированная версия)
-├── A1_admission_decomposition.puml       (Прием и регистрация)
-├── A2_planning_decomposition.puml        (Планирование обучения)
-├── A3_lessons_decomposition.puml         (Проведение занятий)
-├── A4_control_decomposition.puml         (Контроль успеваемости)
-└── MODEL_TEXT_AND_GLOSSARY.md            (Текст модели и глоссарий)
+└── MODEL_TEXT_AND_GLOSSARY.md    (Текст модели и глоссарий)
 ```
+
+**Особенности:** Каждая диаграмма содержит максимум 4-5 элементов на каждой стороне
 
 ### IDEF3 Диаграммы (Потоки работ)
 
@@ -44,46 +61,60 @@ diagrams/idef1x/
 
 ## Порядок просмотра
 
+### Автоматизированная версия
+
 ### 1. Начните с контекстной диаграммы
-`diagrams/idef0/A-0_context_diagram.puml`
+`diagrams/idef0/automated/A-0_context.puml`
 
 ### 2. Изучите декомпозицию первого уровня
-`diagrams/idef0/A0_decomposition.puml`
+`diagrams/idef0/automated/A0_decomposition.puml`
 
-### 3. Сравните версии
-- Неавтоматизированная: `diagrams/idef0/A0_decomposition_nonAutomated.puml`
-- Автоматизированная: `diagrams/idef0/A0_decomposition_automated.puml`
+### 3. Детальные декомпозиции (автоматизированная)
+- A1: `diagrams/idef0/automated/A1_admission.puml`
+- A2: `diagrams/idef0/automated/A2_planning.puml`
+- A3: `diagrams/idef0/automated/A3_lessons.puml`
+- A4: `diagrams/idef0/automated/A4_control.puml`
 
-### 4. Детальные декомпозиции
-- A1: `diagrams/idef0/A1_admission_decomposition.puml`
-- A2: `diagrams/idef0/A2_planning_decomposition.puml`
-- A3: `diagrams/idef0/A3_lessons_decomposition.puml`
-- A4: `diagrams/idef0/A4_control_decomposition.puml`
+### Неавтоматизированная версия
 
-### 5. Workflow диаграммы (IDEF3)
+### 4. Контекстная диаграмма (неавтоматизированная)
+`diagrams/idef0/non-automated/A-0_context.puml`
+
+### 5. Декомпозиция первого уровня (неавтоматизированная)
+`diagrams/idef0/non-automated/A0_decomposition.puml`
+
+### 6. Детальные декомпозиции (неавтоматизированная)
+- A1: `diagrams/idef0/non-automated/A1_admission.puml`
+- A2: `diagrams/idef0/non-automated/A2_planning.puml`
+- A3: `diagrams/idef0/non-automated/A3_lessons.puml`
+- A4: `diagrams/idef0/non-automated/A4_control.puml`
+
+### Другие диаграммы
+
+### 7. Workflow диаграммы (IDEF3)
 - Полетное занятие: `diagrams/idef3/flight_lesson_workflow.puml`
 - Регистрация студента: `diagrams/idef3/student_registration_workflow.puml`
 
-### 6. Диаграмма потоков данных
+### 8. Диаграмма потоков данных
 `diagrams/dfd/dfd_gane_sarson.puml`
 
-### 7. Информационная модель
+### 9. Информационная модель
 - XML-модель: `MigrationService/1ver.ercmdl`
 - Документация: `diagrams/idef1x/MaintenanceLog_Entity.md`
 
-### 8. Текст и глоссарий
+### 10. Текст и глоссарий
 `diagrams/idef0/MODEL_TEXT_AND_GLOSSARY.md`
 
 ## Соответствие требованиям
 
 | Требование | Количество | Статус |
 |-----------|-----------|--------|
-| IDEF0 диаграммы | 6 | ✅ Выполнено |
+| IDEF0 диаграммы (автоматизированная) | 6 | ✅ Выполнено |
+| IDEF0 диаграммы (неавтоматизированная) | 6 | ✅ Выполнено |
+| Элементов на каждой стороне | Макс 4-5 | ✅ Выполнено |
 | IDEF3 диаграммы | 2 | ✅ Выполнено |
 | DFD диаграммы (Гейн-Сарсон) | 1 | ✅ Выполнено |
 | Дополнительные сущности IDEF1X | 1 (8 атрибутов) | ✅ Выполнено |
-| Неавтоматизированная версия | 1 | ✅ Выполнено |
-| Автоматизированная версия | 1 | ✅ Выполнено |
 | Текст и глоссарий | 1 | ✅ Выполнено |
 | Соответствие стандарту Р 50.1.028-2001 | Да | ✅ Выполнено |
 
