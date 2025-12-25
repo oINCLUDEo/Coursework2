@@ -1,0 +1,76 @@
+@startuml A11_Lesson_Registration_DFD_Automated
+!define GANE_SARSON
+
+title DFD Процесса A11 "Регистрация занятия" (Автоматизированная версия)\nНотация Гейна-Сарсона
+
+' Внешние сущности
+rectangle "Пользователь\n(Администратор/\nМетодист)" as User
+
+' Процессы
+rectangle "11.1\nВыбрать и\nвалидировать\nкурсанта" as P1
+rectangle "11.2\nВыбрать и\nвалидировать\nинструктора" as P2
+rectangle "11.3\nПроверить\nдоступность\nсамолета" as P3
+rectangle "11.4\nСоздать запись\nзанятия и\nзафиксировать\nстатус" as P4
+
+' Хранилища данных (БД)
+database "D1\nStudents\n(Курсанты)" as D1
+database "D2\nInstructors\n(Инструкторы)" as D2
+database "D3\nAircraft\n(Самолеты)" as D3
+database "D4\nCourses\n(Курсы)" as D4
+database "D5\nLessons\n(Занятия)" as D5
+database "D6\nLessonStatusChanges\n(История статусов)" as D6
+
+' Потоки данных от пользователя к процессам
+User --> P1 : StudentID
+User --> P2 : InstructorID
+User --> P3 : Date, AircraftID
+
+' Потоки между процессами и хранилищами
+P1 --> D1 : Проверка существования
+D1 --> P1 : Данные курсанта\n(FullName, CourseID)
+
+P2 --> D2 : Проверка существования\nи IsActive
+D2 --> P2 : Данные инструктора\n(FullName)
+
+P3 --> D3 : fn_AvailableAircraftOnDate(Date)
+D3 --> P3 : Список доступных\nсамолетов
+
+' Потоки между процессами
+P1 --> P4 : Валидированный StudentID
+P2 --> P4 : Валидированный InstructorID
+P3 --> P4 : Валидированный AircraftID
+User --> P4 : CourseID, Date,\nDurationHours, Topic
+
+' Чтение данных курса
+P4 --> D4 : Проверка CourseID
+D4 --> P4 : Данные курса
+
+' Создание записи занятия
+P4 --> D5 : Создать Lesson\n(StudentID, InstructorID,\nCourseID, AircraftID,\nDate, DurationHours,\nTopic, Status)
+D5 --> P4 : LessonID
+
+' Создание записи изменения статуса
+P4 --> D6 : Создать LessonStatusChange\n(LessonID, OldStatus="",\nNewStatus="Запланировано",\nComment="Создано")
+
+' Результат пользователю
+P4 --> User : Подтверждение создания\nили сообщение об ошибке
+
+note right of P3
+  Использует SQL-функцию
+  fn_AvailableAircraftOnDate
+  для проверки, что самолет
+  не занят в указанную дату
+end note
+
+note right of P4
+  Транзакция БД:
+  1. INSERT INTO Lessons
+  2. INSERT INTO LessonStatusChanges
+  
+  Валидация:
+  - DurationHours > 0
+  - Date не default
+  - Все ID валидны
+end note
+
+@enduml
