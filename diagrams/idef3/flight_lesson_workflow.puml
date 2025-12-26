@@ -1,0 +1,48 @@
+@startuml IDEF3 Workflow - Проведение полетного занятия
+
+title IDEF3 Workflow Diagram\nПроведение полетного занятия
+
+skinparam state {
+  BackgroundColor LightBlue
+  BorderColor Black
+  ArrowColor Black
+}
+
+state "1\nПодготовить\nстудента" as S1
+state "2\nПровести\nинструктаж" as S2
+state "3\nОсмотреть\nсамолет" as S3
+state "4\nВыполнить\nполет" as S4
+state "5\nПровести\nразбор" as S5
+state "6\nЗафиксировать\nрезультаты" as S6
+
+state decision1 <<choice>>
+state decision2 <<choice>>
+
+[*] --> S1
+
+S1 --> S2
+
+S2 --> decision1
+
+decision1 --> S3
+decision1 --> [*]
+
+S3 --> decision2
+
+decision2 --> S4
+decision2 --> [*]
+
+S4 --> S5
+
+S5 --> S6
+
+S6 --> [*]
+
+note bottom
+  Временные характеристики:
+  S1: 30 мин | S2: 15 мин | S3: 20 мин
+  S4: 1-3 ч | S5: 30 мин | S6: 15 мин
+  Общая длительность: 3-5 часов
+end note
+
+@enduml

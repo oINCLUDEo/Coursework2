@@ -1,0 +1,62 @@
+@startuml IDEF3 Workflow - Процесс регистрации студента
+
+title IDEF3 Workflow Diagram\nПроцесс регистрации студента
+
+skinparam state {
+  BackgroundColor LightYellow
+  BorderColor Black
+  ArrowColor Black
+}
+
+state "1\nПринять\nзаявление" as S1
+state "2\nПроверить\nтребования" as S2
+state "3\nПроверить\nдокументы" as S3
+state "4\nПройти\nмедосмотр" as S4
+state "5\nОплатить\nобучение" as S5
+state "6\nСоздать\nличное дело" as S6
+state "7\nЗачислить\nв группу" as S7
+
+state decision1 <<choice>>
+state decision2 <<choice>>
+state decision3 <<choice>>
+state parallel1 <<fork>>
+state parallel2 <<join>>
+
+[*] --> S1
+
+S1 --> S2
+
+S2 --> decision1
+
+decision1 --> parallel1
+decision1 --> [*]
+
+parallel1 --> S3
+parallel1 --> S4
+
+S3 --> parallel2
+
+S4 --> decision2
+
+decision2 --> parallel2
+decision2 --> [*]
+
+parallel2 --> S5
+
+S5 --> decision3
+
+decision3 --> S6
+decision3 --> [*]
+
+S6 --> S7
+
+S7 --> [*]
+
+note bottom
+  Временные характеристики:
+  S1: 30 мин | S2: 15 мин | S3: 1 ч | S4: 2-4 ч
+  S5: 30 мин | S6: 1 ч | S7: 30 мин
+  Общая длительность: 1-2 рабочих дня
+end note
+
+@enduml

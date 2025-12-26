@@ -1,0 +1,60 @@
+@startuml A11_Student_Application_Automated_DFD
+' DFD для процесса A11 "Прием заявлений" (Автоматизированная версия)
+' Основано на реализации StudentsController.Create
+' Нотация Гейна-Сарсона
+
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+
+' Внешние сущности
+rectangle "Кандидат в\nкурсанты" as Applicant <<External Entity>>
+rectangle "Персонал\nприемной комиссии" as Staff <<External Entity>>
+
+' Процессы
+rectangle "11.1\nВвод данных\nстудента" as P1 <<Process>>
+rectangle "11.2\nВыбор курса\nобучения" as P2 <<Process>>
+rectangle "11.3\nВалидация\nemail" as P3 <<Process>>
+rectangle "11.4\nСоздание записи\nстудента" as P4 <<Process>>
+
+' Хранилища данных
+database "D1\nStudents" as D1 <<Data Store>>
+database "D2\nCourses\n(активные)" as D2 <<Data Store>>
+
+' Потоки данных
+Applicant -down-> P1 : Анкетные данные\n(ФИО, телефон,\nemail, адрес,\nдата рождения,\n№ медсправки)
+Staff -down-> P1 : Команда на\nрегистрацию
+
+P1 -right-> P2 : Данные\nстудента
+P2 -down-> D2 : Запрос списка\nактивных курсов\n(IsActive=true)
+D2 -down-> P2 : Список\nдоступных\nкурсов
+Staff -down-> P2 : Выбор\nCourseID
+
+P2 -down-> P3 : Данные студента +\nCourseID
+P3 -right-> D1 : Проверка\nуникальности\nemail
+D1 -right-> P3 : Результат\nпроверки
+
+P3 -down-> P4 : Валидные\nданные
+P4 -right-> D1 : Создание\nStudent\n(Add + SaveChanges)
+D1 -down-> P4 : Подтверждение\nсоздания
+
+P4 -up-> Staff : Перенаправление\nна Index
+
+note right of P3
+  Валидация через:
+  _context.Students.AnyAsync(
+    s => s.Email == email)
+  
+  Если дубль - ошибка
+  ModelState.AddModelError
+end note
+
+note right of P4
+  Транзакция:
+  _context.Add(student);
+  await _context.SaveChangesAsync();
+  
+  При успехе:
+  RedirectToAction(Index)
+end note
+
+@enduml

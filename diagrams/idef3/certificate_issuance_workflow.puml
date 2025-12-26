@@ -1,0 +1,33 @@
+@startuml certificate_issuance_workflow
+title IDEF3 Workflow: Выдача сертификата
+
+start
+
+:Проверить завершение программы;
+note right
+  Процесс A51
+end note
+
+:Сформировать сертификат;
+note right
+  Процесс A52
+end note
+
+:Зарегистрировать в реестре;
+note right
+  Процесс A53
+end note
+
+:Выдать документ;
+note right
+  Процесс A54
+end note
+
+stop
+
+note bottom
+  Общее время процесса: 1-2 дня (автоматизированная версия)
+  Неавтоматизированная версия: 7-10 дней
+end note
+
+@enduml

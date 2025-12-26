@@ -16,6 +16,7 @@ namespace MigrationService.Models
         public DbSet<Exam> Exams { get; set; }
         public DbSet<Certificate> Certificates { get; set; }
         public DbSet<StudentCertificate> StudentCertificates { get; set; }
+        public DbSet<MaintenanceLog> MaintenanceLogs { get; set; }
         public DbSet<HomeController.UpcomingLessonResult> UpcomingLessonResults { get; set; }
 
 
@@ -30,6 +31,7 @@ namespace MigrationService.Models
             modelBuilder.Entity<Exam>().ToTable("Exams");
             modelBuilder.Entity<Certificate>().ToTable("Certificates");
             modelBuilder.Entity<StudentCertificate>().ToTable("StudentCertificates");
+            modelBuilder.Entity<MaintenanceLog>().ToTable("MaintenanceLogs");
 
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.Course)
@@ -122,6 +124,12 @@ namespace MigrationService.Models
             modelBuilder.Entity<LessonStatusChange>()
                 .Property(lsc => lsc.ChangedAt)
                 .HasDefaultValueSql("GETUTCDATE()");
+
+            modelBuilder.Entity<MaintenanceLog>()
+                .HasOne(ml => ml.Aircraft)
+                .WithMany()
+                .HasForeignKey(ml => ml.AircraftID)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         
         public async Task<decimal> GetTotalFlightHoursByStudentAsync(int studentId)

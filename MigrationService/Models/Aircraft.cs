@@ -26,5 +26,7 @@ namespace MigrationService.Models
 
         [Display(Name = "Статус")]
         public string Status { get; set; } = string.Empty;
+
+        public virtual ICollection<MaintenanceLog> MaintenanceLogs { get; set; } = new List<MaintenanceLog>();
     }
 }
